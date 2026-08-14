@@ -142,6 +142,43 @@ const loginuser = asyncHandler(async (req, res) => {
       .json(new Apiresponse(status, null, error.message || "Login failed"));
   }
 });
+
+const googleLogin = asyncHandler(async (req, res) => {
+  try {
+    const { email, fullName, avatar, role } = req.body;
+    if (!email) throw new ApiError(400, "Email is required");
+    
+    let user = await User.findOne({ email });
+    
+    if (!user) {
+      // Create user
+      user = await User.create({
+        email,
+        fullName: fullName || "Google User",
+        avatar: avatar || "Not Photo",
+        role: role || "customer",
+        password: "google_login_" + Date.now(),
+        farmeractive: role === "farmer" ? "Active" : "Inactive",
+        address: "not provided",
+        phone: "not provided",
+        PinCode: "000000",
+        City: "not provided",
+        State: "not provided"
+      });
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
+    const loggedInuser = await User.findById(user._id).select("-password -refreshToken");
+    
+    return res.status(200).json(
+      new Apiresponse(200, { user: loggedInuser, accessToken, refreshToken }, "Google login successful")
+    );
+  } catch (error) {
+    const status = error.statusCode || 500;
+    return res.status(status).json(new Apiresponse(status, null, error.message || "Google login failed"));
+  }
+});
+
 const LogoutUser = asyncHandler(async (req, res) => {
   try {
     await User.findByIdAndUpdate(
@@ -496,5 +533,6 @@ export {
   updatedAvatarImage,
   getAllFarmersDetail,
   forgetPassword,
-  DeleteAccountofFarmer
+  DeleteAccountofFarmer,
+  googleLogin
 };

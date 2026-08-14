@@ -2,7 +2,7 @@ import{Router}  from 'express'
 import { registerUser , getAllFarmersDetail } from '../Controlers/User.Controler.js'
 import {upload } from '../Middleware/Multer.js'
 import { LogoutUser,adminPanel,forgetPassword , DeleteAccountofFarmer } from '../Controlers/User.Controler.js'
-import { loginuser } from '../Controlers/User.Controler.js'
+import { loginuser, googleLogin } from '../Controlers/User.Controler.js'
 import { verifyjwt } from '../Middleware/auth.middleware.js'
 import{refreshAccessToken,
    changePassword,
@@ -25,6 +25,7 @@ router.route("/register").post(
     registerUser
 )
 router.route("/login").post(loginuser)
+router.route("/google-login").post(googleLogin)
 router.route("/adminlogin").post(adminPanel)
 router.route("/logout").post(verifyjwt,LogoutUser)
 router.route("/refresh_token").post(refreshAccessToken)
