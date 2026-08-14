@@ -3,7 +3,6 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import GuestRoute from './routes/GuestRoute';
 
-// Core Landing & Auth Pages
 import LandingPage from './pages/landing/LandingPage';
 import AuthSelection from './pages/auth/AuthSelection';
 import CustomerAuth from './pages/auth/CustomerAuth';
@@ -13,7 +12,6 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import NotFound from './pages/error/NotFound';
 import Unauthorized from './pages/error/Unauthorized';
 
-// Customer / Buyer Pages
 import CustomerShop from './pages/customer/CustomerShop';
 import CustomerCart from './pages/customer/CustomerCart';
 import CustomerCheckout from './pages/customer/CustomerCheckout';
@@ -22,6 +20,10 @@ import TrackOrder from './pages/customer/TrackOrder';
 import CustomerOrders from './pages/customer/CustomerOrders';
 import CustomerWishlist from './pages/customer/CustomerWishlist';
 import CustomerProfile from './pages/customer/CustomerProfile';
+import CustomerProductDetails from './pages/customer/CustomerProductDetails';
+import CustomerFarmers from './pages/customer/CustomerFarmers';
+import CustomerNotifications from './pages/customer/CustomerNotifications';
+import CustomerSettings from './pages/customer/CustomerSettings';
 
 function App() {
   return (
@@ -29,7 +31,6 @@ function App() {
       <CartProvider>
         <BrowserRouter>
           <Routes>
-            {/* Landing & Public Pages */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<GuestRoute><AuthSelection mode="login" /></GuestRoute>} />
             <Route path="/register" element={<GuestRoute><AuthSelection mode="register" /></GuestRoute>} />
@@ -39,18 +40,21 @@ function App() {
             <Route path="/farmer/signup" element={<GuestRoute><FarmerSignUp /></GuestRoute>} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Customer / Buyer Platform Routes */}
             <Route path="/customer" element={<Navigate to="/customer/profile" replace />} />
             <Route path="/customer/shop" element={<CustomerShop />} />
+            <Route path="/customer/product/:id" element={<CustomerProductDetails />} />
             <Route path="/customer/cart" element={<CustomerCart />} />
             <Route path="/customer/checkout" element={<CustomerCheckout />} />
             <Route path="/customer/order-success" element={<OrderSuccess />} />
             <Route path="/customer/track-order" element={<TrackOrder />} />
+            <Route path="/customer/track-order/:id" element={<TrackOrder />} />
             <Route path="/customer/orders" element={<CustomerOrders />} />
             <Route path="/customer/wishlist" element={<CustomerWishlist />} />
+            <Route path="/customer/farmers" element={<CustomerFarmers />} />
+            <Route path="/customer/notifications" element={<CustomerNotifications />} />
+            <Route path="/customer/settings" element={<CustomerSettings />} />
             <Route path="/customer/profile" element={<CustomerProfile />} />
 
-            {/* Error Pages */}
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
