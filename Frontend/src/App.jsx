@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 import GuestRoute from './routes/GuestRoute';
 
 import LandingPage from './pages/landing/LandingPage';
@@ -34,7 +35,8 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <BrowserRouter>
+        <WishlistProvider>
+          <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<GuestRoute><AuthSelection mode="login" /></GuestRoute>} />
@@ -69,6 +71,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </WishlistProvider>
       </CartProvider>
     </AuthProvider>
   );

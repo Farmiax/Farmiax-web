@@ -1,17 +1,14 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
 import { useCart } from '../../context/CartContext';
-import { FiHeart, FiShare2, FiStar, FiShoppingBag } from 'react-icons/fi';
+import { useWishlist } from '../../context/WishlistContext';
+import { FiHeart, FiShare2, FiStar, FiShoppingBag, FiTrash2 } from 'react-icons/fi';
 
 import '../../styles/customer.css';
 
 const CustomerWishlist = () => {
   const { addToCart } = useCart();
-  
-  // Initialize with empty array since we removed the mock data.
-  // In the future, this can be fetched from the API
-  const [wishlistItems, setWishlistItems] = useState([]);
+  const { wishlistProducts, removeFromWishlist, loading } = useWishlist();
 
   return (
     <CustomerDashboardLayout>
@@ -27,7 +24,7 @@ const CustomerWishlist = () => {
                 <FiHeart /> My Wishlist
               </h2>
               <p>
-                Curated favorites waiting to be yours. ({wishlistItems.length} items)
+                Curated favorites waiting to be yours. ({wishlistProducts.length} items)
               </p>
             </div>
             <button className="wishlist-share-btn">
@@ -36,7 +33,11 @@ const CustomerWishlist = () => {
           </div>
 
           {/* Wishlist Items or Empty State */}
-          {wishlistItems.length === 0 ? (
+          {loading ? (
+            <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+              Loading your wishlist...
+            </div>
+          ) : wishlistProducts.length === 0 ? (
             <div className="wishlist-empty-state">
               <div className="wishlist-empty-icon">
                 <FiHeart size={40} />
@@ -49,25 +50,33 @@ const CustomerWishlist = () => {
             </div>
           ) : (
           <div className="wishlist-products-grid">
-            {wishlistItems.map((item) => (
-              <div key={item.id} className="product-card-item wishlist-card-item">
+            {wishlistProducts.map((item) => (
+              <div key={item._id || item.id} className="product-card-item wishlist-card-item">
                 <div className="product-card-top">
                   {item.tag && <span className={`product-tag ${item.tagClass}`}>{item.tag}</span>}
-                  <button className="wishlist-heart-btn active" title="Remove from Wishlist">
-                    <FiHeart className="fill-red-500 text-red-500" />
+                  <button 
+                    className="wishlist-heart-btn active" 
+                    title="Remove from Wishlist"
+                    onClick={() => removeFromWishlist(item._id || item.id)}
+                  >
+                    <FiTrash2 className="fill-red-500 text-red-500" />
                   </button>
-                  <img src={item.image} alt={item.name} loading="lazy" />
+                  <Link to={`/customer/product/${item._id || item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <img src={item.image ? `http://localhost:5000/${item.image}` : 'https://via.placeholder.com/200'} alt={item.name} loading="lazy" />
+                  </Link>
                 </div>
 
                 <div className="product-card-details">
-                  <h3 className="product-title">{item.name}</h3>
-                  <p className="product-weight">{item.weight}</p>
+                  <Link to={`/customer/product/${item._id || item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <h3 className="product-title">{item.name}</h3>
+                  </Link>
+                  <p className="product-weight">{item.quantity} {item.unit || 'unit'}</p>
 
                   <div className="product-rating">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <FiStar key={i} className="fill-amber-400 text-amber-400" size={12} />
                     ))}
-                    <span className="review-count">({item.reviews})</span>
+                    <span className="review-count">({item.reviews || 0})</span>
                   </div>
 
                   <div className="product-price-box mb-3">
@@ -77,7 +86,7 @@ const CustomerWishlist = () => {
 
                   <button
                     className="add-cart-btn-full"
-                    onClick={() => addToCart(item.id, 1)}
+                    onClick={() => addToCart(item._id || item.id, 1)}
                   >
                     <FiShoppingBag /> Add to Cart
                   </button>

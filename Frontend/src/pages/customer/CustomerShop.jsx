@@ -2,15 +2,17 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
 import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 import { FiHeart, FiShoppingBag, FiStar } from 'react-icons/fi';
 import productService from '../../services/productService';
 
 const CustomerShop = () => {
   const { addToCart } = useCart();
+  const { wishlistIds, toggleWishlist } = useWishlist();
+  
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [minPrice, setMinPrice] = useState(10);
   const [maxPrice, setMaxPrice] = useState(1000);
-  const [wishlistMap, setWishlistMap] = useState({});
   const [productsList, setProductsList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,10 +29,6 @@ const CustomerShop = () => {
     };
     fetchProducts();
   }, []);
-
-  const toggleWishlist = (id) => {
-    setWishlistMap((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   // Generate dynamic categories from loaded products
   const categoryCounts = productsList.reduce((acc, product) => {
@@ -134,11 +132,11 @@ const CustomerShop = () => {
                     <div className="product-card-top">
                       {p.tag && <span className={`product-tag ${p.tagClass}`}>{p.tag}</span>}
                       <button
-                        className={`wishlist-heart-btn ${wishlistMap[p.id] ? 'active' : ''}`}
-                        onClick={() => toggleWishlist(p.id)}
+                        className={`wishlist-heart-btn ${wishlistIds.has(p._id || p.id) ? 'active' : ''}`}
+                        onClick={() => toggleWishlist(p._id || p.id)}
                         aria-label="Wishlist"
                       >
-                        <FiHeart className={wishlistMap[p.id] ? 'fill-current' : ''} />
+                        <FiHeart className={wishlistIds.has(p._id || p.id) ? 'fill-current' : ''} />
                       </button>
                       <Link to={`/customer/product/${p._id || p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <img src={p.image ? `http://localhost:5000/${p.image}` : 'https://via.placeholder.com/200'} alt={p.name} loading="lazy" />

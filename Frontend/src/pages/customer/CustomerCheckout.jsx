@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
-import api from '../../services/api';
+import orderService from '../../services/orderService';
 import {
   FiShield, FiTruck, FiLock, FiCheckCircle, FiMapPin, FiCreditCard,
   FiPlus, FiArrowLeft, FiCheck
@@ -74,6 +74,9 @@ const CustomerCheckout = () => {
   // Dynamic Cart Items from CartContext
   const items = cartProducts || [];
 
+  const location = useLocation();
+  const { appliedCoupon, couponDiscount } = location.state || {};
+
   // Financial calculations
   const subtotal = items.reduce((acc, item) => {
     const q = item.cartQuantity || item.qty || 1;
@@ -85,7 +88,8 @@ const CustomerCheckout = () => {
   const isFreeShipping = subtotal >= freeShippingThreshold || items.length === 0;
   const deliveryCharge = items.length === 0 ? 0 : (isFreeShipping ? 0 : 40);
   const expressFee = deliveryMode === 'express' ? 30 : 0;
-  const grandTotal = subtotal + deliveryCharge + expressFee;
+  const actualDiscount = couponDiscount || 0;
+  const grandTotal = Math.max(0, subtotal + deliveryCharge + expressFee - actualDiscount);
 
   const handleAddNewAddressSubmit = (e) => {
     e.preventDefault();
@@ -128,14 +132,14 @@ const CustomerCheckout = () => {
         actualAmount: subtotal,
         paymentMethod: paymentMethod, // Matched to Enum ["COD", "Stripe", "Razorpay"]
         deliveryAddress: selectedAddrObj,
-        OfferName: '',
-        Discount: 0,
+        OfferName: appliedCoupon ? appliedCoupon.code : '',
+        Discount: actualDiscount,
       };
 
       // Connect to backend API endpoint
-      const response = await api.post('/order/cashondelivery', orderPayload);
+      const response = await orderService.placeOrder(orderPayload);
 
-      if (response.status === 201 || response.status === 200 || response.data?.success) {
+      if (response && response.success !== false) {
         clearLocalCart();
         navigate('/customer/order-success');
       } else {
@@ -431,6 +435,13 @@ const CustomerCheckout = () => {
                   <span>Subtotal ({items.length} items)</span>
                   <span>₹{subtotal}</span>
                 </div>
+
+                {appliedCoupon && actualDiscount > 0 && (
+                  <div className="cart-summary-row discount">
+                    <span>Promo Coupon ({appliedCoupon.code})</span>
+                    <span>-₹{actualDiscount}</span>
+                  </div>
+                )}
 
                 <div className="cart-summary-row">
                   <span>Delivery Charge</span>

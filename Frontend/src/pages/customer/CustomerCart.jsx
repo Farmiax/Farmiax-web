@@ -477,7 +477,7 @@ const CustomerCart = () => {
                 {/* Checkout CTA */}
                 <button
                   className="cart-checkout-cta-btn"
-                  onClick={() => navigate('/customer/checkout')}
+                  onClick={() => navigate('/customer/checkout', { state: { appliedCoupon, couponDiscount } })}
                 >
                   Proceed to Checkout <FiArrowRight size={18} />
                 </button>
