@@ -24,6 +24,11 @@ import CustomerProductDetails from './pages/customer/CustomerProductDetails';
 import CustomerFarmers from './pages/customer/CustomerFarmers';
 import CustomerNotifications from './pages/customer/CustomerNotifications';
 import CustomerSettings from './pages/customer/CustomerSettings';
+import FarmerDashboard from './pages/farmer/FarmerDashboard';
+import FarmerProducts from './pages/farmer/FarmerProducts';
+import FarmerOrders from './pages/farmer/FarmerOrders';
+import FarmerInventory from './pages/farmer/FarmerInventory';
+import FarmerAnalytics from './pages/farmer/FarmerAnalytics';
 
 function App() {
   return (
@@ -41,6 +46,11 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
             <Route path="/customer" element={<Navigate to="/customer/profile" replace />} />
+            <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
+            <Route path="/farmer/products" element={<FarmerProducts />} />
+            <Route path="/farmer/orders" element={<FarmerOrders />} />
+            <Route path="/farmer/inventory" element={<FarmerInventory />} />
+            <Route path="/farmer/analytics" element={<FarmerAnalytics />} />
             <Route path="/customer/shop" element={<CustomerShop />} />
             <Route path="/customer/product/:id" element={<CustomerProductDetails />} />
             <Route path="/customer/cart" element={<CustomerCart />} />

@@ -45,14 +45,6 @@ const FarmerSignIn = () => {
       <div className="auth-visual">
         <img src={authBg} alt="Farmer in green field" />
         <div className="auth-visual-overlay">
-          <h2>Welcome Back, Farmer!</h2>
-          <p>Manage your products, orders and grow your farming business with Farmiax.</p>
-          <ul className="auth-visual-benefits">
-            <li>✓ Easy Product Listing</li>
-            <li>✓ Manage Orders Easily</li>
-            <li>✓ Secure Payments</li>
-            <li>✓ Business Growth Support</li>
-          </ul>
         </div>
       </div>
 

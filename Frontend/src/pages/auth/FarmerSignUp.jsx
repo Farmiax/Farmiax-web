@@ -11,7 +11,7 @@ import authBg from '../../assets/images/auth-farmer-bg.png';
 import '../../styles/auth.css';
 
 const FarmerSignUp = () => {
-  const [form, setForm] = useState({ fullName:'', email:'', phone:'', password:'', confirmPassword:'', address:'', PinCode:'', City:'', State:'', avatar:null });
+  const [form, setForm] = useState({ fullName:'', email:'', phone:'', password:'', confirmPassword:'', farmName:'', address:'', PinCode:'', City:'', State:'', farmSize:'', primaryCrop:'', category:'', otherCategory:'', avatar:null });
   const [avatarPrev, setAvatarPrev] = useState(null);
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState('');
@@ -43,7 +43,7 @@ const FarmerSignUp = () => {
         </div>
       </div>
       <div className="auth-form-side">
-        <div className="auth-form-container">
+        <div className="auth-form-container signup-mode">
           <Link to="/" className="auth-back"><FiArrowLeft size={16}/> Back to Home</Link>
 
           <h1>Create Farmer Account</h1>
@@ -63,7 +63,16 @@ const FarmerSignUp = () => {
               <PasswordInput label="Password" name="password" value={form.password} onChange={hc} error={errors.password} required/>
               <PasswordInput label="Confirm Password" name="confirmPassword" value={form.confirmPassword} onChange={hc} error={errors.confirmPassword} required/>
             </div>
-            <div className="form-group"><label className="form-label">Farm Address *</label><input name="address" className={`form-input ${errors.address?'error':''}`} value={form.address} onChange={hc} placeholder="Farm location"/>{errors.address&&<p className="form-error">{errors.address}</p>}</div>
+            
+            <div className="form-group"><label className="form-label">Farm Name *</label><input name="farmName" className={`form-input ${errors.farmName?'error':''}`} value={form.farmName} onChange={hc} placeholder="Farm Name"/>{errors.farmName&&<p className="form-error">{errors.farmName}</p>}</div>
+            <div className="auth-row">
+              <div className="form-group"><label className="form-label">Farm Size (in acres) *</label><input name="farmSize" type="number" className={`form-input ${errors.farmSize?'error':''}`} value={form.farmSize} onChange={hc} placeholder="e.g. 5"/>{errors.farmSize&&<p className="form-error">{errors.farmSize}</p>}</div>
+              <div className="form-group"><label className="form-label">Primary Crop / Livestock Type *</label><input name="primaryCrop" className={`form-input ${errors.primaryCrop?'error':''}`} value={form.primaryCrop} onChange={hc} placeholder="e.g. Wheat"/>{errors.primaryCrop&&<p className="form-error">{errors.primaryCrop}</p>}</div>
+            </div>
+            <div className="form-group"><label className="form-label">Category Selection *</label><select name="category" className={`form-select ${errors.category?'error':''}`} value={form.category} onChange={hc}><option value="">Select Category</option><option value="vegetables">Vegetables</option><option value="fruits">Fruits</option><option value="grains">Grains</option><option value="dairy">Dairy</option><option value="livestocks">Livestocks</option><option value="organic">Organic</option><option value="herbs">Herbs</option><option value="aquaculture">Aquaculture</option><option value="other">Other</option></select>{errors.category&&<p className="form-error">{errors.category}</p>}</div>
+            {form.category === 'other' && <div className="form-group"><label className="form-label">Specify Other Category *</label><input name="otherCategory" className={`form-input ${errors.otherCategory?'error':''}`} value={form.otherCategory} onChange={hc} placeholder="Please specify type"/>{errors.otherCategory&&<p className="form-error">{errors.otherCategory}</p>}</div>}
+
+            <div className="form-group"><label className="form-label">Farmer Location / Address *</label><input name="address" className={`form-input ${errors.address?'error':''}`} value={form.address} onChange={hc} placeholder="Farm location"/>{errors.address&&<p className="form-error">{errors.address}</p>}</div>
             <div className="auth-row">
               <div className="form-group"><label className="form-label">City *</label><input name="City" className={`form-input ${errors.City?'error':''}`} value={form.City} onChange={hc} placeholder="City"/>{errors.City&&<p className="form-error">{errors.City}</p>}</div>
               <div className="form-group"><label className="form-label">Pin Code *</label><input name="PinCode" className={`form-input ${errors.PinCode?'error':''}`} value={form.PinCode} onChange={hc} placeholder="6-digit"/>{errors.PinCode&&<p className="form-error">{errors.PinCode}</p>}</div>

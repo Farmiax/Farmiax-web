@@ -128,7 +128,7 @@ const CustomerAuth = ({ initialMode = 'signin' }) => {
       </div>
 
       <div className="auth-form-side">
-        <div className="auth-form-container">
+        <div className={`auth-form-container ${isLogin ? 'signin-mode' : 'signup-mode'}`}>
           <Link to="/" className="auth-back"><FiArrowLeft size={16} /> Back to Home</Link>
           <h1>{isLogin ? 'Welcome Back!' : 'Create Account'}</h1>
           <p className="auth-subtitle">{isLogin ? 'Sign in to your Farmiax account' : 'Join Farmiax as a customer'}</p>

@@ -9,7 +9,8 @@ const Footer = () => {
         <div className="footer-brand-col">
           <Logo size="md" variant="dark" />
           <p className="footer-desc">
-            Connecting rural farmers and artisans directly with urban families. Bringing you pure, unadulterated village products for a healthier life.
+            From village farms to your family’s table.
+            Fresh products, trusted farmers, and a direct connection.
           </p>
           <div className="footer-socials">
 

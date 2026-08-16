@@ -6,6 +6,7 @@ import Logo from '../../components/common/Logo';
 import authService from '../../services/authService';
 import { validateEmail, validatePassword } from '../../utils/validators';
 import { getApiError } from '../../utils/helpers';
+import authBg from '../../assets/images/auth-customer-bg.png';
 import '../../styles/auth.css';
 
 const ForgotPassword = () => {
@@ -31,38 +32,44 @@ const ForgotPassword = () => {
     finally { setLoading(false); }
   };
 
-  if (success) {
-    return (
-      <div style={{ minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--cream)',padding:24 }}>
-        <div style={{ textAlign:'center',maxWidth:400 }}>
-          <FiCheckCircle size={56} color="var(--success)" style={{marginBottom:16}}/>
-          <h2>Password Updated!</h2>
-          <p style={{color:'var(--gray-500)',marginBottom:24}}>Your password has been reset successfully.</p>
-          <Link to="/customer/signin" className="btn btn-primary">Sign In</Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--cream)',padding:24 }}>
-      <div style={{ maxWidth:420,width:'100%' }}>
-        <Link to="/" className="auth-back"><FiArrowLeft size={16}/> Back to Home</Link>
-        <div className="auth-logo" style={{ marginTop: 16, marginBottom: 16 }}>
-          <Link to="/"><Logo size="md" /></Link>
+    <div className="auth-page">
+      <div className="auth-visual">
+        <img src={authBg} alt="Farm background" />
+        <div className="auth-visual-overlay" />
+      </div>
+
+      <div className="auth-form-side">
+        <div className="auth-form-container compact-mode">
+          <Link to="/" className="auth-back"><FiArrowLeft size={16}/> Back to Home</Link>
+
+          {success ? (
+            <div style={{ textAlign:'center', padding: '16px 0' }}>
+              <FiCheckCircle size={56} color="#166534" style={{marginBottom:16}}/>
+              <h1>Password Updated!</h1>
+              <p className="auth-subtitle">Your password has been reset successfully.</p>
+              <Link to="/customer/signin" className="btn btn-primary btn-full btn-lg" style={{marginTop: 16}}>Sign In</Link>
+            </div>
+          ) : (
+            <>
+              <h1>Reset Password</h1>
+              <p className="auth-subtitle">Enter your email and new password</p>
+              {apiError && <div className="auth-api-error"><FiAlertCircle size={18}/>{apiError}</div>}
+              <form className="auth-form" onSubmit={handleSubmit} noValidate>
+                <div className="form-group">
+                  <label className="form-label">Email *</label>
+                  <input type="email" className={`form-input ${errors.email?'error':''}`} value={email} onChange={e=>setEmail(e.target.value)} placeholder="Your registered email"/>
+                  {errors.email && <p className="form-error">{errors.email}</p>}
+                </div>
+                <PasswordInput label="New Password" name="password" value={password} onChange={e=>setPassword(e.target.value)} error={errors.password} required/>
+                <PasswordInput label="Confirm New Password" name="confirmPassword" value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} error={errors.confirmPassword} required/>
+                <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading} style={{marginTop:12}}>
+                  {loading ? 'Updating...' : 'Reset Password'}
+                </button>
+              </form>
+            </>
+          )}
         </div>
-        <h1 style={{fontSize:'1.5rem'}}>Reset Password</h1>
-        <p className="auth-subtitle">Enter your email and new password</p>
-        {apiError&&<div className="auth-api-error"><FiAlertCircle size={18}/>{apiError}</div>}
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="form-group"><label className="form-label">Email *</label>
-            <input type="email" className={`form-input ${errors.email?'error':''}`} value={email} onChange={e=>setEmail(e.target.value)} placeholder="Your registered email"/>
-            {errors.email&&<p className="form-error">{errors.email}</p>}
-          </div>
-          <PasswordInput label="New Password" name="password" value={password} onChange={e=>setPassword(e.target.value)} error={errors.password} required/>
-          <PasswordInput label="Confirm New Password" name="confirmPassword" value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} error={errors.confirmPassword} required/>
-          <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading} style={{marginTop:8}}>{loading?'Updating...':'Reset Password'}</button>
-        </form>
       </div>
     </div>
   );

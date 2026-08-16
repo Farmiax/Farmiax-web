@@ -30,7 +30,7 @@ const CategorySection = () => {
       <div className="container">
         <div className="categories-header-row">
           <h2>Shop by Category</h2>
-          <Link to="/customer/shop" className="view-all-link">
+          <Link to="/login" className="view-all-link">
             View All Categories <i className="ri-arrow-right-line" />
           </Link>
         </div>
@@ -41,7 +41,7 @@ const CategorySection = () => {
             {categories.map((cat, idx) => (
               <Link
                 key={idx}
-                to={`/customer/shop?category=${encodeURIComponent(cat.name.toLowerCase())}`}
+                to="/login"
                 className="category-card-item group"
               >
                 <div className="category-img-wrapper">

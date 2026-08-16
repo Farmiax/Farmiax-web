@@ -64,7 +64,16 @@ const Navbar = () => {
   return (
     <header className={`landing-navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container container">
-        <Link to="/" className="navbar-logo" aria-label="Farmiax Home">
+        <Link 
+          to="/" 
+          className="navbar-logo" 
+          aria-label="Farmiax Home"
+          onClick={() => {
+            if (location.pathname === '/') {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+        >
           <Logo size="md" variant="badge" />
         </Link>
 
