@@ -50,13 +50,13 @@ const TrackOrder = () => {
       <CustomerDashboardLayout>
         <div style={{ padding: '60px 20px', maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
           <FiTruck style={{ fontSize: '48px', color: 'var(--primary-green)', marginBottom: '20px' }} />
-          <h2 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '12px' }}>Track Your Order</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '32px' }}>Enter your Order ID below to get real-time tracking updates on your package.</p>
-          
+          <h2 style={{ fontSize: '32px', fontWeight: 800, marginBottom: '12px', color: '#F5E8C7' }}>Track Your Order</h2>
+          <p style={{ color: '#F5E8C7', marginBottom: '32px', fontSize: '16px' }}>Enter your Order ID below to get real-time tracking updates on your package.</p>
+
           <form onSubmit={(e) => { e.preventDefault(); if (searchInput.trim()) navigate(`/customer/track-order/${searchInput.trim()}`); }} style={{ display: 'flex', gap: '12px', maxWidth: '400px', margin: '0 auto' }}>
-            <input 
-              type="text" 
-              placeholder="e.g. FMX1721..." 
+            <input
+              type="text"
+              placeholder="e.g. FMX1721..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               style={{ flex: 1, padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-light)', fontSize: '15px', outline: 'none' }}
@@ -65,10 +65,10 @@ const TrackOrder = () => {
               Track
             </button>
           </form>
-          
+
           <div style={{ marginTop: '32px' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Or select an order from </span>
-            <Link to="/customer/orders" style={{ color: 'var(--primary-green)', fontWeight: 600, fontSize: '13px', textDecoration: 'none' }}>My Orders</Link>
+            <span style={{ color: '#F5E8C7', fontSize: '14px' }}>Or select an order from </span>
+            <Link to="/customer/orders" style={{ color: 'var(--primary-green)', fontWeight: 700, fontSize: '14px', textDecoration: 'none' }}>My Orders</Link>
           </div>
         </div>
       </CustomerDashboardLayout>
@@ -89,9 +89,9 @@ const TrackOrder = () => {
   // Generate dynamic status steps based on current status
   const currentStatus = order.status || 'Order Placed';
   const isCancelled = currentStatus.toLowerCase() === 'cancelled';
-  
+
   const allSteps = ['Order Placed', 'Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
-  
+
   let steps = [];
   if (isCancelled) {
     steps = [
@@ -120,9 +120,9 @@ const TrackOrder = () => {
         {/* Sub Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <p className="text-xs text-slate-500 font-medium m-0">Track Your Order</p>
-            <h1 className="text-2xl font-bold text-slate-800 m-0">
-              Order <span className="text-emerald-800">#{order._id || order.id}</span> • <span className="text-sm text-slate-500 font-normal">Placed on {formattedDate}.</span>
+            <p className="text-xs text-slate-900 font-medium m-0">Track Your Order</p>
+            <h1 className="text-2xl font-bold text-slate-900 m-0">
+              Order <span className="text-emerald-900">#{order._id || order.id}</span> • <span className="text-sm text-slate-900 font-normal">Placed on {formattedDate}.</span>
             </h1>
           </div>
           {!isCancelled && (
@@ -141,15 +141,14 @@ const TrackOrder = () => {
               {steps.map((step, idx) => (
                 <div key={idx} className="flex items-start gap-4 relative z-10">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                      step.error
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${step.error
                         ? 'bg-red-500 text-white ring-4 ring-red-100'
                         : step.status === 'done'
-                        ? 'bg-emerald-700 text-white'
-                        : step.status === 'current'
-                        ? 'bg-emerald-500 text-white ring-4 ring-emerald-100'
-                        : 'bg-slate-200 text-slate-500'
-                    }`}
+                          ? 'bg-emerald-700 text-white'
+                          : step.status === 'current'
+                            ? 'bg-emerald-500 text-white ring-4 ring-emerald-100'
+                            : 'bg-slate-200 text-slate-500'
+                      }`}
                   >
                     {step.error ? <FiXCircle size={16} /> : step.status === 'done' ? <FiCheckCircle size={16} /> : idx + 1}
                   </div>
@@ -169,18 +168,17 @@ const TrackOrder = () => {
 
           {/* Center & Right Body */}
           <div className="lg:col-span-3 flex flex-col gap-8">
-            
+
             {/* Horizontal Stepper Banner */}
             <div className="bg-white rounded-2xl p-6 shadow-sm flex items-center justify-between overflow-x-auto">
               {steps.map((step, idx) => (
                 <React.Fragment key={idx}>
                   <div className="text-center min-w-[80px]">
-                    <div className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center font-bold ${
-                      step.error ? 'bg-red-500 text-white ring-4 ring-red-100' :
-                      step.status === 'done' ? 'bg-emerald-800 text-white' :
-                      step.status === 'current' ? 'bg-emerald-700 text-white ring-4 ring-emerald-100' :
-                      'bg-slate-200 text-slate-400'
-                    }`}>
+                    <div className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center font-bold ${step.error ? 'bg-red-500 text-white ring-4 ring-red-100' :
+                        step.status === 'done' ? 'bg-emerald-800 text-white' :
+                          step.status === 'current' ? 'bg-emerald-700 text-white ring-4 ring-emerald-100' :
+                            'bg-slate-200 text-slate-400'
+                      }`}>
                       {step.error ? <FiXCircle size={20} /> : step.status === 'done' ? <FiCheckCircle size={20} /> : <FiPackage size={20} />}
                     </div>
                     <p className={`text-xs font-semibold mt-2 mb-0 ${step.status === 'current' ? 'text-emerald-800' : step.error ? 'text-red-600' : ''}`}>{step.label}</p>
@@ -239,7 +237,7 @@ const TrackOrder = () => {
                   <div className="bg-white rounded-2xl p-5 shadow-sm">
                     <p className="text-xs font-bold text-slate-700 tracking-wider uppercase mb-3">SHIPPING ADDRESS</p>
                     <h4 className="text-sm font-bold m-0 mb-1">{user?.fullName || 'Customer'}</h4>
-                    <p className="text-xs text-slate-500 leading-relaxed m-0 mb-2">
+                    <p className="text-xs text-slate-900 leading-relaxed m-0 mb-2">
                       {user?.address || '123, Green Street, Anna Nagar\nChennai - 600040, Tamil Nadu\nIndia'}
                     </p>
                     <p className="text-xs font-semibold text-slate-700 m-0">{user?.phone || '+91 98765 43210'}</p>

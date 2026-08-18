@@ -56,7 +56,7 @@ const CustomerProductDetails = () => {
   return (
     <CustomerDashboardLayout>
       <div className="product-details-container" style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
-        
+
         {/* Breadcrumbs */}
         <div className="breadcrumbs-bar" style={{ marginBottom: '32px' }}>
           <Link to="/customer">Home</Link>
@@ -70,7 +70,7 @@ const CustomerProductDetails = () => {
 
         {/* Top Section: Images & Info */}
         <div className="product-top-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', marginBottom: '60px' }}>
-          
+
           {/* Left: Images */}
           <div className="product-image-gallery" style={{ display: 'flex', gap: '20px' }}>
             <div className="thumbnail-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -92,10 +92,10 @@ const CustomerProductDetails = () => {
           {/* Right: Info */}
           <div className="product-info-panel">
             <h1 style={{ fontSize: '32px', fontWeight: 800, margin: '0 0 12px' }}>{product.name}</h1>
-            
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
               <div style={{ display: 'flex', color: '#F59E0B' }}>
-                {[1,2,3,4,5].map(s => <FiStar key={s} className="fill-current" />)}
+                {[1, 2, 3, 4, 5].map(s => <FiStar key={s} className="fill-current" />)}
               </div>
               <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>4.8 (128 Reviews)</span>
             </div>
@@ -132,7 +132,7 @@ const CustomerProductDetails = () => {
                 Buy Now
               </button>
             </div>
-            
+
             <button style={{ width: '100%', padding: '12px', background: 'transparent', border: 'none', color: 'var(--text-dark)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', marginBottom: '32px' }}>
               <FiHeart size={18} /> Add to Wishlist
             </button>
@@ -162,8 +162,8 @@ const CustomerProductDetails = () => {
         {/* Tabs Section */}
         <div style={{ borderBottom: '1px solid var(--border-light)', marginBottom: '32px', display: 'flex', gap: '32px' }}>
           {['Description', 'Product Details', 'How it\'s Made', 'Reviews (128)', 'Farmer Info'].map(tab => (
-            <button 
-              key={tab} 
+            <button
+              key={tab}
               onClick={() => setActiveTab(tab)}
               style={{ padding: '16px 0', border: 'none', background: 'transparent', fontSize: '15px', fontWeight: activeTab === tab ? 700 : 500, color: activeTab === tab ? 'var(--dark-green)' : 'var(--text-muted)', borderBottom: activeTab === tab ? '2px solid var(--dark-green)' : '2px solid transparent', cursor: 'pointer', marginBottom: '-1px' }}
             >
@@ -184,10 +184,10 @@ const CustomerProductDetails = () => {
                   <div style={{ background: '#fff', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '24px' }}>
                     <h4 style={{ margin: '0 0 16px', fontSize: '15px' }}>Key Features</h4>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px', color: 'var(--text-muted)' }}>
-                      <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiCheckCircle color="var(--primary-green)"/> No artificial colors or preservatives</li>
-                      <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiCheckCircle color="var(--primary-green)"/> High nutrient content</li>
-                      <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiCheckCircle color="var(--primary-green)"/> Ethically sourced from small farms</li>
-                      <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiCheckCircle color="var(--primary-green)"/> Traditional processing</li>
+                      <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiCheckCircle color="var(--primary-green)" /> No artificial colors or preservatives</li>
+                      <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiCheckCircle color="var(--primary-green)" /> High nutrient content</li>
+                      <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiCheckCircle color="var(--primary-green)" /> Ethically sourced from small farms</li>
+                      <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><FiCheckCircle color="var(--primary-green)" /> Traditional processing</li>
                     </ul>
                   </div>
                   <div style={{ background: '#fff', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '24px' }}>
@@ -201,7 +201,7 @@ const CustomerProductDetails = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Farmer Info Card */}
               <div style={{ background: '#fff', border: '1px solid var(--border-light)', borderRadius: '16px', padding: '32px 24px', textAlign: 'center', boxShadow: 'var(--card-shadow)' }}>
                 <span style={{ display: 'inline-block', padding: '4px 12px', background: '#86EFAC', color: '#062414', fontSize: '11px', fontWeight: 700, borderRadius: '999px', marginBottom: '20px' }}>FARMER INFO</span>
@@ -209,7 +209,7 @@ const CustomerProductDetails = () => {
                 <h3 style={{ margin: '0 0 4px', fontSize: '18px' }}>Ramesh Kumar</h3>
                 <p style={{ margin: '0 0 12px', fontSize: '13px', color: 'var(--text-muted)' }}>Karnataka, India</p>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#15803D', fontWeight: 700, fontSize: '14px', marginBottom: '20px' }}>
-                  <FiStar className="fill-current"/> 4.8 (56)
+                  <FiStar className="fill-current" /> 4.8 (56)
                 </div>
                 <p style={{ fontStyle: 'italic', fontSize: '13.5px', color: 'var(--text-muted)', lineHeight: '1.6', marginBottom: '24px' }}>
                   "We treat our soil like our mother. Every gram of this turmeric is grown with care and heritage."

@@ -61,7 +61,7 @@ const CustomerShop = () => {
                     onClick={() => setSelectedCategory(c.name === 'All Categories' ? 'All' : c.name)}
                   >
                     <span>{c.name}</span>
-                    <span className="text-xs text-slate-400">({c.count})</span>
+                    <span className="text-xs text-slate-900 font-semibold">({c.count})</span>
                   </div>
                 ))}
               </div>
@@ -103,10 +103,10 @@ const CustomerShop = () => {
               <div className="shop-header-row">
                 <div>
                   <h1>{selectedCategory === 'All' ? 'All Products' : selectedCategory}</h1>
-                  <p>Showing {productsList.length} products</p>
+                  <p className="text-slate-900 font-medium">Showing {productsList.length} products</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-500 font-medium">Sort by:</span>
+                  <span className="text-xs font-medium text-slate-800">Sort by:</span>
                   <select className="shop-sort-select">
                     <option>Popularity</option>
                     <option>Price: Low to High</option>
@@ -118,11 +118,11 @@ const CustomerShop = () => {
 
               {/* Product Cards Grid */}
               {loading ? (
-                <div style={{ textAlign: 'center', padding: '40px', width: '100%', color: 'var(--text-muted)' }}>
+                <div style={{ textAlign: 'center', padding: '40px', width: '100%', color: 'var(--text-dark)' }}>
                   Loading products...
                 </div>
               ) : productsList.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', width: '100%', color: 'var(--text-muted)' }}>
+                <div style={{ textAlign: 'center', padding: '40px', width: '100%', color: 'var(--text-dark)', fontSize: '20px', fontWeight: '600' }}>
                   No products available yet.
                 </div>
               ) : (
