@@ -144,12 +144,15 @@ const CustomerSettings = () => {
         {/* Clean, Elegant Header Card (No Heavy Solid Green Box) */}
         <div
           style={{
-            background: 'var(--dark-green)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 40%), rgba(6, 36, 20, 0.65)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.4)',
             borderRadius: '20px',
             padding: '28px 36px',
-            border: 'none',
             marginBottom: '28px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.15)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
@@ -172,7 +175,7 @@ const CustomerSettings = () => {
                 <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.3px' }}>
                   Account Settings & Preferences
                 </h1>
-                <p style={{ margin: '4px 0 0', fontSize: '13.5px', color: 'rgba(255,255,255,0.8)' }}>
+                <p style={{ margin: '4px 0 0', fontSize: '13.5px', color: '#FFFFFF' }}>
                   Manage delivery addresses, wallet payments, notifications, and login security.
                 </p>
               </div>
@@ -233,7 +236,7 @@ const CustomerSettings = () => {
 
         {/* TAB 1: SAVED ADDRESSES */}
         {activeTab === 'addresses' && (
-          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '32px', border: '1px solid var(--border-light)' }}>
+          <div style={{ background: 'rgba(255, 255, 255, 0.35)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.5)', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', borderRadius: '20px', padding: '32px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
@@ -394,7 +397,7 @@ const CustomerSettings = () => {
 
         {/* TAB 2: PAYMENTS & WALLET */}
         {activeTab === 'payment' && (
-          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '32px', border: '1px solid var(--border-light)' }}>
+          <div style={{ background: 'rgba(255, 255, 255, 0.35)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.5)', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', borderRadius: '20px', padding: '32px' }}>
             <h3 style={{ margin: '0 0 20px', fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
               Wallet Balance & Saved Payment Methods
             </h3>
@@ -417,7 +420,7 @@ const CustomerSettings = () => {
                 <span style={{ fontSize: '12.5px', opacity: 0.8, textTransform: 'uppercase', fontWeight: 700 }}>
                   Farmiax Cash & Rewards Balance
                 </span>
-                <h2 style={{ margin: '4px 0 0', fontSize: '32px', fontWeight: 800 }}>₹{walletBalance}.00</h2>
+                <h2 style={{ margin: '4px 0 0', fontSize: '32px', fontWeight: 800, color: '#F5E8C7' }}>₹{walletBalance}.00</h2>
               </div>
               <button
                 className="btn-dark-green"
@@ -439,8 +442,11 @@ const CustomerSettings = () => {
                     flex: 1,
                     padding: '16px',
                     borderRadius: '12px',
-                    border: refundPreference === 'wallet' ? '2px solid #166534' : '1px solid #E2E8F0',
-                    background: refundPreference === 'wallet' ? '#F0FDF4' : '#FFF',
+                    border: refundPreference === 'wallet' ? '2px solid #166534' : '1px solid rgba(255, 255, 255, 0.5)',
+                    background: refundPreference === 'wallet' ? 'rgba(240, 253, 244, 0.65)' : 'rgba(255, 255, 255, 0.35)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -463,8 +469,11 @@ const CustomerSettings = () => {
                     flex: 1,
                     padding: '16px',
                     borderRadius: '12px',
-                    border: refundPreference === 'source' ? '2px solid #166534' : '1px solid #E2E8F0',
-                    background: refundPreference === 'source' ? '#F0FDF4' : '#FFF',
+                    border: refundPreference === 'source' ? '2px solid #166534' : '1px solid rgba(255, 255, 255, 0.5)',
+                    background: refundPreference === 'source' ? 'rgba(240, 253, 244, 0.65)' : 'rgba(255, 255, 255, 0.35)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -496,8 +505,11 @@ const CustomerSettings = () => {
                     style={{
                       padding: '14px 18px',
                       borderRadius: '12px',
-                      background: '#F8FAFC',
-                      border: '1px solid #E2E8F0',
+                      background: 'rgba(255, 255, 255, 0.35)',
+                      backdropFilter: 'blur(16px)',
+                      WebkitBackdropFilter: 'blur(16px)',
+                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
@@ -522,7 +534,7 @@ const CustomerSettings = () => {
 
         {/* TAB 3: NOTIFICATIONS */}
         {activeTab === 'notifications' && (
-          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '32px', border: '1px solid var(--border-light)' }}>
+          <div style={{ background: 'rgba(255, 255, 255, 0.35)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.5)', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', borderRadius: '20px', padding: '32px' }}>
             <h3 style={{ margin: '0 0 20px', fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
               Communication & Order Alert Channels
             </h3>
@@ -576,7 +588,7 @@ const CustomerSettings = () => {
         {activeTab === 'security' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* Password Change Box */}
-            <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '32px', border: '1px solid var(--border-light)', maxWidth: '640px' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.35)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.5)', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', borderRadius: '20px', padding: '32px', maxWidth: '640px' }}>
               <h3 style={{ margin: '0 0 20px', fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
                 Password & Login Security
               </h3>

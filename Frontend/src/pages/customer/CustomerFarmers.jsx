@@ -200,14 +200,18 @@ const CustomerFarmers = () => {
         <div
           className="farmers-banner-header"
           style={{
-            background: 'linear-gradient(135deg, #062414 0%, #166534 50%, #15803D 100%)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 40%), rgba(6, 36, 20, 0.65)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.4)',
             borderRadius: '20px',
             padding: '32px 40px',
             color: '#FFFFFF',
             marginBottom: '32px',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 12px 30px rgba(6, 36, 20, 0.15)',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.15)',
           }}
         >
           <div
@@ -244,7 +248,7 @@ const CustomerFarmers = () => {
                   <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.5px' }}>
                     Subscribed Farmers & Live Harvest Feed
                   </h1>
-                  <p style={{ margin: '4px 0 0', opacity: 0.85, fontSize: '14px' }}>
+                  <p style={{ margin: '4px 0 0', opacity: 0.9, fontSize: '14px', color: '#FFFFFF' }}>
                     Follow organic farmers to receive instant notifications whenever they post fresh harvest stock.
                   </p>
                 </div>
@@ -384,11 +388,14 @@ const CustomerFarmers = () => {
             {feedItems.length === 0 ? (
               <div
                 style={{
-                  background: '#FFFFFF',
+                  background: 'rgba(255, 255, 255, 0.35)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(255, 255, 255, 0.5)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
                   borderRadius: '20px',
                   padding: '48px',
                   textAlign: 'center',
-                  border: '1px solid var(--border-light)',
                 }}
               >
                 <FiInbox size={48} color="#CBD5E1" style={{ marginBottom: '16px' }} />
@@ -414,11 +421,13 @@ const CustomerFarmers = () => {
                   <div
                     key={post.id}
                     style={{
-                      background: '#FFFFFF',
+                      background: 'rgba(255, 255, 255, 0.35)',
+                      backdropFilter: 'blur(16px)',
+                      WebkitBackdropFilter: 'blur(16px)',
+                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
                       borderRadius: '20px',
                       padding: '24px 28px',
-                      border: '1px solid var(--border-light)',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
                       display: 'grid',
                       gridTemplateColumns: 'minmax(0, 1fr) 280px',
                       gap: '24px',

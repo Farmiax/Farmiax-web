@@ -267,12 +267,12 @@ input, textarea, select {
 }
 
 .header-search input::placeholder {
-  color: #F5E8C7;
+  color: #6B7280;
 }
 
 .header-search input:focus {
   border-color: var(--primary-green);
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: #FFFFFF;
 }
 
 .header-actions {

@@ -199,14 +199,18 @@ const CustomerNotifications = () => {
         {/* Page Banner Header */}
         <div
           style={{
-            background: 'linear-gradient(135deg, #062414 0%, #166534 50%, #15803D 100%)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 40%), rgba(6, 36, 20, 0.65)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.4)',
             borderRadius: '20px',
             padding: '32px 40px',
             color: '#FFFFFF',
             marginBottom: '32px',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 12px 30px rgba(6, 36, 20, 0.15)',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.15)',
           }}
         >
           <div style={{ position: 'relative', zIndex: 2 }}>
@@ -230,7 +234,7 @@ const CustomerNotifications = () => {
                   <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.5px' }}>
                     Notifications & Harvest Alerts
                   </h1>
-                  <p style={{ margin: '4px 0 0', opacity: 0.85, fontSize: '14px' }}>
+                  <p style={{ margin: '4px 0 0', opacity: 0.9, fontSize: '14px', color: '#FFFFFF' }}>
                     Stay updated with subscribed farmer harvests, new producer launches, and exclusive product discounts.
                   </p>
                 </div>
@@ -328,11 +332,14 @@ const CustomerNotifications = () => {
         {filteredNotifications.length === 0 ? (
           <div
             style={{
-              background: '#FFFFFF',
+              background: 'rgba(255, 255, 255, 0.35)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
               borderRadius: '20px',
               padding: '60px 40px',
               textAlign: 'center',
-              border: '1px solid var(--border-light)',
             }}
           >
             <FiBell size={48} color="#CBD5E1" style={{ marginBottom: '16px' }} />

@@ -20,7 +20,7 @@ const CustomerWishlist = () => {
               <FiHeart size={180} />
             </div>
             <div className="wishlist-banner-info">
-              <h2>
+              <h2 style={{ color: '#FFFFFF' }}>
                 <FiHeart /> My Wishlist
               </h2>
               <p>
