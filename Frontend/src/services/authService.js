@@ -73,7 +73,7 @@ const authService = {
   // GET /users/all-Farmers
   getAllFarmers: async () => {
     const res = await api.get('/users/all-Farmers');
-    return res.data;
+    return res.data?.data || res.data || [];
   },
 };
 

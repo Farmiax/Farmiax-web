@@ -1,0 +1,18 @@
+# robots.txt for Farmiax — Pure. Natural. Trusted.
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /faq
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+Allow: /shipping
+Allow: /returns
+
+# Disallow private user/farmer dashboards and auth-only paths
+Disallow: /customer/
+Disallow: /farmer/
+Disallow: /unauthorized
+Disallow: /settings
+
+Sitemap: https://farmiax.com/sitemap.xml

@@ -123,34 +123,36 @@ const CustomerDashboardLayout = ({ children }) => {
           {/* Static Features Footer */}
           <div style={{ 
             marginTop: 'auto', 
-            background: '#FAF7F2', 
-            borderTop: '1px solid var(--border-light)', 
-            padding: '24px 40px',
+            background: '#0B5D38', 
+            borderTop: '1px solid rgba(255, 255, 255, 0.15)', 
+            padding: '18px 40px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             fontSize: '13px',
-            color: 'var(--text-muted)',
-            fontWeight: 600
+            color: '#FFFFFF',
+            fontWeight: 600,
+            flexWrap: 'wrap',
+            gap: '12px'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <FiCheckCircle style={{ color: '#84CC16', fontSize: '18px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
+              <FiCheckCircle style={{ color: '#86EFAC', fontSize: '18px' }} />
               100% Fresh & Natural
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <FiUsers style={{ color: '#3B82F6', fontSize: '18px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
+              <FiUsers style={{ color: '#86EFAC', fontSize: '18px' }} />
               Direct from Farmers
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <FiShield style={{ color: '#3B82F6', fontSize: '18px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
+              <FiShield style={{ color: '#86EFAC', fontSize: '18px' }} />
               Secure Payments
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <FiTruck style={{ color: '#F97316', fontSize: '18px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
+              <FiTruck style={{ color: '#86EFAC', fontSize: '18px' }} />
               On-time Delivery
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <FiRefreshCcw style={{ color: '#3B82F6', fontSize: '18px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
+              <FiRefreshCcw style={{ color: '#86EFAC', fontSize: '18px' }} />
               Easy Returns
             </div>
           </div>

@@ -89,8 +89,33 @@ const Navbar = () => {
           ))}
         </nav>
 
-        <div className="navbar-desktop-actions">
-
+        <div className="navbar-desktop-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogin}
+              className="btn btn-primary btn-sm"
+              style={{ padding: '8px 18px', borderRadius: '8px', fontSize: '13px', fontWeight: 600 }}
+            >
+              {isFarmer ? 'Farmer Portal' : 'My Account'}
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={handleLogin}
+                className="nav-link"
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#FAF7F2', fontWeight: 600, fontSize: '14px' }}
+              >
+                Sign In
+              </button>
+              <button
+                onClick={handleJoinNow}
+                className="btn btn-primary btn-sm"
+                style={{ padding: '8px 18px', borderRadius: '8px', fontSize: '13px', fontWeight: 600 }}
+              >
+                Get Started
+              </button>
+            </>
+          )}
         </div>
 
         <button
@@ -115,6 +140,25 @@ const Navbar = () => {
               </button>
             ))}
 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px', padding: '0 16px' }}>
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogin}
+                  className="btn btn-primary btn-full"
+                >
+                  {isFarmer ? 'Go to Farmer Dashboard' : 'Go to Shop / Account'}
+                </button>
+              ) : (
+                <>
+                  <button onClick={handleLogin} className="btn btn-outline btn-full">
+                    Sign In
+                  </button>
+                  <button onClick={handleJoinNow} className="btn btn-primary btn-full">
+                    Join Farmiax
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

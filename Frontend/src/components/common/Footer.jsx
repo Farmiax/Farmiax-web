@@ -40,34 +40,34 @@ const Footer = () => {
         <div className="footer-links-col">
           <h4>Quick Links</h4>
           <ul>
-            <li><Link to="/customer/shop">Shop</Link></li>
-            <li><Link to="/customer/shop">Categories</Link></li>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#how-it-works">Farmers</a></li>
-            <li><Link to="/customer/shop">Offers</Link></li>
-            <li><a href="#contact">Contact Us</a></li>
+            <li><Link to="/customer/shop">Shop All Produce</Link></li>
+            <li><Link to="/customer/shop?tab=categories">Categories</Link></li>
+            <li><Link to="/about">About Us</Link></li>
+            <li><Link to="/customer/farmers">Farmers Directory</Link></li>
+            <li><Link to="/customer/shop?tab=offers">Special Offers</Link></li>
+            <li><Link to="/contact">Contact Support</Link></li>
           </ul>
         </div>
 
         <div className="footer-links-col">
           <h4>Customer Service</h4>
           <ul>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Shipping & Delivery</a></li>
-            <li><a href="#">Returns & Refunds</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms & Conditions</a></li>
+            <li><Link to="/faq">FAQ</Link></li>
+            <li><Link to="/shipping">Shipping & Delivery</Link></li>
+            <li><Link to="/returns">Returns & Refunds</Link></li>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
+            <li><Link to="/terms">Terms & Conditions</Link></li>
           </ul>
         </div>
 
         <div className="footer-links-col">
           <h4>For Farmers</h4>
           <ul>
-            <li><a href="#how-it-works">How it Works</a></li>
-            <li><a href="#benefits">Benefits</a></li>
-            <li><a href="#testimonials">Success Stories</a></li>
+            <li><Link to="/about#how-it-works">How it Works</Link></li>
+            <li><Link to="/about#benefits">Benefits</Link></li>
             <li><Link to="/farmer/signup">Join as a Farmer</Link></li>
             <li><Link to="/farmer/signin">Farmer Login</Link></li>
+            <li><Link to="/farmer/dashboard">Farmer Portal</Link></li>
           </ul>
         </div>
 
@@ -94,8 +94,10 @@ const Footer = () => {
         <div className="container footer-bottom-flex">
           <p>© {new Date().getFullYear()} Farmiax. All rights reserved.</p>
           <div className="footer-legal-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+            <Link to="/shipping">Shipping</Link>
+            <Link to="/returns">Returns</Link>
           </div>
         </div>
       </div>

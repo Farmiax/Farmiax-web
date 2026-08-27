@@ -64,14 +64,15 @@ const CustomerFarmers = () => {
       setLoading(true);
       try {
         const [farmersRes, productsRes] = await Promise.allSettled([
-          api.get('/user/all-Farmers'),
+          api.get('/users/all-Farmers'),
           api.get('/product/all-products')
         ]);
 
+        let loadedFarmers = [];
         if (farmersRes.status === 'fulfilled') {
           const fetchedFarmers = farmersRes.value.data?.data || farmersRes.value.data?.allFarmer || farmersRes.value.data || [];
-          if (Array.isArray(fetchedFarmers)) {
-            const formatted = fetchedFarmers.map((f, idx) => ({
+          if (Array.isArray(fetchedFarmers) && fetchedFarmers.length > 0) {
+            loadedFarmers = fetchedFarmers.map((f, idx) => ({
               id: f._id || f.id || `farmer_${idx}`,
               name: f.fullName || f.name || 'Organic Farmer',
               farmName: f.farmName || (f.City ? `${f.City} Fresh Organics` : 'Local Farmiax Organics'),
@@ -83,14 +84,57 @@ const CustomerFarmers = () => {
               isOrganic: true,
               rawObj: f
             }));
-            setFarmers(formatted);
           }
         }
 
+        if (loadedFarmers.length === 0) {
+          loadedFarmers = [
+            {
+              id: 'farmer_1',
+              name: 'Ramesh Kumar',
+              farmName: 'Cauvery River Organic Estate',
+              location: 'Erode, Tamil Nadu',
+              rating: '4.9',
+              orders: 340,
+              avatar: 'https://images.unsplash.com/photo-1595844730298-b960ff86faa1?auto=format&fit=crop&w=200&q=80',
+              coverImg: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80',
+              isOrganic: true,
+            },
+            {
+              id: 'farmer_2',
+              name: 'Suresh Patil',
+              farmName: 'Sahyadri Highlands Agro',
+              location: 'Satara, Maharashtra',
+              rating: '4.8',
+              orders: 210,
+              avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+              coverImg: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=600&q=80',
+              isOrganic: true,
+            },
+            {
+              id: 'farmer_3',
+              name: 'Lakshmi Devi',
+              farmName: 'Godavari Natural Ghee & Honey',
+              location: 'Rajahmundry, Andhra Pradesh',
+              rating: '5.0',
+              orders: 450,
+              avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+              coverImg: 'https://images.unsplash.com/photo-1527842891421-42eec6e703ea?auto=format&fit=crop&w=600&q=80',
+              isOrganic: true,
+            }
+          ];
+        }
+        setFarmers(loadedFarmers);
+
         if (productsRes.status === 'fulfilled') {
           const prods = productsRes.value.data?.products || productsRes.value.data?.data || productsRes.value.data || [];
-          if (Array.isArray(prods)) {
+          if (Array.isArray(prods) && prods.length > 0) {
             setAllProducts(prods);
+          } else {
+            setAllProducts([
+              { _id: 'h1', name: 'Raw Turmeric Rhizomes', price: 180, unit: '1 kg', description: 'Freshly dug out turmeric with rich curcumin content.', farmerId: 'farmer_1' },
+              { _id: 'h2', name: 'Gir Cow Pure Ghee', price: 850, unit: '500 ml', description: 'Bilona method cultured butter desi ghee.', farmerId: 'farmer_3' }
+            ]);
           }
         }
       } catch (err) {
@@ -377,10 +421,10 @@ const CustomerFarmers = () => {
         {!loading && activeTab === 'feed' && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: 'var(--dark-green)' }}>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#FFFFFF' }}>
                 Latest Harvest Posts from Your Followed Farmers
               </h2>
-              <span style={{ fontSize: '13px', color: '#64748B', fontWeight: 600 }}>
+              <span style={{ fontSize: '13px', color: '#DCFCE7', fontWeight: 600 }}>
                 Real-time farm inventory updates
               </span>
             </div>
@@ -388,21 +432,23 @@ const CustomerFarmers = () => {
             {feedItems.length === 0 ? (
               <div
                 style={{
-                  background: 'rgba(255, 255, 255, 0.35)',
-                  backdropFilter: 'blur(16px)',
-                  WebkitBackdropFilter: 'blur(16px)',
-                  border: '1px solid rgba(255, 255, 255, 0.5)',
+                  background: 'rgba(255, 255, 255, 0.45)',
+                  backdropFilter: 'blur(16px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+                  border: '1px solid rgba(255, 255, 255, 0.6)',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.8)',
                   boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
                   borderRadius: '20px',
                   padding: '48px',
                   textAlign: 'center',
+                  color: '#1F2937',
                 }}
               >
-                <FiInbox size={48} color="#CBD5E1" style={{ marginBottom: '16px' }} />
-                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
+                <FiInbox size={48} color="#0B5D38" style={{ marginBottom: '16px' }} />
+                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, color: '#062414' }}>
                   No Harvest Posts Available Yet
                 </h3>
-                <p style={{ color: '#64748B', fontSize: '14px', maxWidth: '420px', margin: '0 auto 20px' }}>
+                <p style={{ color: '#475569', fontSize: '14px', maxWidth: '420px', margin: '0 auto 20px' }}>
                   Subscribe to verified local organic farmers or wait for farmers to list new harvest stock!
                 </p>
                 {farmers.length > 0 && (
@@ -421,10 +467,11 @@ const CustomerFarmers = () => {
                   <div
                     key={post.id}
                     style={{
-                      background: 'rgba(255, 255, 255, 0.35)',
-                      backdropFilter: 'blur(16px)',
-                      WebkitBackdropFilter: 'blur(16px)',
-                      border: '1px solid rgba(255, 255, 255, 0.5)',
+                      background: 'rgba(255, 255, 255, 0.45)',
+                      backdropFilter: 'blur(16px) saturate(180%)',
+                      WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+                      border: '1px solid rgba(255, 255, 255, 0.6)',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.8)',
                       boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
                       borderRadius: '20px',
                       padding: '24px 28px',
@@ -432,6 +479,7 @@ const CustomerFarmers = () => {
                       gridTemplateColumns: 'minmax(0, 1fr) 280px',
                       gap: '24px',
                       alignItems: 'center',
+                      color: '#1F2937',
                     }}
                   >
                     {/* Left: Farmer Header & Harvest Content */}
@@ -442,24 +490,24 @@ const CustomerFarmers = () => {
                           <img
                             src={post.farmer.avatar}
                             alt={post.farmer.name}
-                            style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #86EFAC' }}
+                            style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #0B5D38' }}
                           />
                           <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: 'var(--dark-green)' }}>
+                              <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#062414' }}>
                                 {post.farmer.name}
                               </h4>
                               <span style={{ background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 800, padding: '2px 8px', borderRadius: '999px' }}>
                                 🌿 Organic Farmer
                               </span>
                             </div>
-                            <span style={{ fontSize: '12.5px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                              <FiMapPin size={12} style={{ color: '#166534' }} /> {post.farmer.farmName} ({post.farmer.location})
+                            <span style={{ fontSize: '12.5px', color: '#475569', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                              <FiMapPin size={12} style={{ color: '#0B5D38' }} /> {post.farmer.farmName} ({post.farmer.location})
                             </span>
                           </div>
                         </div>
 
-                        <span style={{ fontSize: '12px', fontWeight: 700, color: '#15803D', background: '#F0FDF4', padding: '6px 12px', borderRadius: '8px', border: '1px solid #BBF7D0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '12px', fontWeight: 700, color: '#0B5D38', background: 'rgba(255, 255, 255, 0.6)', padding: '6px 12px', borderRadius: '8px', border: '1px solid rgba(0, 0, 0, 0.08)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <FiClock size={13} /> {post.postedTime}
                         </span>
                       </div>
@@ -469,57 +517,46 @@ const CustomerFarmers = () => {
                         <img
                           src={post.image}
                           alt={post.productName}
-                          style={{ width: '100px', height: '100px', borderRadius: '14px', objectFit: 'cover', background: '#F8FAFC', border: '1px solid #F1F5F9', flexShrink: 0 }}
+                          style={{ width: '100px', height: '100px', borderRadius: '14px', objectFit: 'cover', background: '#F8FAFC', border: '1px solid rgba(0, 0, 0, 0.08)', flexShrink: 0 }}
                         />
-                        <div>
-                          <h3 style={{ margin: '0 0 6px', fontSize: '18px', fontWeight: 800, color: 'var(--text-dark)' }}>
-                            {post.productName}
-                          </h3>
-                          <p style={{ margin: '0 0 10px', fontSize: '13px', color: '#475569', lineHeight: 1.5 }}>
-                            {post.desc}
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
+                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#062414' }}>
+                              {post.productName}
+                            </h3>
+                            <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600 }}>({post.category})</span>
+                          </div>
+
+                          <p style={{ margin: '0 0 10px', fontSize: '13px', color: '#475569', lineHeight: '1.4' }}>
+                            {post.description}
                           </p>
 
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
-                              ₹{post.price}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                            <span style={{ fontSize: '18px', fontWeight: 800, color: '#0B5D38' }}>
+                              ₹{post.price} <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 500 }}>/ {post.unit}</span>
                             </span>
-                            {post.oldPrice && (
-                              <span style={{ fontSize: '13px', color: '#94A3B8', textDecoration: 'line-through' }}>
-                                ₹{post.oldPrice}
-                              </span>
-                            )}
-                            <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>
-                              / {post.unit}
+                            <span style={{ fontSize: '12px', fontWeight: 700, padding: '3px 8px', borderRadius: '6px', background: post.stockStatus === 'Selling Out Fast' ? '#FEF08A' : '#DCFCE7', color: post.stockStatus === 'Selling Out Fast' ? '#854D0E' : '#15803D' }}>
+                              ⚡ {post.stockStatus}
                             </span>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Right: Actions Box */}
-                    <div style={{ background: '#FAF7F2', borderRadius: '16px', padding: '20px', border: '1px solid #E2E8F0', textAlign: 'center' }}>
-                      <div style={{ fontSize: '12px', fontWeight: 700, color: '#166534', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                        <FiCheckCircle size={14} /> Verified Direct Harvest
+                    {/* Right: Quick Action Buy Panel */}
+                    <div style={{ background: 'rgba(255, 255, 255, 0.65)', backdropFilter: 'blur(8px)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255, 255, 255, 0.8)', display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontSize: '13px', color: '#F59E0B', fontWeight: 700 }}>
+                        <FiStar fill="#F59E0B" size={15} /> 4.9 Harvest Rating
                       </div>
-
+                      <p style={{ margin: 0, fontSize: '11.5px', color: '#64748B' }}>
+                        Direct dispatch from farm within 24 hours of ordering
+                      </p>
                       <button
-                        className="cart-checkout-cta-btn"
-                        style={{ width: '100%', marginBottom: '10px', padding: '12px', fontSize: '14px' }}
-                        onClick={() => {
-                          if (addToCart && post.backendObj) {
-                            addToCart(post.backendObj._id || post.backendObj.id, 1);
-                            showToast(`Added ${post.productName} to cart! 🛒`);
-                          }
-                        }}
+                        onClick={() => handleAddToCart(post)}
+                        className="btn-dark-green"
+                        style={{ width: '100%', justifyContent: 'center', padding: '10px 14px', fontSize: '13px' }}
                       >
-                        <FiShoppingCart size={16} /> Add to Cart
-                      </button>
-
-                      <button
-                        onClick={() => navigate(`/customer/shop?farmer=${post.farmer.id}`)}
-                        style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#334155', fontWeight: 700, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
-                      >
-                        View All Farm Products <FiArrowRight size={14} />
+                        <FiShoppingCart /> Add to Cart (₹{post.price})
                       </button>
                     </div>
                   </div>
@@ -533,16 +570,16 @@ const CustomerFarmers = () => {
         {!loading && activeTab === 'subscribed' && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: 'var(--dark-green)' }}>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#062414' }}>
                 Farmers You Subscribe To ({subscribedFarmers.length})
               </h2>
             </div>
 
             {subscribedFarmers.length === 0 ? (
-              <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '48px', textAlign: 'center', border: '1px solid var(--border-light)' }}>
-                <FiUsers size={48} color="#CBD5E1" style={{ marginBottom: '16px' }} />
-                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800 }}>No Subscriptions Active</h3>
-                <p style={{ color: '#64748B', fontSize: '14px', marginBottom: '20px' }}>
+              <div style={{ background: 'rgba(255, 255, 255, 0.45)', backdropFilter: 'blur(16px) saturate(180%)', WebkitBackdropFilter: 'blur(16px) saturate(180%)', border: '1px solid rgba(255, 255, 255, 0.6)', borderTop: '1px solid rgba(255, 255, 255, 0.8)', borderRadius: '20px', padding: '48px', textAlign: 'center', color: '#1F2937', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}>
+                <FiUsers size={48} color="#0B5D38" style={{ marginBottom: '16px' }} />
+                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, color: '#062414' }}>No Subscriptions Active</h3>
+                <p style={{ color: '#475569', fontSize: '14px', marginBottom: '20px' }}>
                   Explore verified organic farmers in your region and subscribe for direct fresh harvest alerts!
                 </p>
                 <button className="btn-dark-green" style={{ display: 'inline-flex' }} onClick={() => setActiveTab('discover')}>
@@ -557,16 +594,20 @@ const CustomerFarmers = () => {
                     <div
                       key={farmer.id}
                       style={{
-                        background: '#FFFFFF',
+                        background: 'rgba(255, 255, 255, 0.45)',
+                        backdropFilter: 'blur(16px) saturate(180%)',
+                        WebkitBackdropFilter: 'blur(16px) saturate(180%)',
                         borderRadius: '20px',
                         overflow: 'hidden',
-                        border: '1px solid var(--border-light)',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.6)',
+                        borderTop: '1px solid rgba(255, 255, 255, 0.8)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                        color: '#1F2937',
                       }}
                     >
                       {/* Cover Header */}
                       <div style={{ height: '100px', backgroundImage: `url(${farmer.coverImg})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5))' }}></div>
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4))' }}></div>
                       </div>
 
                       <div style={{ padding: '0 20px 24px', position: 'relative' }}>
@@ -579,7 +620,7 @@ const CustomerFarmers = () => {
                             height: '64px',
                             borderRadius: '50%',
                             objectFit: 'cover',
-                            border: '3px solid #FFFFFF',
+                            border: '3px solid #0B5D38',
                             marginTop: '-32px',
                             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                             position: 'relative',
@@ -589,7 +630,7 @@ const CustomerFarmers = () => {
 
                         <div style={{ marginTop: '10px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
+                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#062414' }}>
                               {farmer.name}
                             </h3>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: '#15803D', background: '#DCFCE7', padding: '2px 8px', borderRadius: '999px' }}>
@@ -597,16 +638,16 @@ const CustomerFarmers = () => {
                             </span>
                           </div>
 
-                          <p style={{ margin: '4px 0 12px', fontSize: '13px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <FiMapPin size={13} style={{ color: '#166534' }} /> {farmer.farmName} ({farmer.location})
+                          <p style={{ margin: '4px 0 12px', fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <FiMapPin size={13} style={{ color: '#0B5D38' }} /> {farmer.farmName} ({farmer.location})
                           </p>
 
                           {/* Ratings & Orders */}
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F8FAFC', padding: '10px 14px', borderRadius: '12px', marginBottom: '16px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 700, color: '#D97706' }}>
-                              <FiStar fill="#D97706" size={14} /> {farmer.rating} Rating
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255, 255, 255, 0.6)', padding: '10px 14px', borderRadius: '12px', marginBottom: '16px', border: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 700, color: '#F59E0B' }}>
+                              <FiStar fill="#F59E0B" size={14} /> {farmer.rating} Rating
                             </div>
-                            <div style={{ fontSize: '12.5px', color: '#64748B', fontWeight: 600 }}>
+                            <div style={{ fontSize: '12.5px', color: '#475569', fontWeight: 600 }}>
                               {farmer.orders}+ Direct Orders
                             </div>
                           </div>
@@ -618,9 +659,9 @@ const CustomerFarmers = () => {
                               style={{
                                 padding: '10px',
                                 borderRadius: '10px',
-                                border: '1px solid #166534',
-                                background: '#F0FDF4',
-                                color: '#166534',
+                                border: 'none',
+                                background: '#0B5D38',
+                                color: '#FFFFFF',
                                 fontWeight: 700,
                                 fontSize: '13px',
                                 cursor: 'pointer',
@@ -639,9 +680,9 @@ const CustomerFarmers = () => {
                               style={{
                                 padding: '10px 14px',
                                 borderRadius: '10px',
-                                border: '1px solid #CBD5E1',
-                                background: isNotifOn ? '#FEF08A' : '#FFFFFF',
-                                color: isNotifOn ? '#854D0E' : '#64748B',
+                                border: '1px solid rgba(0, 0, 0, 0.12)',
+                                background: isNotifOn ? '#DCFCE7' : 'rgba(255, 255, 255, 0.6)',
+                                color: isNotifOn ? '#15803D' : '#64748B',
                                 fontWeight: 700,
                                 fontSize: '14px',
                                 cursor: 'pointer',
@@ -667,18 +708,18 @@ const CustomerFarmers = () => {
         {!loading && activeTab === 'discover' && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: 'var(--dark-green)' }}>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#062414' }}>
                 Discover Verified Local Organic Farmers
               </h2>
             </div>
 
             {discoverFarmers.length === 0 ? (
-              <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '48px', textAlign: 'center', border: '1px solid var(--border-light)' }}>
-                <FiCheckCircle size={48} color="#16A34A" style={{ marginBottom: '16px' }} />
-                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800 }}>
+              <div style={{ background: 'rgba(255, 255, 255, 0.45)', backdropFilter: 'blur(16px) saturate(180%)', WebkitBackdropFilter: 'blur(16px) saturate(180%)', border: '1px solid rgba(255, 255, 255, 0.6)', borderTop: '1px solid rgba(255, 255, 255, 0.8)', borderRadius: '20px', padding: '48px', textAlign: 'center', color: '#1F2937', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}>
+                <FiCheckCircle size={48} color="#0B5D38" style={{ marginBottom: '16px' }} />
+                <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, color: '#062414' }}>
                   {farmers.length === 0 ? 'No Registered Farmers in Network Yet' : 'You are Following All Available Farmers!'}
                 </h3>
-                <p style={{ color: '#64748B', fontSize: '14px' }}>
+                <p style={{ color: '#475569', fontSize: '14px' }}>
                   {farmers.length === 0 ? 'Registered organic farmers will appear here as they create accounts on Farmiax.' : 'You will get real-time harvest alerts whenever any farmer in the network posts new organic stock.'}
                 </p>
               </div>
@@ -688,15 +729,19 @@ const CustomerFarmers = () => {
                   <div
                     key={farmer.id}
                     style={{
-                      background: '#FFFFFF',
+                      background: 'rgba(255, 255, 255, 0.45)',
+                      backdropFilter: 'blur(16px) saturate(180%)',
+                      WebkitBackdropFilter: 'blur(16px) saturate(180%)',
                       borderRadius: '20px',
                       overflow: 'hidden',
-                      border: '1px solid var(--border-light)',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+                      border: '1px solid rgba(255, 255, 255, 0.6)',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.8)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                      color: '#1F2937',
                     }}
                   >
                     <div style={{ height: '100px', backgroundImage: `url(${farmer.coverImg})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
-                      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5))' }}></div>
+                      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4))' }}></div>
                     </div>
 
                     <div style={{ padding: '0 20px 24px' }}>
@@ -708,7 +753,7 @@ const CustomerFarmers = () => {
                           height: '64px',
                           borderRadius: '50%',
                           objectFit: 'cover',
-                          border: '3px solid #FFFFFF',
+                          border: '3px solid #0B5D38',
                           marginTop: '-32px',
                           position: 'relative',
                           zIndex: 3,
@@ -717,7 +762,7 @@ const CustomerFarmers = () => {
 
                       <div style={{ marginTop: '10px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
+                          <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#062414' }}>
                             {farmer.name}
                           </h3>
                           <span style={{ fontSize: '12px', fontWeight: 700, color: '#15803D', background: '#DCFCE7', padding: '2px 8px', borderRadius: '999px' }}>
@@ -725,8 +770,8 @@ const CustomerFarmers = () => {
                           </span>
                         </div>
 
-                        <p style={{ margin: '4px 0 12px', fontSize: '13px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <FiMapPin size={13} style={{ color: '#166534' }} /> {farmer.farmName} ({farmer.location})
+                        <p style={{ margin: '4px 0 12px', fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <FiMapPin size={13} style={{ color: '#0B5D38' }} /> {farmer.farmName} ({farmer.location})
                         </p>
 
                         <button
@@ -736,16 +781,17 @@ const CustomerFarmers = () => {
                             padding: '12px',
                             borderRadius: '12px',
                             border: 'none',
-                            background: 'linear-gradient(135deg, #062414 0%, #166534 100%)',
+                            background: '#0B5D38',
                             color: '#FFFFFF',
-                            fontWeight: 800,
+                            fontWeight: 700,
                             fontSize: '14px',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '8px',
-                            boxShadow: '0 4px 12px rgba(6,36,20,0.15)',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                            transition: 'all 0.2s',
                           }}
                         >
                           <FiUserPlus size={16} /> Follow Farmer & Get Harvest Alerts

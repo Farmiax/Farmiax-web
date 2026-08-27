@@ -1,315 +1,243 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Logo from '../../components/common/Logo';
+import React, { useState } from 'react';
+import FarmerDashboardLayout from '../../components/common/FarmerDashboardLayout';
 import {
   LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
+import {
+  FiTrendingUp, FiEye, FiMousePointer, FiRepeat, FiUsers,
+  FiDollarSign, FiDownload, FiCalendar
+} from 'react-icons/fi';
+import toast from 'react-hot-toast';
 import '../../styles/farmer-dashboard.css';
 import '../../styles/farmer-analytics.css';
 
-// --- Mock Data ---
 const revenueData = [
-  { name: 'Jan', revenue: 6000 },
+  { name: 'Jan', revenue: 14000 },
   { name: 'Feb', revenue: 23000 },
-  { name: 'Mar', revenue: 22000 },
-  { name: 'Apr', revenue: 30000 },
-  { name: 'May', revenue: 40000 },
-  { name: 'Jun', revenue: 45320 },
+  { name: 'Mar', revenue: 29000 },
+  { name: 'Apr', revenue: 34000 },
+  { name: 'May', revenue: 42000 },
+  { name: 'Jun', revenue: 56400 },
 ];
 
-const viewsData = [
-  { val: 10 }, { val: 25 }, { val: 20 }, { val: 40 }, { val: 35 }, { val: 50 }, { val: 65 }, { val: 60 }
-];
-const clicksData = [
-  { val: 30 }, { val: 45 }, { val: 35 }, { val: 55 }, { val: 45 }, { val: 65 }, { val: 80 }, { val: 75 }
-];
-const conversionData = [
-  { val: 1 }, { val: 2 }, { val: 1.5 }, { val: 3 }, { val: 2.5 }, { val: 4 }, { val: 3.2 }, { val: 3.5 }
-];
-const returningData = [
-  { val: 50 }, { val: 65 }, { val: 55 }, { val: 80 }, { val: 70 }, { val: 95 }, { val: 110 }, { val: 120 }
+const trafficData = [
+  { day: 'Mon', views: 420, clicks: 180 },
+  { day: 'Tue', views: 580, clicks: 240 },
+  { day: 'Wed', views: 720, clicks: 310 },
+  { day: 'Thu', views: 650, clicks: 290 },
+  { day: 'Fri', views: 890, clicks: 420 },
+  { day: 'Sat', views: 1100, clicks: 580 },
+  { day: 'Sun', views: 1250, clicks: 640 },
 ];
 
 const topProducts = [
-  { name: 'Organic Cherry Tomatoes', sales: '3,450 Sales', percent: 85, img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=100&q=80' },
-  { name: 'Premium Wheat Seeds', sales: '2,800 Sales', percent: 70, img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=100&q=80' },
-  { name: 'Natural Soil Enhancer', sales: '1,950 Sales', percent: 50, img: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=100&q=80' },
+  { name: 'Organic Salem Turmeric Powder', sales: '₹14,520 Revenue', percent: 85, img: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=100&q=80' },
+  { name: 'A2 Gir Cow Desi Ghee', sales: '₹22,100 Revenue', percent: 78, img: 'https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=100&q=80' },
+  { name: 'Raw Unpolished Toor Dal', sales: '₹9,850 Revenue', percent: 62, img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=100&q=80' },
 ];
 
 const topLocations = [
-  { name: 'California, USA', count: '4,500 Orders', percent: '36%' },
-  { name: 'Iowa, USA', count: '3,200 Orders', percent: '25%' },
-  { name: 'Ontario, Canada', count: '2,100 Orders', percent: '17%' },
-  { name: 'Nebraska, USA', count: '1,500 Orders', percent: '12%' },
-  { name: 'Texas, USA', count: '1,150 Orders', percent: '10%' },
+  { name: 'Bengaluru, Karnataka', count: '148 Orders', percent: '38%' },
+  { name: 'Chennai, Tamil Nadu', count: '112 Orders', percent: '28%' },
+  { name: 'Hyderabad, Telangana', count: '64 Orders', percent: '16%' },
+  { name: 'Mumbai, Maharashtra', count: '42 Orders', percent: '11%' },
+  { name: 'Coimbatore, Tamil Nadu', count: '28 Orders', percent: '7%' },
 ];
 
 const FarmerAnalytics = () => {
+  const [timeRange, setTimeRange] = useState('month');
+
+  const handleExportReport = () => {
+    toast.success('Harvest Analytics Report (PDF) exported!');
+  };
+
   return (
-    <div className="farmer-layout">
-      {/* Sidebar */}
-      <aside className="farmer-sidebar">
-        <div className="farmer-sidebar-logo" style={{ padding: '12px 0', justifyContent: 'center' }}>
-          <Logo size="xl" />
+    <FarmerDashboardLayout activeNav="analytics">
+      <div className="farmer-analytics-view">
+        {/* Page Top Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+              Farm Sales Analytics & Growth Insights
+            </h1>
+            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
+              Deep dive into crop conversion, visitor impressions, customer retention, and regional demand.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <select
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
+              style={{ padding: '9px 14px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.35)', fontSize: '13px', background: 'rgba(15, 23, 42, 0.8)', color: '#FFFFFF', fontWeight: 600 }}
+            >
+              <option value="week">Past 7 Days</option>
+              <option value="month">Past 30 Days</option>
+              <option value="quarter">Past Quarter</option>
+              <option value="year">Full Year (2025)</option>
+            </select>
+
+            <button
+              onClick={handleExportReport}
+              className="btn btn-outline"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '9px 16px',
+                fontSize: '13px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
+                color: '#FFFFFF',
+                borderRadius: '10px',
+              }}
+            >
+              <FiDownload size={14} /> Export Report
+            </button>
+          </div>
         </div>
-        <nav className="farmer-nav">
-          <Link to="/farmer/dashboard" className="farmer-nav-item">
-            <i className="ri-home-5-line"></i> Dashboard
-          </Link>
-          <Link to="/farmer/orders" className="farmer-nav-item">
-            <i className="ri-file-list-3-line"></i> Orders
-          </Link>
-          <Link to="/farmer/products" className="farmer-nav-item">
-            <i className="ri-landscape-line"></i> Products
-          </Link>
-          <Link to="/farmer/inventory" className="farmer-nav-item">
-            <i className="ri-box-3-line"></i> Inventory
-          </Link>
-          <Link to="/farmer/customers" className="farmer-nav-item">
-            <i className="ri-group-line"></i> Customers
-          </Link>
-          <Link to="/farmer/earnings" className="farmer-nav-item">
-            <i className="ri-money-dollar-circle-line"></i> Earnings
-          </Link>
-          <Link to="/farmer/analytics" className="farmer-nav-item active">
-            <i className="ri-bar-chart-box-line"></i> Analytics
-          </Link>
-          <Link to="/farmer/payouts" className="farmer-nav-item">
-            <i className="ri-bank-card-line"></i> Payouts
-          </Link>
-          <Link to="/farmer/reviews" className="farmer-nav-item">
-            <i className="ri-star-line"></i> Reviews
-          </Link>
-          <Link to="/farmer/messages" className="farmer-nav-item">
-            <i className="ri-message-3-line"></i> Messages
-          </Link>
-          <Link to="/farmer/profile" className="farmer-nav-item">
-            <i className="ri-user-settings-line"></i> Farm Profile
-          </Link>
-          <Link to="/farmer/settings" className="farmer-nav-item">
-            <i className="ri-settings-3-line"></i> Settings
-          </Link>
-        </nav>
-      </aside>
 
-      {/* Main Area */}
-      <div className="farmer-main" style={{ background: 'transparent' }}>
-        {/* Header */}
-        <header className="farmer-header">
-          <div className="farmer-search">
-            <i className="ri-search-line"></i>
-            <input type="text" placeholder="Search orders, products, or insights..." />
+        {/* 4 Micro KPI Glass Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '18px', marginBottom: '26px' }}>
+          <div className="glass-box kpi-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase' }}>Store Visitors</span>
+              <FiEye style={{ color: '#93C5FD', fontSize: '18px' }} />
+            </div>
+            <h3 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 4px', color: '#FFFFFF' }}>5,610</h3>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#4ADE80' }}>↗ +24% vs last period</span>
           </div>
-          <div className="farmer-header-right">
-            <Link to="/farmer/notifications" className="header-notif-btn" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="ri-notification-3-line" style={{ fontSize: '20px', color: '#111' }}></i>
-            </Link>
-            <Link to="/farmer/profile" className="header-profile" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <img src="https://ui-avatars.com/api/?name=FA&background=FCE06D&color=000" alt="Farmer" />
-              <span>Farmer</span>
-            </Link>
+
+          <div className="glass-box kpi-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase' }}>Crop Page Views</span>
+              <FiMousePointer style={{ color: '#FDE047', fontSize: '18px' }} />
+            </div>
+            <h3 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 4px', color: '#FFFFFF' }}>12,840</h3>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#4ADE80' }}>↗ +18% organic discovery</span>
           </div>
-        </header>
 
-        {/* Content */}
-        <main className="farmer-content" style={{ padding: '24px 32px' }}>
-
-          <h1 className="analytics-page-title">Farm Performance Metrics</h1>
-
-          {/* Top KPI Row */}
-          <div className="analytics-kpi-row">
-            {/* KPI 1 */}
-            <div className="analytics-kpi-card">
-              <div className="kpi-header">
-                <span className="kpi-title">Farm Profile Views</span>
-                <span className="kpi-icon-wrapper" style={{ color: '#d97706' }}>🚜</span>
-              </div>
-              <div className="kpi-value-row">
-                <span className="kpi-value">12,450</span>
-              </div>
-              <div className="kpi-trend positive">↗ +8.5%</div>
-              <div className="kpi-chart-container">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={viewsData}>
-                    <defs>
-                      <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#28a745" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#28a745" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area type="monotone" dataKey="val" stroke="#28a745" strokeWidth={2} fillOpacity={1} fill="url(#colorViews)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+          <div className="glass-box kpi-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase' }}>Order Conversion</span>
+              <FiTrendingUp style={{ color: '#4ADE80', fontSize: '18px' }} />
             </div>
+            <h3 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 4px', color: '#FFFFFF' }}>3.85%</h3>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#4ADE80' }}>↗ +0.6% above average</span>
+          </div>
 
-            {/* KPI 2 */}
-            <div className="analytics-kpi-card">
-              <div className="kpi-header">
-                <span className="kpi-title">Product Clicks</span>
-                <span className="kpi-icon-wrapper" style={{ color: '#007bff' }}>🛒</span>
-              </div>
-              <div className="kpi-value-row">
-                <span className="kpi-value">45,210</span>
-              </div>
-              <div className="kpi-trend neutral">↗ +12.1%</div>
-              <div className="kpi-chart-container">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={clicksData}>
-                    <defs>
-                      <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#007bff" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#007bff" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area type="monotone" dataKey="val" stroke="#007bff" strokeWidth={2} fillOpacity={1} fill="url(#colorClicks)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+          <div className="glass-box kpi-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase' }}>Repeat Buyers</span>
+              <FiRepeat style={{ color: '#C084FC', fontSize: '18px' }} />
             </div>
+            <h3 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 4px', color: '#FFFFFF' }}>44.2%</h3>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#4ADE80' }}>High loyalty score</span>
+          </div>
+        </div>
 
-            {/* KPI 3 */}
-            <div className="analytics-kpi-card">
-              <div className="kpi-header">
-                <span className="kpi-title">Conversion Rate</span>
-                <span className="kpi-icon-wrapper" style={{ color: '#fd7e14' }}>🏷️</span>
-              </div>
-              <div className="kpi-value-row">
-                <span className="kpi-value">3.2%</span>
-              </div>
-              <div className="kpi-trend orange">↗ +0.4%</div>
-              <div className="kpi-chart-container">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={conversionData}>
-                    <defs>
-                      <linearGradient id="colorConv" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#fd7e14" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#fd7e14" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area type="monotone" dataKey="val" stroke="#fd7e14" strokeWidth={2} fillOpacity={1} fill="url(#colorConv)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* KPI 4 */}
-            <div className="analytics-kpi-card">
-              <div className="kpi-header">
-                <span className="kpi-title">Returning Customers</span>
-                <span className="kpi-icon-wrapper" style={{ color: '#6f42c1' }}>🤝</span>
-              </div>
-              <div className="kpi-value-row">
-                <span className="kpi-value">1,850</span>
-              </div>
-              <div className="kpi-trend purple">↗ +6.3%</div>
-              <div className="kpi-chart-container">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={returningData}>
-                    <defs>
-                      <linearGradient id="colorRet" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6f42c1" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#6f42c1" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area type="monotone" dataKey="val" stroke="#6f42c1" strokeWidth={2} fillOpacity={1} fill="url(#colorRet)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+        {/* Charts Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '28px' }}>
+          {/* Revenue Growth Trend Box */}
+          <div className="glass-box" style={{ padding: '26px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 16px', color: '#FFFFFF' }}>Cumulative Revenue Growth (₹)</h3>
+            <div style={{ width: '100%', height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={revenueData}>
+                  <defs>
+                    <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#4ADE80" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#4ADE80" stopOpacity={0.0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255, 255, 255, 0.12)" />
+                  <XAxis dataKey="name" stroke="rgba(255, 255, 255, 0.8)" fontSize={12} tickLine={false} />
+                  <YAxis stroke="rgba(255, 255, 255, 0.8)" fontSize={12} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '12px',
+                      color: '#FFFFFF',
+                    }}
+                    formatter={(v) => [`₹${v}`, 'Revenue']}
+                  />
+                  <Area type="monotone" dataKey="revenue" stroke="#4ADE80" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Map Section */}
-          <div className="analytics-map-section">
-            <h3 className="analytics-map-title">Geographic Reach & Top Locations</h3>
-            <div className="map-content-grid">
-              <div className="map-placeholder">
-                {/* Fallback CSS map layout */}
-                <div className="css-map"></div>
-              </div>
-              <div className="locations-list">
-                <h4>Top Customer Locations</h4>
-                {topLocations.map((loc, idx) => (
-                  <div className="location-item" key={idx}>
-                    <span>{idx + 1}. {loc.name} - {loc.count}</span>
-                    <strong>({loc.percent})</strong>
-                  </div>
-                ))}
-              </div>
+          {/* Traffic Activity Trend Box */}
+          <div className="glass-box" style={{ padding: '26px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 16px', color: '#FFFFFF' }}>Weekly Store Activity</h3>
+            <div style={{ width: '100%', height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={trafficData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255, 255, 255, 0.12)" />
+                  <XAxis dataKey="day" stroke="rgba(255, 255, 255, 0.8)" fontSize={12} tickLine={false} />
+                  <YAxis stroke="rgba(255, 255, 255, 0.8)" fontSize={12} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '12px',
+                      color: '#FFFFFF',
+                    }}
+                  />
+                  <Line type="monotone" dataKey="views" stroke="#60A5FA" strokeWidth={2.5} dot={{ r: 4 }} />
+                  <Line type="monotone" dataKey="clicks" stroke="#4ADE80" strokeWidth={2.5} dot={{ r: 4 }} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
+        </div>
 
-          <h2 className="analytics-page-title mt-5">Sales & Revenue Analytics</h2>
-          <div className="sales-revenue-wrapper">
-            <div className="analytics-sales-section">
-              {/* Large Revenue Chart */}
-              <div className="sales-chart-card">
-                <h3 style={{ marginBottom: '20px', fontSize: '16px', fontWeight: '600' }}>Revenue Trend</h3>
-                <div style={{ width: '100%', height: '350px' }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={revenueData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#73c028" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#73c028" stopOpacity={0.1} />
-                        </linearGradient>
-                      </defs>
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 13 }} dy={10} />
-                      <YAxis
-                        axisLine={false}
-                        tickLine={false}
-                        tickFormatter={(val) => `$${val / 1000}K`}
-                        tick={{ fill: '#888', fontSize: 13 }}
-                        dx={-10}
-                      />
-                      <CartesianGrid vertical={false} stroke="#eee" />
-                      <Tooltip
-                        formatter={(value) => [`$${value}`, 'Revenue']}
-                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                      />
-                      <Area type="monotone" dataKey="revenue" stroke="#73c028" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Right Column: Mini KPIs and Top Products */}
-              <div className="sales-right-column">
-                <div className="sales-mini-kpi-row">
-                  <div className="sales-mini-kpi">
-                    <h4>Monthly Sales</h4>
-                    <div className="val">$45,320 <span style={{ color: '#28a745', fontSize: '18px' }}>↗</span></div>
-                    <div className="trend">+12% <span style={{ color: '#666', fontWeight: '400' }}>from last month</span></div>
-                  </div>
-                  <div className="sales-mini-kpi">
-                    <h4>Weekly Orders</h4>
-                    <div className="val">1,250 <span style={{ color: '#28a745', fontSize: '18px' }}>↗</span></div>
-                    <div className="trend">+5% <span style={{ color: '#666', fontWeight: '400' }}>from last week</span></div>
-                  </div>
-                </div>
-
-                <div className="top-products-card">
-                  <h4>Top Performing Products</h4>
-                  {topProducts.map((prod, idx) => (
-                    <div className="top-product-item" key={idx}>
-                      <img src={prod.img} alt={prod.name} className="top-product-img" />
-                      <div className="top-product-info">
-                        <h5>{prod.name}</h5>
-                        <p>{prod.sales}</p>
-                        <div className="progress-bar-bg">
-                          <div className="progress-bar-fill" style={{ width: `${prod.percent}%` }}></div>
-                        </div>
-                      </div>
+        {/* Bottom Breakdown Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          {/* Top Selling Crops Box */}
+          <div className="glass-box" style={{ padding: '26px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 18px', color: '#FFFFFF' }}>Highest Revenue Generating Crops</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {topProducts.map((p, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <img src={p.img} alt={p.name} style={{ width: '48px', height: '48px', borderRadius: '12px', objectFit: 'cover' }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                      <strong style={{ fontSize: '14px', color: '#FFFFFF' }}>{p.name}</strong>
+                      <span style={{ fontSize: '13.5px', fontWeight: 800, color: '#4ADE80' }}>{p.sales}</span>
                     </div>
-                  ))}
+                    <div style={{ width: '100%', height: '6px', background: 'rgba(255, 255, 255, 0.15)', borderRadius: '999px', overflow: 'hidden' }}>
+                      <div style={{ width: `${p.percent}%`, height: '100%', background: '#4ADE80', borderRadius: '999px' }} />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
-        </main>
+
+          {/* Regional Demand Box */}
+          <div className="glass-box" style={{ padding: '26px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 18px', color: '#FFFFFF' }}>Top Customer Locations (India)</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {topLocations.map((loc, idx) => (
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
+                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#FFFFFF' }}>📍 {loc.name}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>{loc.count}</span>
+                    <strong style={{ fontSize: '13.5px', color: '#4ADE80' }}>{loc.percent}</strong>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </FarmerDashboardLayout>
   );
 };
 
 export default FarmerAnalytics;
+

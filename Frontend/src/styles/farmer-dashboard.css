@@ -1,41 +1,46 @@
+/* =========================================================
+   FARMER DASHBOARD GLASSMORPHISM DESIGN SYSTEM
+   ========================================================= */
+
 .farmer-layout {
   display: flex;
   height: 100vh;
-  background: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat fixed;
+  width: 100%;
+  background-image: url('/farmer bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   overflow: hidden;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #FFFFFF;
 }
 
-/* Sidebar */
+/* Sidebar (Rich Emerald Forest Green) */
 .farmer-sidebar {
-  width: 200px;
-  background: rgba(11, 56, 42, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  width: 240px;
+  background-color: #0B5D38;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
   color: #FFFFFF;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
 }
 
 .farmer-sidebar-logo {
-  padding: 24px 20px;
+  padding: 20px 20px;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
 }
 
-
-
 .farmer-nav {
-  padding: 12px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
 }
 
@@ -43,436 +48,291 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
-  color: #FFFFFF;
+  padding: 11px 16px;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 14.5px;
-  transition: all 0.2s;
-  opacity: 0.9;
-}
-
-.farmer-nav-item i {
-  color: #A8C66C;
-  font-size: 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
 }
 
 .farmer-nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  opacity: 1;
-}
-
-.farmer-nav-item.active {
-  background-color: #F8F6EE;
-  color: #124E3B;
-  opacity: 1;
-}
-
-.farmer-nav-item.active i {
-  color: #124E3B;
-}
-
-.farmer-nav-logout {
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.farmer-nav-logout .farmer-nav-item:hover {
-  background-color: #C95745;
-}
-
-.farmer-nav-logout .farmer-nav-item:hover i {
+  background: rgba(0, 0, 0, 0.15);
   color: #FFFFFF;
 }
 
-/* Main Area */
+.farmer-nav-item.active {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.farmer-nav-item.logout:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  color: #FCA5A5 !important;
+}
+
+/* Main Viewport Container */
 .farmer-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: transparent;
 }
 
+/* Top Header Bar */
 .farmer-header {
-  height: 72px;
+  height: 76px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
   padding: 0 32px;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
 }
 
 .farmer-search {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 6px;
-  padding: 8px 16px;
-  width: 350px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 9px 16px;
+  width: 340px;
+  transition: all 0.2s ease;
 }
 
-.farmer-search i {
-  color: #010101;
-  margin-right: 8px;
+.farmer-search:focus-within {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
 }
 
 .farmer-search input {
-  border: none;
   background: transparent;
+  border: none;
+  color: #FFFFFF;
   outline: none;
+  font-size: 13.5px;
   width: 100%;
-  font-size: 14px;
-  color: #040605;
 }
 
 .farmer-search input::placeholder {
-  color: #000000;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .farmer-header-right {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
-
-
 .header-notif-btn {
-  background: transparent;
-  border: none;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #000000;
-  font-size: 18px;
-  position: relative;
-  cursor: pointer;
+  color: #FFFFFF;
+  transition: all 0.2s ease;
 }
 
-.header-notif-dot {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 6px;
-  height: 6px;
-  background-color: #C95745;
-  border-radius: 50%;
+.header-notif-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
 }
 
 .header-profile {
   display: flex;
   align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  padding-left: 24px;
-  border-left: 1px solid #DCE5DC;
-}
-
-.header-profile img {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.header-profile span {
+  gap: 10px;
+  padding: 6px 14px 6px 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  color: #FFFFFF;
   font-weight: 600;
-  color: #17221D;
-  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
+.header-profile:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Scrollable Content Container */
 .farmer-content {
   flex: 1;
+  padding: 28px 32px 40px;
   overflow-y: auto;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
-/* Headings */
-.dashboard-title,
-.chart-title-main,
-.table-header,
-.card-title {
-  color: #17221D;
+.farmer-content::-webkit-scrollbar {
+  width: 6px;
+}
+.farmer-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
 }
 
-/* Overview Cards */
-.overview-cards-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+/* =========================================================
+   GLASS CARDS & CONTAINERS
+   ========================================================= */
+
+.glass-box {
+  background: rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.25), inset 0 1px 2px 0 rgba(255, 255, 255, 0.5) !important;
+  color: #FFFFFF !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.overview-card {
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  position: relative;
-  overflow: hidden;
+.glass-box:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.3), inset 0 1px 2px 0 rgba(255, 255, 255, 0.65) !important;
 }
 
-.overview-card.revenue-card {
-  background: rgba(255, 255, 255, 0.5);
+/* KPI Card Glass Styling */
+.kpi-card {
+  background: rgba(255, 255, 255, 0.16) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  border-radius: 20px !important;
+  padding: 22px 24px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2), inset 0 1px 1px 0 rgba(255, 255, 255, 0.5) !important;
+  color: #FFFFFF !important;
+  transition: all 0.25s ease !important;
 }
 
-.card-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
+.kpi-card:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
 }
 
-.card-title {
-  font-size: 15px;
-  font-weight: 600;
+.kpi-card h2 {
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
-.card-icon-box {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
+.kpi-card span.kpi-label,
+.kpi-card span:first-child {
+  color: rgba(255, 255, 255, 0.88) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
 }
 
-.card-icon-box.green {
-  background-color: #124E3B;
+/* Glass Tables */
+.farmer-table {
+  width: 100%;
+  border-collapse: collapse;
   color: #FFFFFF;
 }
 
-.card-icon-box.yellow {
-  background-color: #fdf6e3;
-
+.farmer-table thead tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
-.card-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: #17221D;
-  margin-bottom: 8px;
-}
-
-.card-trend {
-  font-size: 13px;
-  color: #66736B;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.trend-up {
-  color: #A8C66C;
-  font-weight: 600;
-}
-
-.mini-chart {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 140px;
-  height: 60px;
-}
-
-/* Progress bar */
-.progress-section {
-  margin-top: 16px;
-}
-
-.progress-bar-bg {
-  height: 6px;
-  background-color: #DCE5DC;
-  border-radius: 3px;
-  display: flex;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.progress-bar-fill.completed {
-  background-color: #124E3B;
-  height: 100%;
-}
-
-.progress-bar-fill.pending {
-
-  height: 100%;
-}
-
-.progress-labels {
-  display: flex;
-  justify-content: space-between;
+.farmer-table th {
+  padding: 14px 18px;
   font-size: 12px;
-  color: #66736B;
-}
-
-/* Alerts */
-.alert-items {
-  font-size: 13.5px;
-  color: #66736B;
-  line-height: 1.5;
-}
-
-/* Chart Section */
-.chart-section {
-  background-color: #FFFFFF;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #DCE5DC;
-}
-
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.chart-title-main {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-
-
-.chart-dropdown {
-  padding: 6px 12px;
-  border: 1px solid #DCE5DC;
-  border-radius: 6px;
-  background-color: transparent;
-  color: #475569;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.chart-legend {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 16px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #66736B;
-  font-weight: 500;
-}
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.legend-dot.green {
-  background-color: #124E3B;
-}
-
-.legend-dot.yellow {
-  background-color: #A8C66C;
-}
-
-.main-chart-svg {
-  width: 100%;
-  height: 250px;
-}
-
-/* Table Section */
-.table-section {
-  background-color: #FFFFFF;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #DCE5DC;
-}
-
-.table-header {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-.recent-orders-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.recent-orders-table th {
-  text-align: left;
-  padding: 12px 0;
-  border-bottom: 1px solid #DCE5DC;
-  color: #17221D;
   font-weight: 700;
-  font-size: 13px;
+  color: rgba(255, 255, 255, 0.88) !important;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
-.recent-orders-table td {
-  padding: 16px 0;
-  border-bottom: 1px solid #F8F6EE;
-  color: #66736B;
+.farmer-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #FFFFFF !important;
   font-size: 14px;
 }
 
-.recent-orders-table tr:last-child td {
-  border-bottom: none;
+.farmer-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Status Badges */
-.status-badge {
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 4px 12px;
-  border-radius: 12px;
+  border-radius: 999px;
   font-size: 12px;
-  font-weight: 600;
-  display: inline-block;
-  color: white;
+  font-weight: 700;
+  text-transform: capitalize;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.status-badge.green {
-  background-color: #2E7D52;
+.status-pill.delivered {
+  background: rgba(34, 197, 94, 0.25);
+  border: 1px solid rgba(74, 222, 128, 0.6);
+  color: #86EFAC;
 }
 
-
-
-.status-badge.red {
-  background-color: #C95745;
+.status-pill.shipped {
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(96, 165, 250, 0.6);
+  color: #93C5FD;
 }
 
-.status-badge.blue {
-  background-color: #124E3B;
+.status-pill.packed {
+  background: rgba(245, 158, 11, 0.25);
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  color: #FDE047;
 }
 
-/* Primary Button */
-.btn-primary {
-  background-color: #124E3B;
-  color: #FFFFFF;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.status-pill.pending {
+  background: rgba(148, 163, 184, 0.25);
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  color: #F1F5F9;
 }
 
-.btn-primary:hover {
-  background-color: #0B382A;
+/* Responsive */
+@media (max-width: 1024px) {
+  .farmer-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+  .farmer-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  .farmer-mobile-hamburger {
+    display: block !important;
+    color: #FFFFFF !important;
+  }
+  .mobile-close-btn {
+    display: block !important;
+    color: #FFFFFF !important;
+  }
+  .farmer-header {
+    padding: 0 18px;
+  }
+  .farmer-content {
+    padding: 20px 16px;
+  }
 }

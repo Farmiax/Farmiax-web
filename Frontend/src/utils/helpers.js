@@ -99,3 +99,28 @@ export const productUnits = ['g', 'kg', 'ml', 'L', 'pcs', 'pack'];
 export const orderStatuses = [
   'Order Placed', 'Processing', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'
 ];
+
+// Resolves images safely across Cloudinary URLs, relative URLs, and local assets
+export const getImageUrl = (imagePath, fallback = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80') => {
+  if (!imagePath) return fallback;
+  if (typeof imagePath !== 'string') return fallback;
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:') || imagePath.startsWith('blob:')) {
+    return imagePath;
+  }
+  const backendBase = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1').replace(/\/api\/v1\/?$/, '');
+  const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+  return `${backendBase}/${cleanPath}`;
+};
+
+// Format structured address object into readable string
+export const formatAddress = (addr) => {
+  if (!addr) return 'Address not provided';
+  if (typeof addr === 'string') return addr;
+  const parts = [
+    addr.street || addr.address,
+    addr.city || addr.City,
+    addr.state || addr.State,
+    addr.pincode || addr.PinCode,
+  ].filter(Boolean);
+  return parts.length > 0 ? parts.join(', ') : 'Address not provided';
+};

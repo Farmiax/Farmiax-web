@@ -1,72 +1,70 @@
-import { Link, useNavigate } from 'react-router-dom';
-import CustomerHeader from '../../components/common/CustomerHeader';
-import Footer from '../../components/common/Footer';
-import { FiCheck, FiMail, FiTruck } from 'react-icons/fi';
+import { Link, useLocation } from 'react-router-dom';
+import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
+import { FiCheck, FiMail, FiTruck, FiShoppingBag } from 'react-icons/fi';
+import { formatPrice } from '../../utils/helpers';
 import '../../styles/customer.css';
 
 const OrderSuccess = () => {
-  const navigate = useNavigate();
+  const location = useLocation();
+  const order = location.state?.order || {};
+  const orderId = order._id || order.id || 'FMX' + Math.floor(1000000 + Math.random() * 9000000);
+  const totalAmount = order.totalAmount || order.actualAmount || 310;
+  const itemCount = order.Products?.length || 1;
 
   return (
-    <div className="customer-layout">
-      <CustomerHeader />
+    <CustomerDashboardLayout>
+      <div className="container" style={{ padding: '40px 16px', minHeight: 'calc(100vh - 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="thankyou-wrapper" style={{ maxWidth: '640px', width: '100%' }}>
+          {/* Green Check Circle */}
+          <div className="thankyou-success-circle">
+            <FiCheck size={36} />
+          </div>
 
-      <main className="customer-main-content" style={{ backgroundColor: '#FFFBF0' }}>
-        <div className="container">
-          <div className="thankyou-wrapper">
-            {/* Green Check Circle */}
-            <div className="thankyou-success-circle">
-              <FiCheck />
-            </div>
+          <h1 className="thankyou-title">Thank You!</h1>
+          <p className="thankyou-sub">Your harvest order has been placed successfully.</p>
 
-            <h1 className="thankyou-title">Thank You!</h1>
-            <p className="thankyou-sub">Your order has been placed successfully.</p>
+          <div className="order-id-badge">
+            Order Reference: <strong>#{orderId}</strong>
+          </div>
 
-            <div className="order-id-badge">
-              Order ID: <strong>FMX1721456789</strong>
-            </div>
-
-            {/* Order Summary Card */}
-            <div className="thankyou-summary-card">
-              <h3>Order Summary</h3>
-              <div className="summary-metrics-grid">
-                <div className="metric-item">
-                  <p className="metric-label">Total Items</p>
-                  <p className="metric-val">3 Items</p>
-                </div>
-                <div className="metric-item">
-                  <p className="metric-label">Total Amount</p>
-                  <p className="metric-val">₹310</p>
-                </div>
-                <div className="metric-item">
-                  <p className="metric-label">Estimated Delivery</p>
-                  <p className="metric-val green">25 Jul – 27 Jul 2024</p>
-                </div>
+          {/* Order Summary Card */}
+          <div className="thankyou-summary-card">
+            <h3>Order Summary</h3>
+            <div className="summary-metrics-grid">
+              <div className="metric-item">
+                <p className="metric-label">Total Items</p>
+                <p className="metric-val">{itemCount} {itemCount === 1 ? 'Item' : 'Items'}</p>
               </div>
-
-              <div className="thankyou-notice-box">
-                <FiMail size={20} className="text-primary-600 flex-shrink-0" />
-                <span>
-                  We have sent the order details and tracking link to your registered email address and phone number.
-                </span>
+              <div className="metric-item">
+                <p className="metric-label">Total Amount</p>
+                <p className="metric-val">{formatPrice(totalAmount)}</p>
+              </div>
+              <div className="metric-item">
+                <p className="metric-label">Payment Method</p>
+                <p className="metric-val green">{order.paymentMethod || 'Cash on Delivery'}</p>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="thankyou-actions">
-              <Link to="/customer/track-order" className="btn-dark-green">
-                <FiTruck size={18} /> Track Order
-              </Link>
-              <Link to="/customer/shop" className="btn-outline-dark">
-                Continue Shopping
-              </Link>
+            <div className="thankyou-notice-box">
+              <FiMail size={20} style={{ color: '#0B5D38', flexShrink: 0 }} />
+              <span>
+                We have synchronized your order with the regional farm depot. You will receive live GPS cold-chain tracking updates.
+              </span>
             </div>
           </div>
-        </div>
-      </main>
 
-      <Footer />
-    </div>
+          {/* Action Buttons */}
+          <div className="thankyou-actions">
+            <Link to={`/customer/track-order/${orderId}`} className="btn-dark-green">
+              <FiTruck size={18} /> Track Order Live
+            </Link>
+            <Link to="/customer/shop" className="btn-outline-dark">
+              <FiShoppingBag size={18} /> Continue Shopping
+            </Link>
+          </div>
+        </div>
+      </div>
+    </CustomerDashboardLayout>
   );
 };
 

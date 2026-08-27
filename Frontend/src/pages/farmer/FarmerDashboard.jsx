@@ -1,356 +1,344 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '../../components/common/Logo';
-import FarmerAIChatSupport from '../../components/common/FarmerAIChatSupport';
+import FarmerDashboardLayout from '../../components/common/FarmerDashboardLayout';
+import { useAuth } from '../../context/AuthContext';
+import productService from '../../services/productService';
+import orderService from '../../services/orderService';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
+import {
+  FiTrendingUp, FiShoppingBag, FiBox, FiUsers, FiDollarSign,
+  FiStar, FiArrowUpRight, FiPlus, FiEye
+} from 'react-icons/fi';
 import '../../styles/farmer-dashboard.css';
 import '../../styles/farmer-dashboard-redesign.css';
 
 const FarmerDashboard = () => {
-  // State structured according to expected backend payload
-  const [dashboardData, setDashboardData] = useState({
-    farmerName: 'Ramesh Kumar',
-    farmName: 'Green Valley Farm',
-    location: 'Coimbatore, Tamil Nadu',
-    farmerSince: 'Jan 2023',
-    kpis: {
-      totalOrders: { value: 128, trend: '+18%', isPositive: true },
-      totalRevenue: { value: 78560, trend: '+22%', isPositive: true },
-      productsListed: { value: 24, trend: '', isPositive: true },
-      totalCustomers: { value: 356, trend: '+14%', isPositive: true },
-      averageRating: { value: 4.7, reviewsCount: 128 }
-    },
-    salesOverview: [
-      { date: '1 Aug', revenue: 10000 },
-      { date: '5 Aug', revenue: 12000 },
-      { date: '10 Aug', revenue: 18000 },
-      { date: '15 Aug', revenue: 14000 },
-      { date: '20 Aug', revenue: 22000 },
-      { date: '25 Aug', revenue: 16000 },
-      { date: '31 Aug', revenue: 25000 }
-    ],
-    ordersOverview: [
-      { name: 'Delivered', value: 72, color: '#28a745' },
-      { name: 'Shipped', value: 28, color: '#007bff' },
-      { name: 'Packed', value: 16, color: '#fd7e14' },
-      { name: 'Pending', value: 12, color: '#6c757d' }
-    ],
-    recentOrders: [
-      { id: '#FX20250814', customer: 'Arun Kumar', items: '4 Items', amount: 1250, status: 'Pending', date: '14 Aug 2025' },
-      { id: '#FX20250813', customer: 'Meera Devi', items: '2 Items', amount: 680, status: 'Packed', date: '13 Aug 2025' },
-      { id: '#FX20250812', customer: 'Suresh Babu', items: '3 Items', amount: 920, status: 'Shipped', date: '12 Aug 2025' },
-      { id: '#FX20250811', customer: 'Kavitha R.', items: '5 Items', amount: 1780, status: 'Delivered', date: '11 Aug 2025' },
-      { id: '#FX20250810', customer: 'Raghul V.', items: '1 Item', amount: 350, status: 'Delivered', date: '10 Aug 2025' }
-    ],
-    topProducts: [
-      { name: 'Organic Tomatoes', qty: '120 kg', revenue: 2400, img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=100&q=80' },
-      { name: 'Fresh Spinach', qty: '90 kg', revenue: 1800, img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=100&q=80' },
-      { name: 'Carrots', qty: '85 kg', revenue: 1700, img: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=100&q=80' },
-      { name: 'Green Capsicum', qty: '70 kg', revenue: 1400, img: 'https://images.unsplash.com/photo-1563514222080-60b5d92df917?w=100&q=80' },
-      { name: 'Cucumbers', qty: '60 kg', revenue: 1200, img: 'https://images.unsplash.com/photo-1604977042946-1eecc30f269e?w=100&q=80' }
-    ]
-  });
-
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [farmerProducts, setFarmerProducts] = useState([]);
+  const [farmerOrders, setFarmerOrders] = useState([]);
 
   useEffect(() => {
-    // Simulate API fetch to backend `/api/farmer/dashboard`
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
-  }, []);
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      try {
+        const [prodsRes, ordersRes] = await Promise.allSettled([
+          productService.getFarmerProducts(user?._id),
+          orderService.getFarmerOrders()
+        ]);
+
+        if (prodsRes.status === 'fulfilled') {
+          const prods = Array.isArray(prodsRes.value) ? prodsRes.value : (prodsRes.value?.data || []);
+          setFarmerProducts(prods);
+        }
+
+        if (ordersRes.status === 'fulfilled') {
+          const ords = Array.isArray(ordersRes.value) ? ordersRes.value : (ordersRes.value?.data || []);
+          setFarmerOrders(ords);
+        }
+      } catch (err) {
+        console.warn('Dashboard data fetch notice:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [user?._id]);
+
+  const totalProductsCount = farmerProducts.length;
+  const totalOrdersCount = farmerOrders.length;
+  const totalRevenue = farmerOrders.reduce((sum, ord) => sum + Number(ord.totalAmount || ord.actualAmount || 0), 0);
+
+  // Group actual order statuses
+  const statusCounts = farmerOrders.reduce((acc, o) => {
+    const s = o.status || 'Processing';
+    acc[s] = (acc[s] || 0) + 1;
+    return acc;
+  }, {});
+
+  const ordersOverview = [
+    { name: 'Delivered', value: statusCounts['Delivered'] || 0, color: '#22C55E' },
+    { name: 'Shipped', value: (statusCounts['Shipped'] || 0) + (statusCounts['Out for Delivery'] || 0), color: '#3B82F6' },
+    { name: 'Processing', value: (statusCounts['Processing'] || 0) + (statusCounts['Order Placed'] || 0), color: '#F59E0B' },
+    { name: 'Pending', value: statusCounts['Pending'] || 0, color: '#94A3B8' },
+  ];
+
+  const salesOverview = farmerOrders.length > 0
+    ? farmerOrders.slice(-6).map((ord, idx) => ({
+        date: ord.createdAt ? new Date(ord.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }) : `Order ${idx + 1}`,
+        revenue: Number(ord.totalAmount || ord.actualAmount || 0),
+      }))
+    : [
+        { date: 'Day 1', revenue: 0 },
+        { date: 'Today', revenue: totalRevenue },
+      ];
+
+  const recentOrdersList = farmerOrders.slice(0, 5);
 
   const getStatusClass = (status) => {
-    switch (status.toLowerCase()) {
+    switch ((status || '').toLowerCase()) {
       case 'pending': return 'pending';
-      case 'packed': return 'packed';
-      case 'shipped': return 'shipped';
+      case 'packed':
+      case 'processing': return 'packed';
+      case 'shipped':
+      case 'out for delivery': return 'shipped';
       case 'delivered': return 'delivered';
       default: return 'pending';
     }
   };
 
   return (
-    <div className="farmer-layout">
-      {/* Sidebar Navigation */}
-      <aside className="farmer-sidebar">
-        <div className="farmer-sidebar-logo" style={{ padding: '12px 0', justifyContent: 'center' }}>
-          <Logo size="xl" />
+    <FarmerDashboardLayout activeNav="dashboard">
+      <div className="farmer-dashboard-view">
+        {/* Welcome Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <h1 style={{ fontSize: '28px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+              Welcome back, {user?.fullName || 'Farmer Partner'} 🌾
+            </h1>
+            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '15px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
+              Here is what's happening with your farm crops and orders today.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <Link
+              to="/farmer/products"
+              className="btn btn-primary"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '11px 22px',
+                fontSize: '14px',
+                textDecoration: 'none',
+                background: 'linear-gradient(135deg, #15803D 0%, #166534 100%)',
+                boxShadow: '0 4px 16px rgba(22, 101, 52, 0.4)',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+              }}
+            >
+              <FiPlus size={18} /> Add New Crop
+            </Link>
+          </div>
         </div>
-        <nav className="farmer-nav">
-          <Link to="/farmer/dashboard" className="farmer-nav-item active">
-            <i className="ri-home-5-line"></i> Dashboard
-          </Link>
-          <Link to="/farmer/orders" className="farmer-nav-item">
-            <i className="ri-file-list-3-line"></i> Orders
-          </Link>
-          <Link to="/farmer/products" className="farmer-nav-item">
-            <i className="ri-landscape-line"></i> Products
-          </Link>
-          <Link to="/farmer/inventory" className="farmer-nav-item">
-            <i className="ri-box-3-line"></i> Inventory
-          </Link>
-          <Link to="/farmer/customers" className="farmer-nav-item">
-            <i className="ri-group-line"></i> Customers
-          </Link>
-          <Link to="/farmer/earnings" className="farmer-nav-item">
-            <i className="ri-money-dollar-circle-line"></i> Earnings
-          </Link>
-          <Link to="/farmer/analytics" className="farmer-nav-item">
-            <i className="ri-bar-chart-box-line"></i> Analytics
-          </Link>
-          <Link to="/farmer/payouts" className="farmer-nav-item">
-            <i className="ri-bank-card-line"></i> Payouts
-          </Link>
-          <Link to="/farmer/reviews" className="farmer-nav-item">
-            <i className="ri-star-line"></i> Reviews
-          </Link>
-          <Link to="/farmer/messages" className="farmer-nav-item">
-            <i className="ri-message-3-line"></i> Messages
-          </Link>
-          <Link to="/farmer/profile" className="farmer-nav-item">
-            <i className="ri-user-settings-line"></i> Farm Profile
-          </Link>
-          <Link to="/farmer/settings" className="farmer-nav-item">
-            <i className="ri-settings-3-line"></i> Settings
-          </Link>
-        </nav>
-      </aside>
 
-      {/* Main Content Area */}
-      <div className="farmer-main">
-        {/* Header */}
-        <header className="farmer-header">
-          <div className="farmer-search">
-            <i className="ri-search-line"></i>
-            <input type="text" placeholder="Search orders, products, or insights..." />
-          </div>
-          <div className="farmer-header-right">
-            <Link to="/farmer/notifications" className="header-notif-btn" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="ri-notification-3-line" style={{ fontSize: '20px', color: '#111' }}></i>
-            </Link>
-            <Link to="/farmer/profile" className="header-profile" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <img src="https://ui-avatars.com/api/?name=FA&background=FCE06D&color=000" alt="Farmer" />
-              <span>Farmer</span>
-            </Link>
-          </div>
-        </header>
-
-        {/* Dashboard Content */}
-        <main className="farmer-dashboard-wrapper">
-          {loading ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Loading dashboard data...</div>
-          ) : (
-            <>
-
-              {/* KPI 5-Column Grid */}
-              <div className="kpi-grid-5">
-                <div className="kpi-card-new">
-                  <div className="kpi-header">
-                    <div className="icon-box green-light"><i className="ri-shopping-bag-line"></i></div>
-                    <span className="kpi-title">Total Orders</span>
-                  </div>
-                  <div className="kpi-value">{dashboardData.kpis.totalOrders.value}</div>
-                  <div className="kpi-trend trend-up">↗ {dashboardData.kpis.totalOrders.trend} <span style={{ color: '#666', fontWeight: '400' }}>vs last month</span></div>
-                </div>
-
-                <div className="kpi-card-new">
-                  <div className="kpi-header">
-                    <div className="icon-box purple-light">₹</div>
-                    <span className="kpi-title">Total Revenue</span>
-                  </div>
-                  <div className="kpi-value">₹{dashboardData.kpis.totalRevenue.value.toLocaleString()}</div>
-                  <div className="kpi-trend trend-up">↗ {dashboardData.kpis.totalRevenue.trend} <span style={{ color: '#666', fontWeight: '400' }}>vs last month</span></div>
-                </div>
-
-                <div className="kpi-card-new">
-                  <div className="kpi-header">
-                    <div className="icon-box blue-light"><i className="ri-box-3-line"></i></div>
-                    <span className="kpi-title">Products Listed</span>
-                  </div>
-                  <div className="kpi-value">{dashboardData.kpis.productsListed.value}</div>
-                  <div className="kpi-trend"><span style={{ color: '#666', fontWeight: '400' }}>vs last month</span></div>
-                </div>
-
-                <div className="kpi-card-new">
-                  <div className="kpi-header">
-                    <div className="icon-box orange-light"><i className="ri-group-line"></i></div>
-                    <span className="kpi-title">Total Customers</span>
-                  </div>
-                  <div className="kpi-value">{dashboardData.kpis.totalCustomers.value}</div>
-                  <div className="kpi-trend trend-up">↗ {dashboardData.kpis.totalCustomers.trend} <span style={{ color: '#666', fontWeight: '400' }}>vs last month</span></div>
-                </div>
-
-                <div className="kpi-card-new">
-                  <div className="kpi-header">
-                    <div className="icon-box yellow-light"><i className="ri-star-line"></i></div>
-                    <span className="kpi-title">Average Rating</span>
-                  </div>
-                  <div className="kpi-value" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {dashboardData.kpis.averageRating.value} <i className="ri-star-fill" style={{ color: '#fbc02d', fontSize: '18px' }}></i>
-                  </div>
-                  <div className="kpi-trend"><span style={{ color: '#666', fontWeight: '400' }}>({dashboardData.kpis.averageRating.reviewsCount} reviews)</span></div>
-                </div>
+        {/* 4 Metric KPI Glass Cards */}
+        <div className="farmer-kpis-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '22px', marginBottom: '28px' }}>
+          {/* Revenue */}
+          <div className="glass-box kpi-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Gross Revenue
+              </span>
+              <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(34, 197, 94, 0.25)', border: '1px solid rgba(74, 222, 128, 0.4)', color: '#86EFAC', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <FiDollarSign size={22} />
               </div>
+            </div>
+            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '0 0 8px', color: '#FFFFFF', letterSpacing: '-0.5px' }}>
+              ₹{totalRevenue.toLocaleString()}
+            </h2>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#4ADE80', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <FiTrendingUp /> +18.4% from last month
+            </span>
+          </div>
 
-              {/* Chart Grid (2 Columns) */}
-              <div className="chart-grid-2">
-                {/* Sales Overview Line Chart */}
-                <div className="chart-card-new">
-                  <div className="chart-card-header">
-                    <div>
-                      <h3 className="chart-card-title">Sales Overview</h3>
-                      <div style={{ fontSize: '20px', fontWeight: '700', marginTop: '8px' }}>₹ {dashboardData.kpis.totalRevenue.value.toLocaleString()}</div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>Total Revenue <span style={{ color: '#28a745', marginLeft: '12px' }}>↗ 22% vs last month</span></div>
-                    </div>
-                    <select style={{ padding: '6px 12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '13px' }}>
-                      <option>This Month</option>
-                      <option>Last Month</option>
-                    </select>
-                  </div>
-                  <div style={{ height: '200px', width: '100%' }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={dashboardData.salesOverview} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                        <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} dy={10} />
-                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} tickFormatter={(val) => `₹${val / 1000}k`} />
-                        <Tooltip formatter={(value) => `₹${value}`} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
-                        <Line type="monotone" dataKey="revenue" stroke="#28a745" strokeWidth={3} dot={{ r: 4, fill: '#28a745', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                {/* Orders Overview Donut Chart */}
-                <div className="chart-card-new">
-                  <div className="chart-card-header">
-                    <h3 className="chart-card-title">Orders Overview</h3>
-                    <select style={{ padding: '6px 12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '13px' }}>
-                      <option>This Month</option>
-                    </select>
-                  </div>
-                  <div style={{ height: '220px', width: '100%', position: 'relative' }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={dashboardData.ordersOverview}
-                          innerRadius={60}
-                          outerRadius={80}
-                          paddingAngle={2}
-                          dataKey="value"
-                        >
-                          {dashboardData.ordersOverview.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-                      <div style={{ fontSize: '24px', fontWeight: '700' }}>{dashboardData.kpis.totalOrders.value}</div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>Total Orders</div>
-                    </div>
-                  </div>
-                </div>
+          {/* Orders */}
+          <div className="glass-box kpi-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Total Orders
+              </span>
+              <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.25)', border: '1px solid rgba(96, 165, 250, 0.4)', color: '#93C5FD', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <FiBox size={22} />
               </div>
+            </div>
+            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '0 0 8px', color: '#FFFFFF', letterSpacing: '-0.5px' }}>
+              {totalOrdersCount}
+            </h2>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#4ADE80', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <FiTrendingUp /> +12% growth rate
+            </span>
+          </div>
 
-              {/* Bottom 3-Column Grid */}
-              <div className="bottom-grid-3">
+          {/* Products Listed */}
+          <div className="glass-box kpi-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Active Produce Items
+              </span>
+              <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.25)', border: '1px solid rgba(251, 191, 36, 0.4)', color: '#FDE047', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <FiShoppingBag size={22} />
+              </div>
+            </div>
+            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '0 0 8px', color: '#FFFFFF', letterSpacing: '-0.5px' }}>
+              {totalProductsCount}
+            </h2>
+            <Link to="/farmer/products" style={{ fontSize: '13px', fontWeight: 700, color: '#86EFAC', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              Manage Crop Catalog <FiArrowUpRight />
+            </Link>
+          </div>
 
-                {/* Recent Orders Table */}
-                <div className="table-card">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h3 className="chart-card-title">Recent Orders</h3>
-                    <Link to="/farmer/orders" style={{ fontSize: '13px', color: '#28a745', textDecoration: 'none', fontWeight: '500' }}>View all</Link>
-                  </div>
-                  <table className="recent-orders-table-new">
-                    <thead>
-                      <tr>
-                        <th>Order ID</th>
-                        <th>Customer</th>
-                        <th>Items</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {dashboardData.recentOrders.map((order, idx) => (
-                        <tr key={idx}>
-                          <td>{order.id}</td>
-                          <td>{order.customer}</td>
-                          <td>{order.items}</td>
-                          <td style={{ fontWeight: '500' }}>₹ {order.amount.toLocaleString()}</td>
-                          <td><span className={`status-badge-new ${getStatusClass(order.status)}`}>{order.status}</span></td>
-                          <td style={{ color: '#666' }}>{order.date}</td>
-                          <td>
-                            <button className="action-btn-eye"><i className="ri-eye-line"></i></button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+          {/* Customer Rating */}
+          <div className="glass-box kpi-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Quality Rating
+              </span>
+              <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(234, 179, 8, 0.25)', border: '1px solid rgba(250, 204, 21, 0.4)', color: '#FDE047', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <FiStar size={22} />
+              </div>
+            </div>
+            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '0 0 8px', color: '#FDE047', letterSpacing: '-0.5px' }}>
+              4.9 ★
+            </h2>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.85)' }}>
+              Based on 64 buyer reviews
+            </span>
+          </div>
+        </div>
 
-                {/* Top Selling Products */}
-                <div className="table-card">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h3 className="chart-card-title">Top Selling Products</h3>
-                    <Link to="/farmer/products" style={{ fontSize: '13px', color: '#28a745', textDecoration: 'none', fontWeight: '500' }}>View all</Link>
-                  </div>
-                  <div className="top-products-list">
-                    {dashboardData.topProducts.map((prod, idx) => (
-                      <div className="top-product-item-new" key={idx}>
-                        <img src={prod.img} alt={prod.name} className="top-product-img-new" />
-                        <div className="top-product-info-new">
-                          <h5>{prod.name}</h5>
-                          <p>{prod.qty}</p>
-                        </div>
-                        <div className="top-product-price">₹ {prod.revenue.toLocaleString()}</div>
-                      </div>
+        {/* Charts Section Glass Boxes */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '28px' }}>
+          {/* Revenue Chart Box */}
+          <div className="glass-box" style={{ padding: '26px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 4px', color: '#FFFFFF' }}>Sales Revenue Trend (₹)</h3>
+                <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>Direct harvest proceeds across settlement periods</p>
+              </div>
+              <span style={{ background: 'rgba(34, 197, 94, 0.2)', border: '1px solid rgba(74, 222, 128, 0.4)', color: '#86EFAC', fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '8px' }}>
+                August 2025
+              </span>
+            </div>
+
+            <div style={{ width: '100%', height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={salesOverview}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255, 255, 255, 0.12)" />
+                  <XAxis dataKey="date" stroke="rgba(255, 255, 255, 0.8)" fontSize={12} tickLine={false} />
+                  <YAxis stroke="rgba(255, 255, 255, 0.8)" fontSize={12} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '12px',
+                      color: '#FFFFFF',
+                    }}
+                    formatter={(v) => [`₹${v}`, 'Revenue']}
+                  />
+                  <Line type="monotone" dataKey="revenue" stroke="#4ADE80" strokeWidth={3.5} dot={{ r: 5, fill: '#4ADE80', stroke: '#FFFFFF', strokeWidth: 2 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Orders Distribution Pie Box */}
+          <div className="glass-box" style={{ padding: '26px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 4px', color: '#FFFFFF' }}>Order Status</h3>
+            <p style={{ margin: '0 0 16px', fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>Current active fulfillment stage</p>
+
+            <div style={{ width: '100%', height: 260 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={ordersOverview} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={85} innerRadius={50} paddingAngle={5}>
+                    {ordersOverview.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke="rgba(0,0,0,0.2)" strokeWidth={1.5} />
                     ))}
-                  </div>
-                </div>
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '12px',
+                      color: '#FFFFFF',
+                    }}
+                  />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ color: '#FFFFFF', fontSize: '12px' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
 
-                {/* Quick Actions & Help */}
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <h3 className="chart-card-title" style={{ marginBottom: '16px' }}>Quick Actions</h3>
-                  <div className="quick-actions-grid">
-                    <Link to="/farmer/products/add" className="quick-action-btn" style={{ textDecoration: 'none' }}>
-                      <i className="ri-add-box-line"></i>
-                      <span>Add Product</span>
-                    </Link>
-                    <Link to="/farmer/inventory" className="quick-action-btn" style={{ textDecoration: 'none' }}>
-                      <i className="ri-box-3-line"></i>
-                      <span>Manage Inventory</span>
-                    </Link>
-                    <Link to="/farmer/orders" className="quick-action-btn" style={{ textDecoration: 'none' }}>
-                      <i className="ri-file-list-3-line"></i>
-                      <span>View Orders</span>
-                    </Link>
-                    <Link to="/farmer/analytics" className="quick-action-btn" style={{ textDecoration: 'none' }}>
-                      <i className="ri-bar-chart-line"></i>
-                      <span>Sales Report</span>
-                    </Link>
-                  </div>
+        {/* Recent Orders Glass Stack */}
+        <div className="glass-box" style={{ padding: '26px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div>
+              <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 4px', color: '#FFFFFF' }}>Recent Customer Orders</h3>
+              <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>Live orders ready for dispatch and milestone tracking</p>
+            </div>
+            <Link to="/farmer/orders" style={{ fontSize: '13.5px', fontWeight: 700, color: '#86EFAC', textDecoration: 'none' }}>
+              View All Orders →
+            </Link>
+          </div>
 
-
-                </div>
-
-              </div>
-
-            </>
-          )}
-        </main>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="farmer-table">
+              <thead>
+                <tr>
+                  <th>ORDER ID</th>
+                  <th>CUSTOMER</th>
+                  <th>ITEMS</th>
+                  <th>AMOUNT</th>
+                  <th>STATUS</th>
+                  <th style={{ textAlign: 'right' }}>ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentOrdersList.map((ord, idx) => {
+                  const ordId = ord._id || ord.id || `ORD-${idx}`;
+                  return (
+                    <tr key={ordId}>
+                      <td style={{ fontWeight: 700, color: '#FFFFFF' }}>
+                        #{String(ordId).slice(-8)}
+                      </td>
+                      <td style={{ color: '#FFFFFF', fontWeight: 600 }}>
+                        {ord.customer?.fullName || ord.customer || 'Customer'}
+                      </td>
+                      <td style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                        {ord.Products?.length ? `${ord.Products.length} items` : (ord.items || '1 item')}
+                      </td>
+                      <td style={{ fontWeight: 800, color: '#4ADE80', fontSize: '15px' }}>
+                        ₹{ord.totalAmount || ord.amount || 0}
+                      </td>
+                      <td>
+                        <span className={`status-pill ${getStatusClass(ord.status)}`}>
+                          {ord.status || 'Delivered'}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <Link
+                          to="/farmer/orders"
+                          className="btn btn-outline btn-sm"
+                          style={{
+                            padding: '6px 14px',
+                            fontSize: '12px',
+                            textDecoration: 'none',
+                            background: 'rgba(255, 255, 255, 0.15)',
+                            border: '1px solid rgba(255, 255, 255, 0.4)',
+                            color: '#FFFFFF',
+                            borderRadius: '8px',
+                          }}
+                        >
+                          <FiEye size={12} /> Manage
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-
-      {/* Floating AI Customer Support Button & Chat Widget */}
-      <FarmerAIChatSupport />
-    </div>
+    </FarmerDashboardLayout>
   );
 };
 

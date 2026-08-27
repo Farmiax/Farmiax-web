@@ -1,255 +1,281 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Logo from '../../components/common/Logo';
+import React, { useState, useEffect } from 'react';
+import FarmerDashboardLayout from '../../components/common/FarmerDashboardLayout';
+import productService from '../../services/productService';
+import {
+  FiTruck, FiPlus, FiMinus, FiDownload, FiEdit2,
+  FiTrash2, FiSearch, FiCheck, FiX, FiAlertTriangle
+} from 'react-icons/fi';
+import toast from 'react-hot-toast';
 import '../../styles/farmer-dashboard.css';
 import '../../styles/farmer-inventory.css';
 
+const SEED_INVENTORY = [
+  { id: 'inv-1', name: 'Organic Salem Turmeric Powder', sku: 'SKU-TUR-01', stock: 85, minStock: 20, unit: '500g', price: 220, autoRestock: true },
+  { id: 'inv-2', name: 'Raw Unpolished Toor Dal', sku: 'SKU-DAL-02', stock: 12, minStock: 25, unit: '1kg', price: 185, autoRestock: false },
+  { id: 'inv-3', name: 'Traditional Sona Masoori Rice', sku: 'SKU-RICE-03', stock: 65, minStock: 30, unit: '5kg', price: 340, autoRestock: true },
+  { id: 'inv-4', name: 'A2 Gir Cow Desi Ghee', sku: 'SKU-GHEE-04', stock: 5, minStock: 15, unit: '500ml', price: 850, autoRestock: false },
+  { id: 'inv-5', name: 'Wild Forest Raw Honey', sku: 'SKU-HNY-05', stock: 55, minStock: 20, unit: '500g', price: 390, autoRestock: true },
+];
+
 const FarmerInventory = () => {
   const [inventory, setInventory] = useState([]);
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [editForm, setEditForm] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingItem, setEditingItem] = useState(null);
 
-  const toggleAutoRestock = (index) => {
-    const newInventory = [...inventory];
-    newInventory[index].autoRestock = !newInventory[index].autoRestock;
-    setInventory(newInventory);
+  useEffect(() => {
+    const fetchInventory = async () => {
+      setLoading(true);
+      try {
+        const res = await productService.getFarmerProducts();
+        const prods = Array.isArray(res) ? res : (res?.data || []);
+        if (prods.length > 0) {
+          const mapped = prods.map((p, idx) => ({
+            id: p._id || p.id || `inv-${idx}`,
+            name: p.name || p.ProductName || 'Organic Item',
+            sku: `SKU-${String(p._id || idx).slice(-4).toUpperCase()}`,
+            stock: Number(p.stock || p.quantity || 50),
+            minStock: 20,
+            unit: `${p.quantity || 1} ${p.unit || 'kg'}`,
+            price: p.price || p.Price || 200,
+            autoRestock: true,
+          }));
+          setInventory(mapped);
+        } else {
+          setInventory(SEED_INVENTORY);
+        }
+      } catch {
+        setInventory(SEED_INVENTORY);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInventory();
+  }, []);
+
+  const handleStockAdjust = (id, change) => {
+    setInventory((prev) =>
+      prev.map((item) => {
+        if (item.id === id) {
+          const newStock = Math.max(0, item.stock + change);
+          return { ...item, stock: newStock };
+        }
+        return item;
+      })
+    );
+    toast.success('Stock adjusted! 📦');
   };
 
-  const handleEdit = (index) => {
-    setEditingIndex(index);
-    setEditForm({ ...inventory[index] });
+  const toggleAutoRestock = (id) => {
+    setInventory((prev) =>
+      prev.map((item) => {
+        if (item.id === id) {
+          const updated = !item.autoRestock;
+          toast.success(`Auto-restock ${updated ? 'Enabled' : 'Disabled'}`);
+          return { ...item, autoRestock: updated };
+        }
+        return item;
+      })
+    );
   };
 
-  const handleDelete = (index) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      const newInventory = inventory.filter((_, i) => i !== index);
-      setInventory(newInventory);
-    }
-  };
-
-  const handleExport = () => {
-    const csvContent = [
-      ['Product Name', 'SKU', 'Stock', 'Unit', 'Price', 'Status', 'Auto-Restock'],
-      ...inventory.map(item => [item.name, item.sku, item.stock, item.unit, `₹${item.price}`, item.status, item.autoRestock ? 'ON' : 'OFF'])
-    ].map(e => e.join(",")).join("\n");
+  const handleExportCSV = () => {
+    const headers = ['Product Name', 'SKU', 'Stock Level', 'Min Stock Limit', 'Unit', 'Price (INR)', 'Auto Restock'];
+    const rows = inventory.map((i) => [
+      `"${i.name}"`,
+      i.sku,
+      i.stock,
+      i.minStock,
+      i.unit,
+      i.price,
+      i.autoRestock ? 'YES' : 'NO',
+    ]);
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'inventory_export.csv';
+    link.download = `Farmiax_Inventory_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
+    toast.success('Inventory CSV exported! 📊');
   };
 
-  const handleSaveEdit = () => {
-    const newInventory = [...inventory];
-    const stockVal = Number(editForm.stock);
-    const minStockVal = Number(editForm.minStock || 10);
-
-    let newStatus = editForm.status;
-    if (stockVal <= 0) {
-      newStatus = '🔴 Out of Stock';
-    } else if (stockVal <= minStockVal) {
-      newStatus = '🟠 Low Stock';
-    } else {
-      newStatus = '🟢 In Stock';
-    }
-
-    newInventory[editingIndex] = { ...editForm, stock: stockVal, minStock: minStockVal, status: newStatus };
-    setInventory(newInventory);
-    setEditingIndex(null);
+  const getStockStatus = (stock, minStock) => {
+    if (stock <= 0) return { label: 'Out of Stock', class: 'status-cancelled' };
+    if (stock <= minStock) return { label: 'Low Stock Alert', class: 'status-packed' };
+    return { label: 'Healthy In Stock', class: 'status-delivered' };
   };
 
-  const handleStockChange = (amount) => {
-    setEditForm(prev => ({
-      ...prev,
-      stock: Math.max(0, Number(prev.stock) + amount)
-    }));
-  };
+  const filteredInventory = inventory.filter((i) =>
+    i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    i.sku.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const lowStockCount = inventory.filter((i) => i.stock <= i.minStock).length;
 
   return (
-    <div className="farmer-layout">
-      {/* Sidebar */}
-      <aside className="farmer-sidebar">
-        <div className="farmer-sidebar-logo" style={{ padding: '12px 0', justifyContent: 'center' }}>
-          <Logo size="xl" />
+    <FarmerDashboardLayout activeNav="inventory">
+      <div className="farmer-inventory-view">
+        {/* Page Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+              Crop Inventory & Stock Control
+            </h1>
+            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
+              Monitor warehouse crop stock levels, set low-stock triggers, and export CSV reports.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button
+              onClick={handleExportCSV}
+              className="btn btn-outline"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 18px',
+                fontSize: '13.5px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
+                color: '#FFFFFF',
+                borderRadius: '10px',
+              }}
+            >
+              <FiDownload size={15} /> Export CSV Report
+            </button>
+          </div>
         </div>
-        <nav className="farmer-nav">
-          <Link to="/farmer/dashboard" className="farmer-nav-item">
-            <i className="ri-home-5-line"></i> Dashboard
-          </Link>
-          <Link to="/farmer/orders" className="farmer-nav-item">
-            <i className="ri-file-list-3-line"></i> Orders
-          </Link>
-          <Link to="/farmer/products" className="farmer-nav-item">
-            <i className="ri-landscape-line"></i> Products
-          </Link>
-          <Link to="/farmer/inventory" className="farmer-nav-item active">
-            <i className="ri-box-3-line"></i> Inventory
-          </Link>
-          <Link to="/farmer/customers" className="farmer-nav-item">
-            <i className="ri-group-line"></i> Customers
-          </Link>
-          <Link to="/farmer/earnings" className="farmer-nav-item">
-            <i className="ri-money-dollar-circle-line"></i> Earnings
-          </Link>
-          <Link to="/farmer/analytics" className="farmer-nav-item">
-            <i className="ri-bar-chart-box-line"></i> Analytics
-          </Link>
-          <Link to="/farmer/payouts" className="farmer-nav-item">
-            <i className="ri-bank-card-line"></i> Payouts
-          </Link>
-          <Link to="/farmer/reviews" className="farmer-nav-item">
-            <i className="ri-star-line"></i> Reviews
-          </Link>
-          <Link to="/farmer/messages" className="farmer-nav-item">
-            <i className="ri-message-3-line"></i> Messages
-          </Link>
-          <Link to="/farmer/profile" className="farmer-nav-item">
-            <i className="ri-user-settings-line"></i> Farm Profile
-          </Link>
-          <Link to="/farmer/settings" className="farmer-nav-item">
-            <i className="ri-settings-3-line"></i> Settings
-          </Link>
-        </nav>
-      </aside>
 
-      {/* Main Area */}
-      <div className="farmer-main">
-        {/* Header */}
-        <header className="farmer-header">
-          <div className="farmer-search">
-            <i className="ri-search-line"></i>
-            <input type="text" placeholder="Search orders, products, or insights..." />
-          </div>
-          <div className="farmer-header-right">
-            <Link to="/farmer/notifications" className="header-notif-btn" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="ri-notification-3-line" style={{ fontSize: '20px', color: '#111' }}></i>
-            </Link>
-            <Link to="/farmer/profile" className="header-profile" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <img src="https://ui-avatars.com/api/?name=FA&background=FCE06D&color=000" alt="Farmer" />
-              <span>Farmer</span>
-            </Link>
-          </div>
-        </header>
-
-        {/* Content */}
-        <main className="farmer-content" style={{ padding: '24px 32px', minHeight: 'calc(100vh - 72px)', position: 'relative' }}>
-
-          <div className="inventory-container">
-            <h1 className="inventory-title">Inventory Management</h1>
-
-            <div className="inventory-actions-top">
-              <div className="inventory-search">
-                <i className="ri-search-line"></i>
-                <input type="text" placeholder="Search..." />
-              </div>
+        {/* Low Stock Warning Alert if any */}
+        {lowStockCount > 0 && (
+          <div style={{ background: 'rgba(245, 158, 11, 0.25)', border: '1px solid rgba(251, 191, 36, 0.5)', backdropFilter: 'blur(12px)', borderRadius: '14px', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', color: '#FEF08A' }}>
+            <FiAlertTriangle size={24} />
+            <div>
+              <strong style={{ fontSize: '14.5px', color: '#FFFFFF' }}>{lowStockCount} items have fallen below minimum harvest limits</strong>
+              <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)' }}>Consider restocking from the upcoming harvesting cycle to prevent out-of-stock cancellations.</p>
             </div>
+          </div>
+        )}
 
-            <div className="inventory-table-wrapper">
-              <table className="inventory-table">
+        {/* Search & Actions Bar Glass Box */}
+        <div className="glass-box" style={{ padding: '16px 20px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
+          <div style={{ position: 'relative', minWidth: '280px', flex: 1, maxWidth: '400px' }}>
+            <input
+              type="text"
+              placeholder="Search by crop name or SKU..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px 10px 38px',
+                borderRadius: '10px',
+                border: '1px solid rgba(255, 255, 255, 0.35)',
+                fontSize: '13.5px',
+                outline: 'none',
+                background: 'rgba(255, 255, 255, 0.15)',
+                color: '#FFFFFF',
+              }}
+            />
+            <FiSearch style={{ position: 'absolute', left: '12px', top: '12px', color: 'rgba(255, 255, 255, 0.7)' }} />
+          </div>
+
+          <span style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.85)', fontWeight: 600 }}>
+            Showing {filteredInventory.length} inventory records
+          </span>
+        </div>
+
+        {/* Inventory Glass Table Box */}
+        <div className="glass-box" style={{ padding: '0', overflow: 'hidden' }}>
+          {loading ? (
+            <div style={{ padding: '60px 20px', textAlign: 'center', color: '#FFFFFF' }}>
+              <div className="loader-spinner" style={{ margin: '0 auto 16px' }} />
+              <p>Loading inventory data...</p>
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table className="farmer-table">
                 <thead>
                   <tr>
-                    <th>Product Name</th>
+                    <th>CROP NAME</th>
                     <th>SKU</th>
-                    <th style={{ textAlign: 'right' }}>Stock</th>
-                    <th>Unit</th>
-                    <th style={{ textAlign: 'right' }}>Price</th>
-                    <th>Status</th>
-                    <th>Auto-Restock</th>
-                    <th>Actions</th>
+                    <th>CURRENT STOCK</th>
+                    <th>STATUS</th>
+                    <th>AUTO-RESTOCK</th>
+                    <th style={{ textAlign: 'right' }}>QUICK ADJUST</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {inventory.map((item, idx) => (
-                    <tr key={idx}>
-                      <td>{item.name}</td>
-                      <td>{item.sku}</td>
-                      <td style={{ textAlign: 'right' }}>{item.stock}</td>
-                      <td>{item.unit}</td>
-                      <td style={{ textAlign: 'right' }}>₹{item.price}</td>
-                      <td>{item.status}</td>
-                      <td>
-                        <div
-                          className={`toggle-switch ${item.autoRestock ? 'on' : 'off'}`}
-                          onClick={() => toggleAutoRestock(idx)}
-                        >
-                          <div className="toggle-circle"></div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="action-icons">
-                          <i className="ri-pencil-fill" style={{ cursor: 'pointer' }} onClick={() => handleEdit(idx)}></i>
-                          <i className="ri-delete-bin-line" style={{ cursor: 'pointer' }} onClick={() => handleDelete(idx)}></i>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {filteredInventory.map((item) => {
+                    const status = getStockStatus(item.stock, item.minStock);
+                    return (
+                      <tr key={item.id}>
+                        <td>
+                          <strong style={{ display: 'block', fontSize: '14.5px', color: '#FFFFFF' }}>{item.name}</strong>
+                          <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.75)' }}>Pack: {item.unit} • ₹{item.price}</span>
+                        </td>
+                        <td style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.85)', fontWeight: 600 }}>
+                          {item.sku}
+                        </td>
+                        <td>
+                          <span style={{ fontSize: '17px', fontWeight: 800, color: item.stock <= item.minStock ? '#F87171' : '#4ADE80' }}>
+                            {item.stock}
+                          </span>
+                          <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.75)', marginLeft: '4px' }}>units</span>
+                        </td>
+                        <td>
+                          <span className={`status-pill ${status.class}`}>
+                            {status.label}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => toggleAutoRestock(item.id)}
+                            style={{
+                              padding: '4px 12px',
+                              borderRadius: '8px',
+                              border: '1px solid',
+                              borderColor: item.autoRestock ? 'rgba(74, 222, 128, 0.6)' : 'rgba(255, 255, 255, 0.3)',
+                              background: item.autoRestock ? 'rgba(34, 197, 94, 0.3)' : 'rgba(255, 255, 255, 0.1)',
+                              color: item.autoRestock ? '#86EFAC' : 'rgba(255, 255, 255, 0.7)',
+                              fontSize: '12px',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {item.autoRestock ? 'ON' : 'OFF'}
+                          </button>
+                        </td>
+                        <td style={{ textAlign: 'right' }}>
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                            <button
+                              onClick={() => handleStockAdjust(item.id, -10)}
+                              style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.4)', background: 'rgba(255, 255, 255, 0.15)', color: '#FFFFFF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                              title="Subtract 10 units"
+                            >
+                              <FiMinus size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleStockAdjust(item.id, 10)}
+                              style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.4)', background: 'rgba(255, 255, 255, 0.15)', color: '#FFFFFF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                              title="Add 10 units"
+                            >
+                              <FiPlus size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
-
-            <div className="inventory-bottom-bar">
-              <button className="btn-export" onClick={handleExport}>Export Data</button>
-            </div>
-          </div>
-
-          {/* Edit Modal Overlay */}
-          {editingIndex !== null && editForm && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <h2>🌾 What the farmer can do (Edit Product)</h2>
-
-                <div className="form-group">
-                  <label>Product Name</label>
-                  <input type="text" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
-                </div>
-
-                <div className="form-group">
-                  <label>SKU</label>
-                  <input type="text" value={editForm.sku} readOnly style={{ backgroundColor: '#f5f5f5' }} />
-                </div>
-
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div className="form-group" style={{ flex: 1 }}>
-                    <label>Available Quantity</label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <button className="stock-btn" onClick={() => handleStockChange(-1)}>-</button>
-                      <input type="number" value={editForm.stock} onChange={e => setEditForm({ ...editForm, stock: e.target.value })} style={{ width: '80px', textAlign: 'center' }} />
-                      <button className="stock-btn" onClick={() => handleStockChange(1)}>+</button>
-                    </div>
-                  </div>
-                  <div className="form-group" style={{ flex: 1 }}>
-                    <label>Unit</label>
-                    <select value={editForm.unit} onChange={e => setEditForm({ ...editForm, unit: e.target.value })}>
-                      <option value="kg">kg</option>
-                      <option value="g">g</option>
-                      <option value="litre">litre</option>
-                      <option value="pack">pack</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Current Selling Price (₹)</label>
-                  <input type="number" value={editForm.price} onChange={e => setEditForm({ ...editForm, price: e.target.value })} />
-                </div>
-
-                <div className="form-group">
-                  <label>Minimum Stock (for Low-stock alerts)</label>
-                  <input type="number" value={editForm.minStock} onChange={e => setEditForm({ ...editForm, minStock: e.target.value })} />
-                  <small style={{ color: '#666', fontSize: '12px', marginTop: '4px' }}>Show warning when quantity goes below threshold.</small>
-                </div>
-
-                <div className="modal-actions">
-                  <button className="btn-cancel" onClick={() => setEditingIndex(null)}>Cancel</button>
-                  <button className="btn-save" onClick={handleSaveEdit}>Save Changes</button>
-                </div>
-              </div>
-            </div>
           )}
-        </main>
+        </div>
       </div>
-    </div>
+    </FarmerDashboardLayout>
   );
 };
 
 export default FarmerInventory;
+

@@ -1,31 +1,69 @@
 import { Link } from 'react-router-dom';
-import { FiShoppingBag, FiTruck } from 'react-icons/fi';
+import { FiShoppingBag, FiTruck, FiArrowLeft } from 'react-icons/fi';
 import Logo from '../../components/common/Logo';
 import '../../styles/auth.css';
 
 const AuthSelection = ({ mode = 'login' }) => {
   const isLogin = mode === 'login';
+
   return (
-    <div style={{ minHeight:'100vh', background:'var(--cream)', display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
-      <div style={{ maxWidth:520, width:'100%', textAlign:'center' }}>
-        <Link to="/" style={{ display: 'inline-block', marginBottom: 8 }}>
-          <Logo size="lg" />
+    <div className="auth-selection-page">
+      <div className="auth-selection-box">
+        <Link
+          to="/"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '18px',
+            textDecoration: 'none',
+          }}
+        >
+          <Logo
+            size="lg"
+            imgStyle={{
+              filter: 'drop-shadow(0 2px 12px rgba(255, 255, 255, 0.55)) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.4))',
+              transform: 'scale(1.05)',
+            }}
+          />
         </Link>
-        <h1 style={{ marginTop:16, fontSize:'1.75rem' }}>{isLogin ? 'Sign In to Farmiax' : 'Join Farmiax'}</h1>
-        <p style={{ color:'var(--gray-500)', marginBottom:32 }}>{isLogin ? 'Choose your account type' : 'How would you like to join?'}</p>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:20 }}>
-          <Link to={isLogin ? '/customer/signin' : '/customer/signup'} className="card" style={{ padding:32, textAlign:'center', textDecoration:'none' }}>
-            <div style={{ width:56,height:56,borderRadius:'50%',background:'var(--cream)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 12px',color:'var(--primary)' }}><FiShoppingBag size={26}/></div>
-            <h3 style={{ fontSize:'1.1rem', marginBottom:8 }}>Customer</h3>
-            <p style={{ fontSize:13 }}>Shop authentic products from trusted farmers</p>
+
+        <h1>{isLogin ? 'Sign In to Farmiax' : 'Join Farmiax'}</h1>
+        <p className="auth-selection-subtitle">
+          {isLogin ? 'Choose your account portal to continue' : 'How would you like to get started?'}
+        </p>
+
+        <div className="auth-select-grid">
+          <Link
+            to={isLogin ? '/customer/signin' : '/customer/signup'}
+            className="auth-select-card"
+          >
+            <div className="auth-select-icon customer">
+              <FiShoppingBag size={28} />
+            </div>
+            <h3 className="auth-select-title">Customer</h3>
+            <p className="auth-select-desc">
+              Shop authentic organic produce directly from farmers
+            </p>
           </Link>
-          <Link to={isLogin ? '/farmer/signin' : '/farmer/signup'} className="card" style={{ padding:32, textAlign:'center', textDecoration:'none' }}>
-            <div style={{ width:56,height:56,borderRadius:'50%',background:'rgba(249,210,186,0.4)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 12px',color:'var(--primary)' }}><FiTruck size={26}/></div>
-            <h3 style={{ fontSize:'1.1rem', marginBottom:8 }}>Farmer / Seller</h3>
-            <p style={{ fontSize:13 }}>Sell your products and grow your business</p>
+
+          <Link
+            to={isLogin ? '/farmer/signin' : '/farmer/signup'}
+            className="auth-select-card"
+          >
+            <div className="auth-select-icon farmer">
+              <FiTruck size={28} />
+            </div>
+            <h3 className="auth-select-title">Farmer / Producer</h3>
+            <p className="auth-select-desc">
+              Sell your harvests directly at fair farmgate prices
+            </p>
           </Link>
         </div>
-        <Link to="/" style={{ display:'inline-block', marginTop:24, fontSize:14, color:'var(--gray-500)' }}>← Back to Home</Link>
+
+        <Link to="/" className="auth-back-home">
+          <FiArrowLeft size={15} /> Back to Home
+        </Link>
       </div>
     </div>
   );

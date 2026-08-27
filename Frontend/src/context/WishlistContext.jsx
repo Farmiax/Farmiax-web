@@ -23,30 +23,41 @@ export const WishlistProvider = ({ children }) => {
     setLoading(true);
     try {
       const res = await wishlistService.getWishlist();
-      const wList = res.data?.wishlist || res.data || [];
-      
-      const newIds = new Set(wList.map((w) => w.product));
-      setWishlistIds(newIds);
-      
-      if (wList.length === 0) {
+      const rawList = res.data?.data || res.data?.wishlist || res.data || [];
+      const wList = Array.isArray(rawList) ? rawList : [];
+
+      const ids = new Set();
+      const populatedItems = [];
+
+      wList.forEach((item) => {
+        if (!item) return;
+        if (typeof item === 'object' && (item._id || item.id)) {
+          const id = item._id || item.id;
+          ids.add(id);
+          // If it's a full populated product object with name/price
+          if (item.name || item.ProductName) {
+            populatedItems.push(item);
+          }
+        } else if (typeof item === 'string') {
+          ids.add(item);
+        }
+      });
+
+      setWishlistIds(ids);
+
+      if (populatedItems.length === wList.length && wList.length > 0) {
+        setWishlistProducts(populatedItems);
+      } else if (wList.length > 0) {
+        // Resolve from all products if items are just IDs
+        const allProducts = await productService.getAllProducts();
+        const products = Array.isArray(allProducts) ? allProducts : (allProducts.data || []);
+        const resolved = Array.from(ids).map((id) => {
+          return products.find((p) => (p._id === id || p.id === id));
+        }).filter(Boolean);
+        setWishlistProducts(resolved);
+      } else {
         setWishlistProducts([]);
-        return;
       }
-      
-      // Resolve full product details
-      const allProducts = await productService.getAllProducts();
-      const products = allProducts.data || [];
-      const resolved = wList.map((item) => {
-        const productDetail = products.find((p) => p._id === item.product);
-        if (!productDetail) return null;
-        return {
-          ...productDetail,
-          wishlistAddedAt: item.addedAt
-        };
-      }).filter(Boolean);
-      
-      setWishlistProducts(resolved);
-      
     } catch (err) {
       console.warn("Failed to fetch wishlist:", err);
       setWishlistIds(new Set());

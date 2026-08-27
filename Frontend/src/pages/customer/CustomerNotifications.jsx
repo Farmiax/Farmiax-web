@@ -332,21 +332,23 @@ const CustomerNotifications = () => {
         {filteredNotifications.length === 0 ? (
           <div
             style={{
-              background: 'rgba(255, 255, 255, 0.35)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              border: '1px solid rgba(255, 255, 255, 0.5)',
+              background: 'rgba(255, 255, 255, 0.45)',
+              backdropFilter: 'blur(16px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+              borderTop: '1px solid rgba(255, 255, 255, 0.8)',
               boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
               borderRadius: '20px',
               padding: '60px 40px',
               textAlign: 'center',
+              color: '#1F2937',
             }}
           >
-            <FiBell size={48} color="#CBD5E1" style={{ marginBottom: '16px' }} />
-            <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, color: 'var(--dark-green)' }}>
+            <FiBell size={48} color="#0B5D38" style={{ marginBottom: '16px' }} />
+            <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 800, color: '#062414' }}>
               No Notifications Found
             </h3>
-            <p style={{ color: '#64748B', fontSize: '14px', maxWidth: '420px', margin: '0 auto 20px' }}>
+            <p style={{ color: '#475569', fontSize: '14px', maxWidth: '420px', margin: '0 auto 20px' }}>
               You are all caught up! New notifications about harvest updates, newly joined farmers, and special discounts will appear here.
             </p>
             <button
@@ -366,17 +368,20 @@ const CustomerNotifications = () => {
                   key={n.id}
                   onClick={() => markAsRead(n.id)}
                   style={{
-                    background: n.unread ? '#F0FDF4' : '#FFFFFF',
+                    background: n.unread ? 'rgba(255, 255, 255, 0.75)' : 'rgba(255, 255, 255, 0.45)',
+                    backdropFilter: 'blur(16px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(16px) saturate(180%)',
                     borderRadius: '16px',
                     padding: '20px 24px',
-                    border: n.unread ? '1.5px solid #86EFAC' : '1px solid var(--border-light)',
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
+                    border: n.unread ? '1.5px solid #0B5D38' : '1px solid rgba(255, 255, 255, 0.6)',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
                     display: 'flex',
                     alignItems: 'flex-start',
                     justifyContent: 'space-between',
                     gap: '20px',
                     transition: 'all 0.2s',
                     cursor: 'pointer',
+                    color: '#1F2937',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
@@ -385,8 +390,8 @@ const CustomerNotifications = () => {
                         width: '44px',
                         height: '44px',
                         borderRadius: '12px',
-                        background: n.badgeColor || '#E2E8F0',
-                        color: n.badgeTextColor || '#334155',
+                        background: '#DCFCE7',
+                        color: '#15803D',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -398,7 +403,7 @@ const CustomerNotifications = () => {
 
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: 'var(--dark-green)' }}>
+                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#062414' }}>
                           {n.title}
                         </h4>
                         {n.unread && (
@@ -407,66 +412,63 @@ const CustomerNotifications = () => {
                               width: '8px',
                               height: '8px',
                               borderRadius: '50%',
-                              background: '#16A34A',
+                              background: '#0B5D38',
                               display: 'inline-block',
                             }}
                           ></span>
                         )}
                       </div>
-
-                      <p style={{ margin: '0 0 10px', fontSize: '13.5px', color: '#475569', lineHeight: 1.5 }}>
+                      <p style={{ margin: 0, fontSize: '13.5px', color: '#475569', lineHeight: '1.5' }}>
                         {n.message}
                       </p>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '12px', color: '#64748B', fontWeight: 600 }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <FiClock size={13} /> {n.time}
-                        </span>
-
-                        {n.actionPath && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              markAsRead(n.id);
-                              navigate(n.actionPath);
-                            }}
-                            style={{
-                              background: 'none',
-                              border: 'none',
-                              color: '#15803D',
-                              fontWeight: 800,
-                              cursor: 'pointer',
-                              padding: 0,
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                              fontSize: '12.5px',
-                            }}
-                          >
-                            {n.actionText || 'View Details'} <FiArrowRight size={14} />
-                          </button>
-                        )}
-                      </div>
+                      <span style={{ fontSize: '11.5px', color: '#94A3B8', marginTop: '6px', display: 'inline-block' }}>
+                        {n.time}
+                      </span>
                     </div>
                   </div>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteNotification(n.id);
-                    }}
-                    title="Delete notification"
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#94A3B8',
-                      cursor: 'pointer',
-                      padding: '4px',
-                      borderRadius: '6px',
-                    }}
-                  >
-                    <FiTrash2 size={16} />
-                  </button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {n.actionLink && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(n.actionLink);
+                        }}
+                        style={{
+                          background: '#0B5D38',
+                          color: '#FFFFFF',
+                          border: 'none',
+                          padding: '8px 14px',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
+                        View Details <FiArrowRight size={13} />
+                      </button>
+                    )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteNotification(n.id);
+                      }}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#EF4444',
+                        cursor: 'pointer',
+                        padding: '6px',
+                        borderRadius: '6px',
+                      }}
+                      title="Delete Notification"
+                    >
+                      <FiTrash2 size={16} />
+                    </button>
+                  </div>
                 </div>
               );
             })}

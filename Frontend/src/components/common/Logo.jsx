@@ -1,6 +1,6 @@
 import logoPng from '../../assets/logo.png';
 
-const Logo = ({ size = 'md', variant = 'default', className = '' }) => {
+const Logo = ({ size = 'md', variant = 'default', className = '', style = {}, imgStyle = {} }) => {
   const heights = {
     sm: 36,
     md: 46,
@@ -18,6 +18,7 @@ const Logo = ({ size = 'md', variant = 'default', className = '' }) => {
         alignItems: 'center',
         justifyContent: 'center',
         lineHeight: 1,
+        ...style,
       }}
     >
       <img
@@ -29,6 +30,7 @@ const Logo = ({ size = 'md', variant = 'default', className = '' }) => {
           maxWidth: '100%',
           objectFit: 'contain',
           display: 'block',
+          ...imgStyle,
         }}
       />
     </div>
