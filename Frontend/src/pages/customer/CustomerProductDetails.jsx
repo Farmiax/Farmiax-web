@@ -29,47 +29,21 @@ const CustomerProductDetails = () => {
     const fetchProduct = async () => {
       try {
         const data = await productService.getProduct(id);
-        const prodData = data?.data || data;
-        if (prodData && prodData._id) {
+        const prodData = data?.data || data?.product || data;
+        if (prodData && (prodData._id || prodData.name || prodData.ProductName)) {
           setProduct(prodData);
         } else {
-          // Fallback product detail if ID not found in current local session
-          setProduct({
-            _id: id,
-            name: 'Organic Traditional Harvest',
-            Category: 'Grains & Pulses',
-            description: 'Directly harvested from certified local organic farms. Sown using heritage seeds and nourished with natural compost without synthetic chemicals or pesticides.',
-            price: 240,
-            quantity: 1,
-            unit: 'kg',
-            stock: 45,
-            reviews: 58,
-            farmer: {
-              fullName: 'Ramesh Kumar',
-              City: 'Erode',
-              State: 'Tamil Nadu',
-              farmName: 'Green Valley Agro',
-            }
-          });
+          setProduct(null);
         }
       } catch (err) {
-        console.warn('Product details API error:', err);
-        setProduct({
-          _id: id,
-          name: 'Organic Pure Harvest',
-          Category: 'Natural Produce',
-          description: 'Sourced directly from our network of traditional Indian farmers practicing sustainable agriculture.',
-          price: 220,
-          quantity: 1,
-          unit: 'kg',
-          stock: 30,
-          reviews: 24,
-        });
+        console.warn('Product details API note:', err?.message);
+        setProduct(null);
       } finally {
         setLoading(false);
       }
     };
     if (id) fetchProduct();
+    else setLoading(false);
   }, [id]);
 
   if (loading) {

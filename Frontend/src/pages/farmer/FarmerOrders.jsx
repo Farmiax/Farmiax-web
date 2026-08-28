@@ -12,44 +12,6 @@ import {
 import '../../styles/farmer-dashboard.css';
 import '../../styles/farmer-orders.css';
 
-const SEED_FARMER_ORDERS = [
-  {
-    _id: 'FRM-2025-0814',
-    customer: { fullName: 'Ananya Sharma', phone: '+91 98450 12345', address: '12, Green Park Avenue, Indiranagar, Bengaluru' },
-    createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-    status: 'Processing',
-    totalAmount: 640,
-    paymentMethod: 'Prepaid (UPI)',
-    Products: [
-      { product: { name: 'Organic Salem Turmeric Powder', price: 220, unit: '500g' }, quantity: 2, price: 220 },
-      { product: { name: 'Raw Unpolished Toor Dal', price: 185, unit: '1kg' }, quantity: 1, price: 185 },
-    ]
-  },
-  {
-    _id: 'FRM-2025-0813',
-    customer: { fullName: 'Karthik Raja', phone: '+91 97123 45678', address: '45, Lakeview Road, Anna Nagar, Chennai' },
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    status: 'Packed',
-    totalAmount: 1190,
-    paymentMethod: 'Cash on Delivery',
-    Products: [
-      { product: { name: 'A2 Gir Cow Desi Ghee', price: 850, unit: '500ml' }, quantity: 1, price: 850 },
-      { product: { name: 'Traditional Sona Masoori Rice', price: 340, unit: '5kg' }, quantity: 1, price: 340 },
-    ]
-  },
-  {
-    _id: 'FRM-2025-0812',
-    customer: { fullName: 'Dr. Meenakshi Sundaram', phone: '+91 94432 98765', address: '78, Temple Bell Layout, Madurai' },
-    createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-    status: 'Delivered',
-    totalAmount: 390,
-    paymentMethod: 'Prepaid (Card)',
-    Products: [
-      { product: { name: 'Wild Forest Raw Honey', price: 390, unit: '500g' }, quantity: 1, price: 390 },
-    ]
-  }
-];
-
 const STATUS_FLOW = [
   'Order Placed', 'Confirmed', 'Processing', 'Packed', 'Ready for Pickup', 'Out for Delivery', 'Delivered'
 ];
@@ -67,14 +29,10 @@ const FarmerOrders = () => {
     try {
       const res = await orderService.getFarmerOrders();
       const ords = Array.isArray(res) ? res : (res?.data || []);
-      if (ords.length > 0) {
-        setOrders(ords);
-      } else {
-        setOrders(SEED_FARMER_ORDERS);
-      }
+      setOrders(ords);
     } catch (err) {
-      console.warn('Farmer orders error, using local orders:', err);
-      setOrders(SEED_FARMER_ORDERS);
+      console.warn('Farmer orders error note:', err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }

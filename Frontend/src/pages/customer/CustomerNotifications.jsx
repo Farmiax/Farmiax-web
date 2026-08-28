@@ -9,82 +9,19 @@ import {
 } from 'react-icons/fi';
 import '../../styles/customer.css';
 
-const DEFAULT_NOTIFICATIONS = [
-  {
-    id: 'notif_1',
-    type: 'farmer_product', // Subscribed farmer added a product
-    title: '🌾 New Harvest Alert from Subscribed Farmer',
-    message: 'Ramesh Kumar (Green Valley Organic) just posted fresh stock of Organic Cold-Pressed Groundnut Oil harvested today!',
-    farmerName: 'Ramesh Kumar',
-    farmLocation: 'Erode, Tamil Nadu',
-    productName: 'Organic Cold-Pressed Groundnut Oil',
-    productId: '64f1a2b3c4d5e6f7a8b9c0d1',
-    time: '15 mins ago',
-    unread: true,
-    badgeColor: '#DCFCE7',
-    badgeTextColor: '#15803D',
-    icon: FiUserCheck,
-    actionPath: '/customer/farmers',
-    actionText: 'View Harvest Post',
-  },
-  {
-    id: 'notif_2',
-    type: 'new_farmer', // New farmer joined & added product -> suggested to all customers
-    title: '🌱 New Organic Farmer Joined Farmiax!',
-    message: 'Welcoming Lakshmi Narayan from Wayanad Spice Estate! She just added her first batch of Certified Wild Forest Honey.',
-    farmerName: 'Lakshmi Narayan',
-    farmLocation: 'Wayanad, Kerala',
-    productName: 'Wild Forest Honey',
-    time: '2 hours ago',
-    unread: true,
-    badgeColor: '#E0F2FE',
-    badgeTextColor: '#0369A1',
-    icon: FiUserPlus,
-    actionPath: '/customer/farmers',
-    actionText: 'Discover Farmer',
-  },
-  {
-    id: 'notif_3',
-    type: 'discount_offer', // Discount offer on product
-    title: '🔥 Special Harvest Offer: 20% OFF!',
-    message: 'Enjoy 20% flat discount on Heritage Rice & Organic Pulses for the next 24 hours. Use code FARM20 at checkout.',
-    code: 'FARM20',
-    time: '5 hours ago',
-    unread: false,
-    badgeColor: '#FEF3C7',
-    badgeTextColor: '#B45309',
-    icon: FiTag,
-    actionPath: '/customer/shop?tab=offers',
-    actionText: 'Claim Offer',
-  },
-  {
-    id: 'notif_4',
-    type: 'order_status', // Order update
-    title: '🚚 Order Dispatch Update',
-    message: 'Your order #FMX-89240 has been packed by the farmer and is out for doorstep delivery.',
-    time: 'Yesterday',
-    unread: false,
-    badgeColor: '#F3E8FF',
-    badgeTextColor: '#6B21A8',
-    icon: FiTruck,
-    actionPath: '/customer/track-order',
-    actionText: 'Track Order',
-  },
-];
-
 const CustomerNotifications = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const [activeFilter, setActiveFilter] = useState('All'); // 'All' | 'farmer_product' | 'new_farmer' | 'discount_offer' | 'order_status'
+  const [activeFilter, setActiveFilter] = useState('All');
   const [toastMessage, setToastMessage] = useState('');
 
   // Persisted Notifications state in localStorage
   const [notifications, setNotifications] = useState(() => {
     try {
       const saved = localStorage.getItem('farmiax_customer_notifications');
-      return saved ? JSON.parse(saved) : DEFAULT_NOTIFICATIONS;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return DEFAULT_NOTIFICATIONS;
+      return [];
     }
   });
 

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FarmerDashboardLayout from '../../components/common/FarmerDashboardLayout';
+import orderService from '../../services/orderService';
+import productService from '../../services/productService';
 import {
   FiBell, FiBox, FiDollarSign, FiAlertTriangle,
   FiCheckCircle, FiStar, FiTrash2, FiCheck
@@ -8,40 +10,65 @@ import toast from 'react-hot-toast';
 import '../../styles/farmer-dashboard.css';
 
 const FarmerNotifications = () => {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 'notif-1',
-      type: 'order',
-      title: 'New Harvest Order Received',
-      description: 'Customer Ananya Sharma placed Order #FMX9823145 (₹640) for Organic Salem Turmeric and Toor Dal.',
-      time: '15 minutes ago',
-      read: false,
-    },
-    {
-      id: 'notif-2',
-      type: 'payout',
-      title: 'Payout Transfer Credited',
-      description: 'Weekly settlement of ₹48,520 has been credited to your State Bank of India account (SBIN0001234).',
-      time: 'Yesterday, 5:00 PM',
-      read: false,
-    },
-    {
-      id: 'notif-3',
-      type: 'stock',
-      title: 'Low Harvest Stock Alert',
-      description: 'A2 Gir Cow Desi Ghee inventory is currently down to 5 units. Please consider restocking.',
-      time: '2 days ago',
-      read: true,
-    },
-    {
-      id: 'notif-4',
-      type: 'review',
-      title: 'New 5-Star Buyer Review',
-      description: 'Dr. Meenakshi Sundaram left a glowing 5-star review on your Wild Forest Raw Honey.',
-      time: '3 days ago',
-      read: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      setLoading(true);
+      try {
+        const [ordersRes, prodsRes] = await Promise.allSettled([
+          orderService.getFarmerOrders(),
+          productService.getFarmerProducts()
+        ]);
+
+        const notifs = [];
+
+        if (ordersRes.status === 'fulfilled') {
+          const ords = Array.isArray(ordersRes.value) ? ordersRes.value : (ordersRes.value?.data || []);
+          ords.slice(0, 5).forEach((ord, idx) => {
+            const custUser = ord.user || ord.customer || {};
+            const custName = custUser.fullName || custUser.name || ord.deliveryAddress?.fullName || 'A Customer';
+            const prodName = ord.Products?.[0]?.product?.name || 'Fresh Produce';
+            notifs.push({
+              id: `notif-ord-${ord._id || idx}`,
+              type: 'order',
+              title: 'New Harvest Order Received',
+              description: `${custName} placed Order #${String(ord._id || idx).slice(-8)} (₹${ord.totalAmount || ord.actualAmount || 0}) for ${prodName}.`,
+              time: ord.createdAt ? new Date(ord.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent',
+              read: false,
+            });
+          });
+        }
+
+        if (prodsRes.status === 'fulfilled') {
+          const prods = Array.isArray(prodsRes.value) ? prodsRes.value : (prodsRes.value?.data || []);
+          prods.forEach((p, idx) => {
+            const stock = Number(p.stock || p.quantity || 0);
+            if (stock <= 10) {
+              notifs.push({
+                id: `notif-stock-${p._id || idx}`,
+                type: 'stock',
+                title: 'Low Harvest Stock Alert',
+                description: `${p.name || p.ProductName || 'Farm Product'} inventory is currently down to ${stock} units. Please consider restocking fresh harvest.`,
+                time: 'Live Alert',
+                read: false,
+              });
+            }
+          });
+        }
+
+        setNotifications(notifs);
+      } catch (err) {
+        console.warn('Notifications fetch note:', err);
+        setNotifications([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   const markAllRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
@@ -96,7 +123,11 @@ const FarmerNotifications = () => {
         </div>
 
         {/* Notifications Stack */}
-        {notifications.length === 0 ? (
+        {loading ? (
+          <div className="glass-box" style={{ padding: '60px 20px', textAlign: 'center', color: 'rgba(255, 255, 255, 0.7)' }}>
+            Loading notifications...
+          </div>
+        ) : notifications.length === 0 ? (
           <div className="glass-box" style={{ padding: '60px 20px', textAlign: 'center' }}>
             <FiBell size={48} style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '12px' }} />
             <h3 style={{ fontSize: '18px', fontWeight: 700, margin: '0 0 6px', color: '#FFFFFF' }}>You are all caught up!</h3>

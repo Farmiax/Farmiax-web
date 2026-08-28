@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 import { FiSearch, FiHeart, FiShoppingBag, FiUser, FiLogOut, FiBox } from 'react-icons/fi';
 
 const CustomerHeader = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { cartCount } = useCart();
+  const { wishlistIds } = useWishlist();
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [userDropdown, setUserDropdown] = useState(false);
 
@@ -20,14 +21,7 @@ const CustomerHeader = () => {
     }
   };
 
-  const navLinks = [
-    { label: 'Shop', path: '/customer/shop' },
-    { label: 'Categories', path: '/customer/shop?tab=categories' },
-    { label: 'About Us', path: '/customer#about' },
-    { label: 'Farmers', path: '/customer#farmers' },
-    { label: 'Offers', path: '/customer/shop?tab=offers' },
-    { label: 'Contact', path: '/customer#contact' },
-  ];
+  const wishlistCount = wishlistIds ? wishlistIds.size : 0;
 
   return (
     <header className="customer-header-bar">
@@ -60,13 +54,17 @@ const CustomerHeader = () => {
           {/* Wishlist */}
           <Link to="/customer/wishlist" className="customer-action-btn" title="Wishlist">
             <FiHeart size={20} />
-            <span className="action-badge wishlist-badge">3</span>
+            {wishlistCount > 0 && (
+              <span className="action-badge wishlist-badge">{wishlistCount}</span>
+            )}
           </Link>
 
           {/* Cart */}
           <Link to="/customer/cart" className="customer-action-btn" title="Cart">
             <FiShoppingBag size={20} />
-            <span className="action-badge cart-badge">{cartCount > 0 ? cartCount : 3}</span>
+            {cartCount > 0 && (
+              <span className="action-badge cart-badge">{cartCount}</span>
+            )}
           </Link>
 
           {/* User Profile / Menu */}
@@ -74,7 +72,7 @@ const CustomerHeader = () => {
             <button
               className="customer-avatar-btn"
               onClick={() => setUserDropdown(!userDropdown)}
-              title={isAuthenticated ? user?.fullName : 'Account'}
+              title={isAuthenticated ? (user?.fullName || 'Customer Account') : 'Account'}
             >
               <FiUser size={18} />
             </button>
@@ -84,7 +82,7 @@ const CustomerHeader = () => {
                 {isAuthenticated ? (
                   <>
                     <div className="dropdown-user-info">
-                      <p className="user-name">{user?.fullName || 'Dilli Rani'}</p>
+                      <p className="user-name">{user?.fullName || 'Customer Partner'}</p>
                       <p className="user-role">Customer</p>
                     </div>
                     <hr />

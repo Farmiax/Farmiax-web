@@ -3,12 +3,27 @@ import CustomerDashboardLayout from '../../components/common/CustomerDashboardLa
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { FiHeart, FiShare2, FiStar, FiShoppingBag, FiTrash2 } from 'react-icons/fi';
+import { getImageUrl } from '../../utils/helpers';
+import toast from 'react-hot-toast';
 
 import '../../styles/customer.css';
 
 const CustomerWishlist = () => {
   const { addToCart } = useCart();
   const { wishlistProducts, removeFromWishlist, loading } = useWishlist();
+
+  const handleShareWishlist = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Farmiax Wishlist',
+        text: 'Check out my favorite organic produce on Farmiax!',
+        url: window.location.href,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success('Wishlist link copied to clipboard! 📋');
+    }
+  };
 
   return (
     <CustomerDashboardLayout>
@@ -27,7 +42,7 @@ const CustomerWishlist = () => {
                 Curated favorites waiting to be yours. ({wishlistProducts.length} items)
               </p>
             </div>
-            <button className="wishlist-share-btn">
+            <button className="wishlist-share-btn" onClick={handleShareWishlist}>
               <FiShare2 /> Share Collection
             </button>
           </div>
@@ -50,49 +65,61 @@ const CustomerWishlist = () => {
             </div>
           ) : (
           <div className="wishlist-products-grid">
-            {wishlistProducts.map((item) => (
-              <div key={item._id || item.id} className="product-card-item wishlist-card-item">
-                <div className="product-card-top">
-                  {item.tag && <span className={`product-tag ${item.tagClass}`}>{item.tag}</span>}
-                  <button 
-                    className="wishlist-heart-btn active" 
-                    title="Remove from Wishlist"
-                    onClick={() => removeFromWishlist(item._id || item.id)}
-                  >
-                    <FiTrash2 className="fill-red-500 text-red-500" />
-                  </button>
-                  <Link to={`/customer/product/${item._id || item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <img src={item.image ? `http://localhost:5000/${item.image}` : 'https://via.placeholder.com/200'} alt={item.name} loading="lazy" />
-                  </Link>
-                </div>
+            {wishlistProducts.map((item) => {
+              const prodId = item._id || item.id;
+              const prodImg = getImageUrl(item.image || item.Image);
 
-                <div className="product-card-details">
-                  <Link to={`/customer/product/${item._id || item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <h3 className="product-title">{item.name}</h3>
-                  </Link>
-                  <p className="product-weight">{item.quantity} {item.unit || 'unit'}</p>
-
-                  <div className="product-rating">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <FiStar key={i} className="fill-amber-400 text-amber-400" size={12} />
-                    ))}
-                    <span className="review-count">({item.reviews || 0})</span>
+              return (
+                <div key={prodId} className="product-card-item wishlist-card-item">
+                  <div className="product-card-top">
+                    {item.tag && <span className={`product-tag ${item.tagClass || 'tag-fresh'}`}>{item.tag}</span>}
+                    <button 
+                      className="wishlist-heart-btn active" 
+                      title="Remove from Wishlist"
+                      onClick={() => removeFromWishlist(prodId)}
+                    >
+                      <FiTrash2 className="fill-red-500 text-red-500" />
+                    </button>
+                    <Link to={`/customer/product/${prodId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <img
+                        src={prodImg}
+                        alt={item.name || 'Organic Produce'}
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80';
+                        }}
+                      />
+                    </Link>
                   </div>
 
-                  <div className="product-price-box mb-3">
-                    <span className="current-price">₹{item.price}</span>
-                    {item.oldPrice && <span className="old-price">₹{item.oldPrice}</span>}
-                  </div>
+                  <div className="product-card-details">
+                    <Link to={`/customer/product/${prodId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <h3 className="product-title">{item.name || item.ProductName || 'Organic Item'}</h3>
+                    </Link>
+                    <p className="product-weight">{item.quantity || 1} {item.unit || 'unit'}</p>
 
-                  <button
-                    className="add-cart-btn-full"
-                    onClick={() => addToCart(item._id || item.id, 1)}
-                  >
-                    <FiShoppingBag /> Add to Cart
-                  </button>
+                    <div className="product-rating">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <FiStar key={i} className="fill-amber-400 text-amber-400" size={12} />
+                      ))}
+                      <span className="review-count">({item.reviews || 0})</span>
+                    </div>
+
+                    <div className="product-price-box mb-3">
+                      <span className="current-price">₹{item.price || 0}</span>
+                      {item.oldPrice && <span className="old-price">₹{item.oldPrice}</span>}
+                    </div>
+
+                    <button
+                      className="add-cart-btn-full"
+                      onClick={() => addToCart(prodId, 1)}
+                    >
+                      <FiShoppingBag /> Add to Cart
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           )}
         </section>

@@ -9,14 +9,6 @@ import toast from 'react-hot-toast';
 import '../../styles/farmer-dashboard.css';
 import '../../styles/farmer-inventory.css';
 
-const SEED_INVENTORY = [
-  { id: 'inv-1', name: 'Organic Salem Turmeric Powder', sku: 'SKU-TUR-01', stock: 85, minStock: 20, unit: '500g', price: 220, autoRestock: true },
-  { id: 'inv-2', name: 'Raw Unpolished Toor Dal', sku: 'SKU-DAL-02', stock: 12, minStock: 25, unit: '1kg', price: 185, autoRestock: false },
-  { id: 'inv-3', name: 'Traditional Sona Masoori Rice', sku: 'SKU-RICE-03', stock: 65, minStock: 30, unit: '5kg', price: 340, autoRestock: true },
-  { id: 'inv-4', name: 'A2 Gir Cow Desi Ghee', sku: 'SKU-GHEE-04', stock: 5, minStock: 15, unit: '500ml', price: 850, autoRestock: false },
-  { id: 'inv-5', name: 'Wild Forest Raw Honey', sku: 'SKU-HNY-05', stock: 55, minStock: 20, unit: '500g', price: 390, autoRestock: true },
-];
-
 const FarmerInventory = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,23 +21,19 @@ const FarmerInventory = () => {
       try {
         const res = await productService.getFarmerProducts();
         const prods = Array.isArray(res) ? res : (res?.data || []);
-        if (prods.length > 0) {
-          const mapped = prods.map((p, idx) => ({
-            id: p._id || p.id || `inv-${idx}`,
-            name: p.name || p.ProductName || 'Organic Item',
-            sku: `SKU-${String(p._id || idx).slice(-4).toUpperCase()}`,
-            stock: Number(p.stock || p.quantity || 50),
-            minStock: 20,
-            unit: `${p.quantity || 1} ${p.unit || 'kg'}`,
-            price: p.price || p.Price || 200,
-            autoRestock: true,
-          }));
-          setInventory(mapped);
-        } else {
-          setInventory(SEED_INVENTORY);
-        }
+        const mapped = prods.map((p, idx) => ({
+          id: p._id || p.id || `inv-${idx}`,
+          name: p.name || p.ProductName || 'Organic Item',
+          sku: `SKU-${String(p._id || idx).slice(-4).toUpperCase()}`,
+          stock: Number(p.stock || p.quantity || 0),
+          minStock: 20,
+          unit: `${p.quantity || 1} ${p.unit || 'kg'}`,
+          price: p.price || p.Price || 0,
+          autoRestock: true,
+        }));
+        setInventory(mapped);
       } catch {
-        setInventory(SEED_INVENTORY);
+        setInventory([]);
       } finally {
         setLoading(false);
       }

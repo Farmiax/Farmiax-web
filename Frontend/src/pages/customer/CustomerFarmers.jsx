@@ -87,58 +87,16 @@ const CustomerFarmers = () => {
           }
         }
 
-        if (loadedFarmers.length === 0) {
-          loadedFarmers = [
-            {
-              id: 'farmer_1',
-              name: 'Ramesh Kumar',
-              farmName: 'Cauvery River Organic Estate',
-              location: 'Erode, Tamil Nadu',
-              rating: '4.9',
-              orders: 340,
-              avatar: 'https://images.unsplash.com/photo-1595844730298-b960ff86faa1?auto=format&fit=crop&w=200&q=80',
-              coverImg: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80',
-              isOrganic: true,
-            },
-            {
-              id: 'farmer_2',
-              name: 'Suresh Patil',
-              farmName: 'Sahyadri Highlands Agro',
-              location: 'Satara, Maharashtra',
-              rating: '4.8',
-              orders: 210,
-              avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-              coverImg: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=600&q=80',
-              isOrganic: true,
-            },
-            {
-              id: 'farmer_3',
-              name: 'Lakshmi Devi',
-              farmName: 'Godavari Natural Ghee & Honey',
-              location: 'Rajahmundry, Andhra Pradesh',
-              rating: '5.0',
-              orders: 450,
-              avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
-              coverImg: 'https://images.unsplash.com/photo-1527842891421-42eec6e703ea?auto=format&fit=crop&w=600&q=80',
-              isOrganic: true,
-            }
-          ];
-        }
         setFarmers(loadedFarmers);
 
         if (productsRes.status === 'fulfilled') {
           const prods = productsRes.value.data?.products || productsRes.value.data?.data || productsRes.value.data || [];
-          if (Array.isArray(prods) && prods.length > 0) {
-            setAllProducts(prods);
-          } else {
-            setAllProducts([
-              { _id: 'h1', name: 'Raw Turmeric Rhizomes', price: 180, unit: '1 kg', description: 'Freshly dug out turmeric with rich curcumin content.', farmerId: 'farmer_1' },
-              { _id: 'h2', name: 'Gir Cow Pure Ghee', price: 850, unit: '500 ml', description: 'Bilona method cultured butter desi ghee.', farmerId: 'farmer_3' }
-            ]);
-          }
+          setAllProducts(Array.isArray(prods) ? prods : []);
         }
       } catch (err) {
         console.warn('Backend API fetch error:', err?.message);
+        setFarmers([]);
+        setAllProducts([]);
       } finally {
         setLoading(false);
       }

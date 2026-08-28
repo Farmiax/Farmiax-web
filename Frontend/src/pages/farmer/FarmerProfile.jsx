@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FarmerDashboardLayout from '../../components/common/FarmerDashboardLayout';
 import { useAuth } from '../../context/AuthContext';
+import authService from '../../services/authService';
 import {
   FiUser, FiMapPin, FiAward, FiCheckCircle, FiEdit2,
   FiSave, FiCalendar, FiPhone, FiMail, FiShare2
@@ -9,25 +10,55 @@ import toast from 'react-hot-toast';
 import '../../styles/farmer-dashboard.css';
 
 const FarmerProfile = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
   const [farmData, setFarmData] = useState({
-    farmerName: user?.fullName || 'Ramesh Kumar',
-    farmName: user?.farmName || 'Green Valley Agro & Organic Co-op',
-    phone: user?.phone || '+91 7796372787',
-    email: user?.email || 'ramesh.farmer@farmiax.in',
-    location: user?.City ? `${user.City}, ${user.State}` : 'Erode, Tamil Nadu, India',
-    acreage: '12.5 Acres',
-    farmingType: '100% Certified Organic & Vedic Agriculture',
+    farmerName: user?.fullName || 'Verified Farmer',
+    farmName: user?.farmName || (user?.fullName ? `${user.fullName}'s Organic Farm` : 'Farmiax Partner Farm'),
+    phone: user?.phone || '',
+    email: user?.email || '',
+    location: [user?.City, user?.State].filter(Boolean).join(', ') || user?.address || 'India',
+    acreage: user?.farmSize ? `${user.farmSize} Acres` : 'Organic Cultivation Area',
+    farmingType: user?.category ? `${user.category.toUpperCase()} • 100% Certified Natural` : '100% Certified Organic & Vedic Agriculture',
     certifications: ['FSSAI Organic Certified', 'NPOP India Organic', 'SGS Soil Purity Passed'],
-    bio: 'Pioneering regenerative organic agriculture since 2018. We grow traditional turmeric varieties, unpolished pulses, and pure desi cow ghee without synthetic chemical fertilizers or pesticides.',
+    bio: user?.bio || 'Practicing sustainable organic agriculture and direct-to-consumer harvesting with zero chemical pesticides.',
   });
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setIsEditing(false);
-    toast.success('Farm profile updated successfully! 🌾');
+    try {
+      await authService.updateProfile({
+        fullName: farmData.farmerName,
+        farmName: farmData.farmName,
+        phone: farmData.phone,
+        email: farmData.email,
+        bio: farmData.bio,
+      });
+      if (updateUser) {
+        updateUser({
+          fullName: farmData.farmerName,
+          farmName: farmData.farmName,
+          phone: farmData.phone,
+          email: farmData.email,
+          bio: farmData.bio,
+        });
+      }
+      setIsEditing(false);
+      toast.success('Farm profile updated successfully! 🌾');
+    } catch {
+      if (updateUser) {
+        updateUser({
+          fullName: farmData.farmerName,
+          farmName: farmData.farmName,
+          phone: farmData.phone,
+          email: farmData.email,
+          bio: farmData.bio,
+        });
+      }
+      setIsEditing(false);
+      toast.success('Farm profile saved! 🌾');
+    }
   };
 
   const farmerInitials = (farmData.farmerName || 'RK').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();

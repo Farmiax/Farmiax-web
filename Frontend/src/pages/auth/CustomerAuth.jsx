@@ -64,27 +64,14 @@ const CustomerAuth = ({ initialMode = 'signin' }) => {
     setErrors({});
     setLoading(true);
     try {
-      // For "static mode" as requested, we can mock or use real login.
-      // Assuming real login works, but let's mock it if it fails or if the user wanted a full static bypass
-      // Actually we'll call login and if it fails, we fall back to a mock to satisfy "static mode" request.
-      try {
-        const user = await login(loginEmail, loginPassword);
-        if (user.role === 'customer') {
-          navigate('/customer', { replace: true });
-        } else if (user.role === 'farmer') {
-          navigate('/farmer/dashboard', { replace: true });
-        }
-      } catch (err) {
-        // Fallback for static mode
-        const mockUser = {
-          _id: 'mock-static-id',
-          fullName: 'Static Customer',
-          email: loginEmail,
-          role: 'customer'
-        };
-        updateUser(mockUser);
+      const user = await login(loginEmail, loginPassword);
+      if (user.role === 'customer') {
         navigate('/customer', { replace: true });
+      } else if (user.role === 'farmer') {
+        navigate('/farmer/dashboard', { replace: true });
       }
+    } catch (err) {
+      setApiError(getApiError(err));
     } finally {
       setLoading(false);
     }
@@ -99,20 +86,10 @@ const CustomerAuth = ({ initialMode = 'signin' }) => {
     setErrors({});
     setLoading(true);
     try {
-      try {
-        await register({ ...form, role: 'customer', farmeractive: 'Inactive' });
-        setIsLogin(true); // switch to login mode on success
-      } catch (err) {
-        // static mode mock
-        const mockUser = {
-          _id: 'mock-static-id-2',
-          fullName: form.fullName,
-          email: form.email,
-          role: 'customer'
-        };
-        updateUser(mockUser);
-        navigate('/customer', { replace: true });
-      }
+      await register({ ...form, role: 'customer', farmeractive: 'Inactive' });
+      setIsLogin(true); // switch to login mode on success
+    } catch (err) {
+      setApiError(getApiError(err));
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Logo from './Logo';
+import { getImageUrl } from '../../utils/helpers';
 import {
   FiSearch, FiBell, FiShoppingCart, FiGrid,
   FiShoppingBag, FiTruck, FiHeart, FiTag, FiUsers,
@@ -9,8 +10,6 @@ import {
   FiShield, FiRefreshCcw, FiCheckCircle
 } from 'react-icons/fi';
 import '../../styles/dashboard.css';
-
-const farmerImg = "https://images.unsplash.com/photo-1595844730298-b960ff86faa1?auto=format&fit=crop&w=200&q=80";
 
 const CustomerDashboardLayout = ({ children }) => {
   const { user, logout } = useAuth();
@@ -39,8 +38,8 @@ const CustomerDashboardLayout = ({ children }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if(search.trim()) {
-       navigate(`/customer/shop?search=${encodeURIComponent(search.trim())}`);
+    if (search.trim()) {
+      navigate(`/customer/shop?search=${encodeURIComponent(search.trim())}`);
     }
   }
 
@@ -109,7 +108,35 @@ const CustomerDashboardLayout = ({ children }) => {
             </button>
             <div className="header-divider"></div>
             <Link to="/customer/profile" className="header-profile" style={{ textDecoration: 'none' }}>
-              <img src={farmerImg} alt="User Profile" className="header-avatar" />
+              {user?.avatar && user.avatar !== 'Not Photo' ? (
+                <img
+                  src={getImageUrl(user.avatar)}
+                  alt="User Profile"
+                  className="header-avatar"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div
+                className="header-avatar-fallback"
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  backgroundColor: '#1D4533',
+                  color: '#86EFAC',
+                  display: user?.avatar && user.avatar !== 'Not Photo' ? 'none' : 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  border: '2px solid rgba(255,255,255,0.3)',
+                }}
+              >
+                {(user?.fullName || 'Customer').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+              </div>
             </Link>
           </div>
         </header>
@@ -121,10 +148,10 @@ const CustomerDashboardLayout = ({ children }) => {
           </div>
 
           {/* Static Features Footer */}
-          <div style={{ 
-            marginTop: 'auto', 
-            background: '#0B5D38', 
-            borderTop: '1px solid rgba(255, 255, 255, 0.15)', 
+          <div style={{
+            marginTop: 'auto',
+            background: '#0B5D38',
+            borderTop: '1px solid rgba(255, 255, 255, 0.15)',
             padding: '18px 40px',
             display: 'flex',
             justifyContent: 'space-between',

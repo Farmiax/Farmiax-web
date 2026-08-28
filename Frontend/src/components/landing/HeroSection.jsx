@@ -29,7 +29,7 @@ const HeroSection = () => {
         <div className="hero-header-text">
           <h1 className="hero-headline">
             Pure. Natural. Trusted.<br />
-            From Our Farms to Your Home
+            From Our Farmers to Your Home
           </h1>
           <p className="hero-subtext">
             Farmiax connects rural farmers and artisans with conscious buyers. Shop authentic products or sell your produce globally with ease.

@@ -7,18 +7,6 @@ import { FiHeart, FiShoppingBag, FiStar, FiFilter, FiTag, FiSearch, FiX } from '
 import productService from '../../services/productService';
 import { getImageUrl } from '../../utils/helpers';
 
-// Fallback seed catalog for fresh setup if backend DB is empty
-const SEED_PRODUCTS = [
-  { _id: 'seed-1', name: 'Organic Salem Turmeric Powder', Category: 'Spices', price: 220, quantity: 500, unit: 'g', reviews: 48, rating: 4.9, tag: 'Bestseller', tagClass: 'tag-bestseller', image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80' },
-  { _id: 'seed-2', name: 'Raw Unpolished Toor Dal', Category: 'Pulses', price: 185, quantity: 1, unit: 'kg', reviews: 36, rating: 4.8, tag: 'Farm Fresh', tagClass: 'tag-fresh', image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80' },
-  { _id: 'seed-3', name: 'Traditional Sona Masoori Rice', Category: 'Grains', price: 340, quantity: 5, unit: 'kg', reviews: 62, rating: 4.9, tag: 'Organic', tagClass: 'tag-organic', image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80' },
-  { _id: 'seed-4', name: 'A2 Gir Cow Desi Ghee', Category: 'Oil & Ghee', price: 850, quantity: 500, unit: 'ml', reviews: 89, rating: 5.0, tag: 'Pure', tagClass: 'tag-pure', image: 'https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=500&q=80' },
-  { _id: 'seed-5', name: 'Wild Forest Raw Honey', Category: 'Honey', price: 390, quantity: 500, unit: 'g', reviews: 42, rating: 4.9, tag: 'Natural', tagClass: 'tag-natural', image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500&q=80' },
-  { _id: 'seed-6', name: 'Dried Organic Ashwagandha Root', Category: 'Herbs', price: 299, quantity: 250, unit: 'g', reviews: 27, rating: 4.7, tag: 'Ayurvedic', tagClass: 'tag-organic', image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500&q=80' },
-  { _id: 'seed-7', name: 'Fresh Green Cardamom Pods', Category: 'Spices', price: 420, quantity: 100, unit: 'g', reviews: 54, rating: 4.8, tag: 'Aroma', tagClass: 'tag-fresh', image: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=500&q=80' },
-  { _id: 'seed-8', name: 'Organic Cold Pressed Mustard Oil', Category: 'Oil & Ghee', price: 240, quantity: 1, unit: 'L', reviews: 31, rating: 4.8, tag: 'Kachi Ghani', tagClass: 'tag-pure', image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&q=80' },
-];
-
 const CustomerShop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { addToCart } = useCart();
@@ -50,14 +38,10 @@ const CustomerShop = () => {
       try {
         const data = await productService.getAllProducts();
         const prods = Array.isArray(data) ? data : (data?.data || []);
-        if (prods.length > 0) {
-          setProductsList(prods);
-        } else {
-          setProductsList(SEED_PRODUCTS);
-        }
+        setProductsList(prods);
       } catch (error) {
-        console.warn('Backend products not loaded, utilizing catalog fallback:', error?.message);
-        setProductsList(SEED_PRODUCTS);
+        console.warn('Products fetch note:', error?.message);
+        setProductsList([]);
       } finally {
         setLoading(false);
       }

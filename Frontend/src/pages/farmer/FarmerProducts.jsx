@@ -11,14 +11,6 @@ import toast from 'react-hot-toast';
 import '../../styles/farmer-products.css';
 import '../../styles/farmer-dashboard.css';
 
-const SEED_FARMER_PRODUCTS = [
-  { _id: 'fp-1', name: 'Organic Salem Turmeric Powder', Category: 'Spices', price: 220, quantity: 500, unit: 'g', stock: 85, image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80' },
-  { _id: 'fp-2', name: 'Raw Unpolished Toor Dal', Category: 'Pulses', price: 185, quantity: 1, unit: 'kg', stock: 120, image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80' },
-  { _id: 'fp-3', name: 'Traditional Sona Masoori Rice', Category: 'Grains', price: 340, quantity: 5, unit: 'kg', stock: 65, image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80' },
-  { _id: 'fp-4', name: 'A2 Gir Cow Desi Ghee', Category: 'Oil & Ghee', price: 850, quantity: 500, unit: 'ml', stock: 40, image: 'https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=500&q=80' },
-  { _id: 'fp-5', name: 'Wild Forest Raw Honey', Category: 'Honey', price: 390, quantity: 500, unit: 'g', stock: 55, image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500&q=80' },
-];
-
 const FarmerProducts = () => {
   const { user } = useAuth();
   const [products, setProducts] = useState([]);
@@ -46,14 +38,10 @@ const FarmerProducts = () => {
     try {
       const res = await productService.getFarmerProducts(user?._id);
       const prods = Array.isArray(res) ? res : (res?.data || []);
-      if (prods.length > 0) {
-        setProducts(prods);
-      } else {
-        setProducts(SEED_FARMER_PRODUCTS);
-      }
+      setProducts(prods);
     } catch (err) {
       console.warn('Farmer products load note:', err);
-      setProducts(SEED_FARMER_PRODUCTS);
+      setProducts([]);
     } finally {
       setLoading(false);
     }

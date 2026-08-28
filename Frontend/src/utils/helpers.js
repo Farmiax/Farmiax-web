@@ -63,6 +63,12 @@ export const getApiError = (error) => {
   if (error.response?.data?.message) {
     return error.response.data.message;
   }
+  if (error.response?.data?.Message) {
+    return error.response.data.Message;
+  }
+  if (error.message === 'Network Error') {
+    return 'Unable to connect to the backend server. Please ensure your internet is connected or the server is active, and try again.';
+  }
   if (error.message) {
     return error.message;
   }

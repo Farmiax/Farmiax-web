@@ -61,6 +61,11 @@ const productService = {
     return res.data?.data || res.data;
   },
 
+  deleteFarmerProduct: async (productId) => {
+    const res = await api.delete(`/product/farmer/${productId}`);
+    return res.data?.data || res.data;
+  },
+
   // GET /product/farmer-all-products or fallback to all-products filtered by farmer
   getFarmerProducts: async (farmerId) => {
     try {

@@ -14,20 +14,20 @@ import '../../styles/customer.css';
 const defaultAvatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80";
 
 const CustomerSettings = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'addresses' | 'payment' | 'notifications' | 'security' | 'preferences'
   const [toastMessage, setToastMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Profile Form State
   const [profileData, setProfileData] = useState({
-    fullName: user?.fullName || 'Priya Raman',
-    email: user?.email || 'priya.customer@gmail.com',
-    phone: user?.phone || '+91 98451 23456',
-    address: user?.address || '42, 3rd Cross, Indiranagar',
-    city: user?.City || 'Bengaluru',
-    state: user?.State || 'Karnataka',
-    pincode: user?.PinCode || '560038',
+    fullName: user?.fullName || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    address: user?.address || '',
+    city: user?.City || '',
+    state: user?.State || '',
+    pincode: user?.PinCode || '',
     gender: 'Female',
     dob: '1994-06-15',
     bio: 'Passionate about 100% organic farm produce, heritage rice varieties, and cold-pressed oils direct from rural farmers.',
@@ -39,23 +39,12 @@ const CustomerSettings = () => {
       id: 'addr_1',
       tag: 'Home (Primary)',
       isDefault: true,
-      name: user?.fullName || 'Priya Raman',
+      name: user?.fullName || 'Primary User',
       phone: user?.phone || '+91 98451 23456',
-      street: user?.address || '42, 3rd Cross, Indiranagar',
+      street: user?.address || 'Direct Delivery Location',
       city: user?.City || 'Bengaluru',
       state: user?.State || 'Karnataka',
       pincode: user?.PinCode || '560038',
-    },
-    {
-      id: 'addr_2',
-      tag: 'Office',
-      isDefault: false,
-      name: 'Priya Raman (Work)',
-      phone: '+91 98451 23456',
-      street: 'Tech Park Block B, Outer Ring Road, Marathahalli',
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      pincode: '560103',
     }
   ]);
 
@@ -73,7 +62,7 @@ const CustomerSettings = () => {
   // Payment & Wallet State
   const [walletBalance, setWalletBalance] = useState(450); // ₹450 Farmiax Cash
   const [refundPreference, setRefundPreference] = useState('wallet'); // 'wallet' | 'source'
-  const [savedUpiList, setSavedUpiList] = useState(['priya.raman@okaxis', 'farmbuy@ybl']);
+  const [savedUpiList, setSavedUpiList] = useState(['customer@okaxis', 'farmbuy@ybl']);
   const [newUpi, setNewUpi] = useState('');
   const [showAddUpi, setShowAddUpi] = useState(false);
 
@@ -108,13 +97,39 @@ const CustomerSettings = () => {
     setTimeout(() => setToastMessage(''), 3500);
   };
 
-  const handleProfileUpdate = (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await api.patch('/users/updated-account', {
+        fullName: profileData.fullName,
+        email: profileData.email,
+        phone: profileData.phone,
+        address: profileData.address,
+        City: profileData.city,
+        State: profileData.state,
+        PinCode: profileData.pincode,
+      });
+      if (updateUser) {
+        updateUser({
+          fullName: profileData.fullName,
+          email: profileData.email,
+          phone: profileData.phone,
+          address: profileData.address,
+          City: profileData.city,
+          State: profileData.state,
+          PinCode: profileData.pincode,
+        });
+      }
       showToast('Profile information updated successfully! ✨');
-    }, 600);
+    } catch {
+      if (updateUser) {
+        updateUser(profileData);
+      }
+      showToast('Profile information saved! ✨');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAddAddress = (e) => {

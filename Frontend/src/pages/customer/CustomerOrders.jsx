@@ -9,31 +9,6 @@ import 'jspdf-autotable';
 import toast from 'react-hot-toast';
 import '../../styles/customer.css';
 
-const SEED_ORDERS = [
-  {
-    _id: 'FMX9823145',
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    totalAmount: 640,
-    actualAmount: 640,
-    status: 'Out for Delivery',
-    Products: [
-      { product: { name: 'Organic Salem Turmeric Powder', price: 220, unit: '500g' }, quantity: 2, price: 220 },
-      { product: { name: 'Raw Unpolished Toor Dal', price: 185, unit: '1kg' }, quantity: 1, price: 185 },
-    ]
-  },
-  {
-    _id: 'FMX9821092',
-    createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
-    totalAmount: 1190,
-    actualAmount: 1190,
-    status: 'Delivered',
-    Products: [
-      { product: { name: 'A2 Gir Cow Desi Ghee', price: 850, unit: '500ml' }, quantity: 1, price: 850 },
-      { product: { name: 'Traditional Sona Masoori Rice', price: 340, unit: '5kg' }, quantity: 1, price: 340 },
-    ]
-  }
-];
-
 const CustomerOrders = () => {
   const { user } = useAuth();
   const [activeFilter, setActiveFilter] = useState('All');
@@ -47,14 +22,10 @@ const CustomerOrders = () => {
       try {
         const data = await orderService.getUserOrders();
         const extracted = Array.isArray(data) ? data : (data?.data || data?.orders || []);
-        if (extracted.length > 0) {
-          setOrders(extracted);
-        } else {
-          setOrders(SEED_ORDERS);
-        }
+        setOrders(extracted);
       } catch (error) {
-        console.warn('User orders fetch error, showing local records:', error);
-        setOrders(SEED_ORDERS);
+        console.warn('User orders fetch notice:', error?.message);
+        setOrders([]);
       } finally {
         setLoading(false);
       }

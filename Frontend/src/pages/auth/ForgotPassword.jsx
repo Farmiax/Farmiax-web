@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowLeft, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
 import PasswordInput from '../../components/common/PasswordInput';
-import Logo from '../../components/common/Logo';
 import authService from '../../services/authService';
 import { validateEmail, validatePassword } from '../../utils/validators';
 import { getApiError } from '../../utils/helpers';

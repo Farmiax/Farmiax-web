@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FarmerDashboardLayout from '../../components/common/FarmerDashboardLayout';
+import orderService from '../../services/orderService';
 import {
   FiDollarSign, FiTrendingUp, FiArrowUpRight, FiClock,
   FiCheckCircle, FiDownload, FiCreditCard
@@ -8,15 +9,41 @@ import toast from 'react-hot-toast';
 import '../../styles/farmer-dashboard.css';
 
 const FarmerEarnings = () => {
-  const [activeTab, setActiveTab] = useState('all');
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const transactions = [
-    { id: 'TXN-98412', orderId: '#FMX9823145', date: 'Yesterday, 4:30 PM', amount: 640, status: 'Settled', method: 'Direct Bank Transfer' },
-    { id: 'TXN-98405', orderId: '#FMX9821092', date: '3 days ago', amount: 1190, status: 'Settled', method: 'Direct Bank Transfer' },
-    { id: 'TXN-98388', orderId: '#FMX9819842', date: '6 days ago', amount: 390, status: 'Settled', method: 'Direct Bank Transfer' },
-    { id: 'TXN-98350', orderId: '#FMX9815410', date: '10 days ago', amount: 2450, status: 'Settled', method: 'Direct Bank Transfer' },
-    { id: 'TXN-98312', orderId: '#FMX9812001', date: '14 days ago', amount: 850, status: 'Settled', method: 'Direct Bank Transfer' },
-  ];
+  useEffect(() => {
+    const fetchEarningsData = async () => {
+      setLoading(true);
+      try {
+        const res = await orderService.getFarmerOrders();
+        const ords = Array.isArray(res) ? res : (res?.data || []);
+        setOrders(ords);
+      } catch (err) {
+        console.warn('Farmer earnings fetch error note:', err);
+        setOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEarningsData();
+  }, []);
+
+  const totalEarnings = orders.reduce((sum, o) => sum + Number(o.totalAmount || o.actualAmount || 0), 0);
+  const settledOrders = orders.filter((o) => (o.status || '').toLowerCase() === 'delivered');
+  const settledAmount = settledOrders.reduce((sum, o) => sum + Number(o.totalAmount || o.actualAmount || 0), 0);
+  const pendingAmount = orders
+    .filter((o) => (o.status || '').toLowerCase() !== 'delivered' && (o.status || '').toLowerCase() !== 'cancelled')
+    .reduce((sum, o) => sum + Number(o.totalAmount || o.actualAmount || 0), 0);
+
+  const transactions = orders.map((o, idx) => ({
+    id: `TXN-${String(o._id || idx).slice(-6).toUpperCase()}`,
+    orderId: `#${String(o._id || o.id || idx).slice(-8)}`,
+    date: o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Recent',
+    amount: o.totalAmount || o.actualAmount || 0,
+    status: o.status || 'Settled',
+    method: o.paymentMethod || 'Direct Bank Transfer',
+  }));
 
   return (
     <FarmerDashboardLayout activeNav="earnings">
@@ -55,22 +82,22 @@ const FarmerEarnings = () => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '22px', marginBottom: '28px' }}>
           <div className="glass-box kpi-card">
             <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase' }}>Available for Payout</span>
-            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '8px 0 6px', color: '#4ADE80' }}>₹14,850.00</h2>
-            <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>Auto-transfers every Monday to registered bank</p>
+            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '8px 0 6px', color: '#4ADE80' }}>₹{pendingAmount.toLocaleString('en-IN')}</h2>
+            <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>Pending disbursement upon customer delivery</p>
           </div>
 
           <div className="glass-box kpi-card">
-            <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase' }}>This Month's Settled</span>
-            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '8px 0 6px', color: '#FFFFFF' }}>₹48,520.00</h2>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase' }}>Total Settled</span>
+            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '8px 0 6px', color: '#FFFFFF' }}>₹{settledAmount.toLocaleString('en-IN')}</h2>
             <span style={{ fontSize: '13px', fontWeight: 700, color: '#4ADE80', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <FiTrendingUp /> +22.4% vs previous month
+              <FiTrendingUp /> {settledOrders.length} Completed Orders
             </span>
           </div>
 
           <div className="glass-box kpi-card">
             <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.88)', textTransform: 'uppercase' }}>Lifetime Farm Earnings</span>
-            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '8px 0 6px', color: '#FDE047' }}>₹2,84,300.00</h2>
-            <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>Across 210+ direct harvest dispatches</p>
+            <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '8px 0 6px', color: '#FDE047' }}>₹{totalEarnings.toLocaleString('en-IN')}</h2>
+            <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>Across {orders.length} direct harvest dispatches</p>
           </div>
         </div>
 
@@ -78,7 +105,7 @@ const FarmerEarnings = () => {
         <div className="glass-box" style={{ padding: '0', overflow: 'hidden' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255, 255, 255, 0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#FFFFFF' }}>Recent Order Settlements</h3>
-            <span style={{ fontSize: '13px', color: '#86EFAC', fontWeight: 700 }}>• Instant Direct Deposit Active</span>
+            <span style={{ fontSize: '13px', color: '#86EFAC', fontWeight: 700 }}>• Direct Deposit Active</span>
           </div>
 
           <div style={{ overflowX: 'auto' }}>
@@ -94,30 +121,44 @@ const FarmerEarnings = () => {
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((txn) => (
-                  <tr key={txn.id}>
-                    <td style={{ fontWeight: 700, color: '#FFFFFF' }}>
-                      {txn.id}
-                    </td>
-                    <td style={{ color: '#93C5FD', fontWeight: 600 }}>
-                      {txn.orderId}
-                    </td>
-                    <td style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-                      {txn.date}
-                    </td>
-                    <td style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-                      🏦 {txn.method}
-                    </td>
-                    <td>
-                      <span className="status-pill status-delivered">
-                        ✓ {txn.status}
-                      </span>
-                    </td>
-                    <td style={{ fontWeight: 800, fontSize: '16px', color: '#4ADE80', textAlign: 'right' }}>
-                      +₹{txn.amount}
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.7)' }}>
+                      Loading settlements...
                     </td>
                   </tr>
-                ))}
+                ) : transactions.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.7)' }}>
+                      No settlements yet. Orders placed by customers will appear here.
+                    </td>
+                  </tr>
+                ) : (
+                  transactions.map((txn) => (
+                    <tr key={txn.id}>
+                      <td style={{ fontWeight: 700, color: '#FFFFFF' }}>
+                        {txn.id}
+                      </td>
+                      <td style={{ color: '#93C5FD', fontWeight: 600 }}>
+                        {txn.orderId}
+                      </td>
+                      <td style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                        {txn.date}
+                      </td>
+                      <td style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                        🏦 {txn.method}
+                      </td>
+                      <td>
+                        <span className="status-pill status-delivered">
+                          ✓ {txn.status}
+                        </span>
+                      </td>
+                      <td style={{ fontWeight: 800, fontSize: '16px', color: '#4ADE80', textAlign: 'right' }}>
+                        +₹{txn.amount}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

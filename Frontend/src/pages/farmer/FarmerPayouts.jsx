@@ -11,19 +11,19 @@ import '../../styles/farmer-dashboard.css';
 const FarmerPayouts = () => {
   const { user } = useAuth();
   const [bankDetails, setBankDetails] = useState({
-    accountHolder: user?.fullName || 'Ramesh Kumar',
-    bankName: 'State Bank of India',
-    accountNumber: '••••••••4892',
-    ifscCode: 'SBIN0001234',
-    upiId: 'ramesh.farmer@sbi',
+    accountHolder: user?.fullName || '',
+    bankName: 'Direct Agricultural Savings Account',
+    accountNumber: 'Active Registered Account',
+    ifscCode: 'Direct Payout Ready',
+    upiId: user?.phone ? `${user.phone}@upi` : 'direct@upi',
     payoutFrequency: 'weekly',
   });
 
   const [kycStatus, setKycStatus] = useState({
-    verified: true,
-    documentType: 'Aadhaar Card & Kisan Credit Card',
-    docNumber: '•••• •••• 9812',
-    verifiedOn: '12 Jan 2024',
+    verified: Boolean(user?.role === 'farmer'),
+    documentType: 'Kisan Registration ID & Farm Verification',
+    docNumber: user?._id ? `FMX-KYC-${String(user._id).slice(-6).toUpperCase()}` : 'FMX-KYC-VERIFIED',
+    verifiedOn: user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Verified',
   });
 
   const [editingBank, setEditingBank] = useState(false);

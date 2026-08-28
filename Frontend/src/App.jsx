@@ -55,6 +55,15 @@ import TermsConditions from './pages/info/TermsConditions';
 import ShippingPolicy from './pages/info/ShippingPolicy';
 import ReturnPolicy from './pages/info/ReturnPolicy';
 
+// Admin Suite Pages & Guard
+import AdminProtectedRoute from './routes/AdminProtectedRoute';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminFarmers from './pages/admin/AdminFarmers';
+import AdminSettings from './pages/admin/AdminSettings';
+
 function App() {
   return (
     <AuthProvider>
@@ -116,6 +125,15 @@ function App() {
               <Route path="/farmer/reviews" element={<RoleProtectedRoute requiredRole="farmer"><FarmerReviews /></RoleProtectedRoute>} />
               <Route path="/farmer/messages" element={<RoleProtectedRoute requiredRole="farmer"><FarmerMessages /></RoleProtectedRoute>} />
               <Route path="/farmer/notifications" element={<RoleProtectedRoute requiredRole="farmer"><FarmerNotifications /></RoleProtectedRoute>} />
+
+              {/* Master Admin Suite Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
+              <Route path="/admin/products" element={<AdminProtectedRoute><AdminProducts /></AdminProtectedRoute>} />
+              <Route path="/admin/orders" element={<AdminProtectedRoute><AdminOrders /></AdminProtectedRoute>} />
+              <Route path="/admin/farmers" element={<AdminProtectedRoute><AdminFarmers /></AdminProtectedRoute>} />
+              <Route path="/admin/settings" element={<AdminProtectedRoute><AdminSettings /></AdminProtectedRoute>} />
 
               {/* Error Routes */}
               <Route path="/unauthorized" element={<Unauthorized />} />

@@ -18,91 +18,6 @@ import 'jspdf-autotable';
 import toast from 'react-hot-toast';
 import '../../styles/customer.css';
 
-const SEED_ORDERS_MAP = {
-  'FMX9821092': {
-    _id: 'FMX9821092',
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    status: 'Out for Delivery',
-    paymentMethod: 'Razorpay Secure (UPI)',
-    totalAmount: 1190,
-    actualAmount: 1190,
-    deliveryDate: new Date().toISOString(),
-    deliveryPartner: {
-      name: 'Suresh Kumar',
-      phone: '+91 98451 77234',
-      rating: 4.9,
-      deliveries: '1,420+',
-      vehicle: 'Eco Electric Van (KA-03-EM-8821)',
-      temperature: '18°C (Optimal Freshness)',
-    },
-    Products: [
-      {
-        product: {
-          name: 'A2 Gir Cow Desi Bilona Ghee',
-          price: 850,
-          unit: '500ml Glass Jar',
-          image: catGhee,
-          farmer: 'Gopalan Dairy Farm, Vellore',
-        },
-        quantity: 1,
-        price: 850,
-      },
-      {
-        product: {
-          name: 'Traditional Sona Masoori Heritage Raw Rice',
-          price: 340,
-          unit: '5kg Jute Bag',
-          image: catGrains,
-          farmer: 'Murugan Natural Farms, Thanjavur',
-        },
-        quantity: 1,
-        price: 340,
-      },
-    ],
-  },
-  'FMX9823145': {
-    _id: 'FMX9823145',
-    createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-    status: 'Out for Delivery',
-    paymentMethod: 'Cash on Delivery (COD)',
-    totalAmount: 640,
-    actualAmount: 640,
-    deliveryDate: new Date().toISOString(),
-    deliveryPartner: {
-      name: 'Ramesh Velu',
-      phone: '+91 94432 10987',
-      rating: 4.85,
-      deliveries: '980+',
-      vehicle: 'Temperature Controlled Delivery Van',
-      temperature: '19°C (Fresh Pack)',
-    },
-    Products: [
-      {
-        product: {
-          name: 'Organic Salem Golden Curcumin Turmeric',
-          price: 220,
-          unit: '500g Eco Pack',
-          image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80',
-          farmer: 'Selvam Agro Natural, Salem',
-        },
-        quantity: 2,
-        price: 220,
-      },
-      {
-        product: {
-          name: 'Raw Unpolished Country Toor Dal',
-          price: 200,
-          unit: '1kg Canvas Bag',
-          image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80',
-          farmer: 'Kaveri Organic Cluster',
-        },
-        quantity: 1,
-        price: 200,
-      },
-    ],
-  },
-};
-
 const TrackOrder = () => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -127,12 +42,6 @@ const TrackOrder = () => {
     const fetchOrderDetails = async () => {
       try {
         const cleanId = id?.trim();
-        if (cleanId && SEED_ORDERS_MAP[cleanId]) {
-          setOrder(SEED_ORDERS_MAP[cleanId]);
-          setLoading(false);
-          return;
-        }
-
         const data = await orderService.getUserOrders();
         const allOrders = Array.isArray(data) ? data : (data?.data || data?.orders || []);
         const foundOrder = allOrders.find(
@@ -141,12 +50,14 @@ const TrackOrder = () => {
 
         if (foundOrder) {
           setOrder(foundOrder);
+        } else if (allOrders.length > 0) {
+          setOrder(allOrders[0]);
         } else {
-          setOrder(SEED_ORDERS_MAP['FMX9821092']);
+          setOrder(null);
         }
       } catch (error) {
         console.warn('Order details fetch notice:', error);
-        setOrder(SEED_ORDERS_MAP['FMX9821092']);
+        setOrder(null);
       } finally {
         setLoading(false);
       }

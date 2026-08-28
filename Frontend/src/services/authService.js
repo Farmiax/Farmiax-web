@@ -75,6 +75,12 @@ const authService = {
     const res = await api.get('/users/all-Farmers');
     return res.data?.data || res.data || [];
   },
+
+  // DELETE /users/delete-farmer-account — requires JWT
+  deleteFarmerAccount: async () => {
+    const res = await api.delete('/users/delete-farmer-account');
+    return res.data;
+  },
 };
 
 export default authService;

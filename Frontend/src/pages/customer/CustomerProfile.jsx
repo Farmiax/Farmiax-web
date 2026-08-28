@@ -52,19 +52,19 @@ const CustomerProfile = () => {
         // Extract a few products for recommendations
         if (allProducts.length > 0) {
           const formattedRecs = allProducts.slice(0, 4).map(p => ({
-            id: p._id,
-            name: p.name || 'Organic Product',
-            img: p.image ? `http://localhost:5000/${p.image}` : tomatoImg,
+            id: p._id || p.id,
+            name: p.name || p.ProductName || 'Organic Product',
+            img: getImageUrl(p.image, tomatoImg),
             farmer: p.farmer || 'Local Farm',
             price: p.price || 0,
-            oldPrice: p.oldPrice || p.price * 1.2,
+            oldPrice: p.oldPrice || (p.price ? p.price * 1.2 : 180),
             weight: `${p.quantity || 1} ${p.unit || 'unit'}`,
             rating: 4.5
           }));
           setRecommended(formattedRecs);
 
           // Generate dynamic categories
-          const catSet = new Set(allProducts.map(p => p.Category).filter(Boolean));
+          const catSet = new Set(allProducts.map(p => p.Category || p.category).filter(Boolean));
           const catArray = Array.from(catSet).map(c => ({ name: c, emoji: '🌱' })).slice(0, 4);
           setCategories(catArray);
         }
@@ -89,6 +89,9 @@ const CustomerProfile = () => {
     };
     if (user) fetchData();
   }, [user]);
+
+  const { addToCart } = useCart();
+  const { wishlistIds, toggleWishlist } = useWishlist();
 
   return (
     <CustomerDashboardLayout>
@@ -171,26 +174,43 @@ const CustomerProfile = () => {
               <Link to="/customer/shop" className="section-link">View All <FiChevronRight /></Link>
             </div>
             <div className="products-grid">
-              {recommended.length > 0 ? recommended.map((prod, i) => (
-                <div key={i} className="product-item">
-                  <button className="product-fav-btn"><FiHeart size={16} /></button>
-                  <div className="product-img-box">
-                    <img src={prod.img} alt={prod.name} />
+              {recommended.length > 0 ? recommended.map((prod, i) => {
+                const isWished = wishlistIds?.has(prod.id);
+                return (
+                  <div key={i} className="product-item">
+                    <button
+                      className="product-fav-btn"
+                      onClick={() => toggleWishlist(prod.id)}
+                      title={isWished ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                    >
+                      <FiHeart size={16} style={{ color: isWished ? '#EF4444' : 'inherit', fill: isWished ? '#EF4444' : 'none' }} />
+                    </button>
+                    <div className="product-img-box" onClick={() => navigate(`/customer/product/${prod.id}`)} style={{ cursor: 'pointer' }}>
+                      <img
+                        src={prod.img}
+                        alt={prod.name}
+                        onError={(e) => {
+                          e.currentTarget.src = tomatoImg;
+                        }}
+                      />
+                    </div>
+                    <h4 className="product-name" onClick={() => navigate(`/customer/product/${prod.id}`)} style={{ cursor: 'pointer' }}>
+                      {prod.name}
+                    </h4>
+                    <p className="product-farmer"><FiUsers size={12} /> {prod.farmer}</p>
+                    <div className="product-rating">
+                      ★ {prod.rating}
+                    </div>
+                    <div className="product-price-row">
+                      <span className="product-price">₹{prod.price} <span className="product-old-price">₹{prod.oldPrice}</span></span>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{prod.weight}</span>
+                    </div>
+                    <button className="product-add-btn" onClick={() => addToCart(prod.id, 1)}>
+                      <FiShoppingCart size={14} /> Add to Cart
+                    </button>
                   </div>
-                  <h4 className="product-name">{prod.name}</h4>
-                  <p className="product-farmer"><FiUsers size={12} /> {prod.farmer}</p>
-                  <div className="product-rating">
-                    ★ {prod.rating}
-                  </div>
-                  <div className="product-price-row">
-                    <span className="product-price">₹{prod.price} <span className="product-old-price">₹{prod.oldPrice}</span></span>
-                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{prod.weight}</span>
-                  </div>
-                  <button className="product-add-btn">
-                    <FiShoppingCart size={14} /> Add to Cart
-                  </button>
-                </div>
-              )) : <p style={{ color: 'var(--text-muted)', fontSize: '13px', padding: '16px 0' }}>No recommendations yet. Start shopping to get personalized suggestions!</p>}
+                );
+              }) : <p style={{ color: 'var(--text-muted)', fontSize: '13px', padding: '16px 0' }}>No recommendations yet. Start shopping to get personalized suggestions!</p>}
             </div>
           </div>
 
