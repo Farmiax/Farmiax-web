@@ -24,6 +24,7 @@ const FarmerProducts = () => {
   const [formData, setFormData] = useState({
     name: '',
     Category: 'Spices',
+    customCategory: '',
     price: '',
     quantity: '1',
     unit: 'kg',
@@ -56,6 +57,7 @@ const FarmerProducts = () => {
     setFormData({
       name: '',
       Category: 'Spices',
+      customCategory: '',
       price: '',
       quantity: '1',
       unit: 'kg',
@@ -69,9 +71,12 @@ const FarmerProducts = () => {
 
   const handleOpenEdit = (prod) => {
     setEditingProduct(prod);
+    const incomingCat = prod.Category || prod.category || 'Spices';
+    const isStandardCat = ['Spices', 'Pulses', 'Grains', 'Oil & Ghee', 'Honey', 'Herbs', 'Vegetables'].includes(incomingCat);
     setFormData({
       name: prod.name || prod.ProductName || '',
-      Category: prod.Category || prod.category || 'Spices',
+      Category: isStandardCat ? incomingCat : 'Other',
+      customCategory: isStandardCat ? '' : incomingCat,
       price: prod.price || prod.Price || '',
       quantity: prod.quantity || '1',
       unit: prod.unit || 'kg',
@@ -94,7 +99,9 @@ const FarmerProducts = () => {
     try {
       const dataPayload = new FormData();
       dataPayload.append('name', formData.name);
-      dataPayload.append('Category', formData.Category);
+      
+      const finalCategory = formData.Category === 'Other' ? (formData.customCategory || 'Other') : formData.Category;
+      dataPayload.append('Category', finalCategory);
       dataPayload.append('price', formData.price);
       dataPayload.append('quantity', formData.quantity);
       dataPayload.append('unit', formData.unit);
@@ -171,8 +178,8 @@ const FarmerProducts = () => {
       <div className="farmer-products-view">
         {/* Page Top Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+          <div className="page-header-box">
+            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
               My Farm Crops & Catalog
             </h1>
             <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
@@ -214,7 +221,8 @@ const FarmerProducts = () => {
                 border: '1px solid rgba(255, 255, 255, 0.35)',
                 fontSize: '13.5px',
                 outline: 'none',
-                background: 'rgba(255, 255, 255, 0.15)',
+                background: 'rgba(0, 0, 0, 0.65)',
+                backdropFilter: 'blur(10px)',
                 color: '#FFFFFF',
               }}
             />
@@ -376,7 +384,18 @@ const FarmerProducts = () => {
                       <option value="Honey">Honey</option>
                       <option value="Herbs">Herbs</option>
                       <option value="Vegetables">Vegetables</option>
+                      <option value="Other">Other (Type custom)</option>
                     </select>
+                    {formData.Category === 'Other' && (
+                      <input
+                        type="text"
+                        placeholder="Type custom category..."
+                        value={formData.customCategory}
+                        onChange={(e) => setFormData({ ...formData, customCategory: e.target.value })}
+                        style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '14px', marginTop: '10px' }}
+                        required
+                      />
+                    )}
                   </div>
 
                   <div>
@@ -502,3 +521,6 @@ const FarmerProducts = () => {
 };
 
 export default FarmerProducts;
+
+
+

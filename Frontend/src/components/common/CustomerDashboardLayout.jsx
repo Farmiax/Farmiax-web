@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 import Logo from './Logo';
 import { getImageUrl } from '../../utils/helpers';
 import {
   FiSearch, FiBell, FiShoppingCart, FiGrid,
   FiShoppingBag, FiTruck, FiHeart, FiTag, FiUsers,
   FiSettings, FiLogOut, FiBox, FiChevronLeft, FiChevronRight,
-  FiShield, FiRefreshCcw, FiCheckCircle
+  FiShield, FiRefreshCcw, FiCheckCircle, FiMenu, FiX
 } from 'react-icons/fi';
 import '../../styles/dashboard.css';
 
 const CustomerDashboardLayout = ({ children }) => {
   const { user, logout } = useAuth();
+  const { cartCount } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const [search, setSearch] = useState('');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    const saved = localStorage.getItem('farmiax_sidebar_open');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [mobileMenuOpen]);
+
+  const toggleSidebar = () => {
+    const newState = !isSidebarOpen;
+    setIsSidebarOpen(newState);
+    localStorage.setItem('farmiax_sidebar_open', JSON.stringify(newState));
+  };
 
   const sidebarLinks = [
     { icon: FiGrid, label: 'Dashboard', path: '/customer/profile' },
@@ -45,8 +66,16 @@ const CustomerDashboardLayout = ({ children }) => {
 
   return (
     <div className="dashboard-container">
+      {/* Mobile Drawer Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="sidebar-overlay" 
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className={`dashboard-sidebar ${isSidebarOpen ? '' : 'collapsed'}`}>
+      <aside className={`dashboard-sidebar ${isSidebarOpen ? '' : 'collapsed'} ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-logo">
           {isSidebarOpen ? (
             <Logo size="md" />
@@ -55,9 +84,16 @@ const CustomerDashboardLayout = ({ children }) => {
           )}
           <button
             className="sidebar-toggle-btn"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            onClick={toggleSidebar}
           >
             {isSidebarOpen ? <FiChevronLeft size={16} /> : <FiChevronRight size={16} />}
+          </button>
+          
+          <button 
+            className="mobile-close-btn" 
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <FiX size={20} />
           </button>
         </div>
 
@@ -71,6 +107,7 @@ const CustomerDashboardLayout = ({ children }) => {
                 key={idx}
                 to={link.path}
                 className={`sidebar-link ${isActive ? 'active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
               >
                 <Icon size={18} />
                 <span>{link.label}</span>
@@ -85,10 +122,15 @@ const CustomerDashboardLayout = ({ children }) => {
         </nav>
       </aside>
 
-      {/* Main Container */}
       <div className="dashboard-main">
         {/* Header */}
         <header className="dashboard-header">
+          <div className="mobile-header-left">
+            <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>
+              <FiMenu size={24} color="#FFFFFF" />
+            </button>
+          </div>
+
           <form className="header-search" onSubmit={handleSearch}>
             <FiSearch size={18} />
             <input
@@ -103,11 +145,16 @@ const CustomerDashboardLayout = ({ children }) => {
             <button className="header-icon-btn" onClick={() => navigate('/customer/notifications')} title="Notifications">
               <FiBell size={22} />
             </button>
-            <button className="header-icon-btn" onClick={() => navigate('/customer/cart')}>
+            <button className="header-icon-btn" onClick={() => navigate('/customer/cart')} title="Shopping Cart">
               <FiShoppingCart size={22} />
+              {cartCount > 0 && (
+                <span className="header-icon-badge" style={{ background: '#F59E0B', color: '#FFFFFF', border: '2px solid #0B5D38' }}>
+                  {cartCount}
+                </span>
+              )}
             </button>
             <div className="header-divider"></div>
-            <Link to="/customer/profile" className="header-profile" style={{ textDecoration: 'none' }}>
+            <Link to="/customer/personal-profile" className="header-profile" style={{ textDecoration: 'none' }}>
               {user?.avatar && user.avatar !== 'Not Photo' ? (
                 <img
                   src={getImageUrl(user.avatar)}

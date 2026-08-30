@@ -26,6 +26,7 @@ import TrackOrder from './pages/customer/TrackOrder';
 import CustomerOrders from './pages/customer/CustomerOrders';
 import CustomerWishlist from './pages/customer/CustomerWishlist';
 import CustomerProfile from './pages/customer/CustomerProfile';
+import CustomerAccountProfile from './pages/customer/CustomerAccountProfile';
 import CustomerProductDetails from './pages/customer/CustomerProductDetails';
 import CustomerFarmers from './pages/customer/CustomerFarmers';
 import CustomerNotifications from './pages/customer/CustomerNotifications';
@@ -95,6 +96,7 @@ function App() {
               <Route path="/customer" element={<Navigate to="/customer/dashboard" replace />} />
               <Route path="/customer/dashboard" element={<RoleProtectedRoute requiredRole="customer"><CustomerProfile /></RoleProtectedRoute>} />
               <Route path="/customer/profile" element={<RoleProtectedRoute requiredRole="customer"><CustomerProfile /></RoleProtectedRoute>} />
+              <Route path="/customer/personal-profile" element={<RoleProtectedRoute requiredRole="customer"><CustomerAccountProfile /></RoleProtectedRoute>} />
               <Route path="/customer/shop" element={<RoleProtectedRoute requiredRole="customer"><CustomerShop /></RoleProtectedRoute>} />
               <Route path="/customer/product/:id" element={<RoleProtectedRoute requiredRole="customer"><CustomerProductDetails /></RoleProtectedRoute>} />
               <Route path="/customer/cart" element={<RoleProtectedRoute requiredRole="customer"><CustomerCart /></RoleProtectedRoute>} />

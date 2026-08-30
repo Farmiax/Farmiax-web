@@ -15,7 +15,7 @@ const defaultAvatar = "https://images.unsplash.com/photo-1534528741775-53994a69d
 
 const CustomerSettings = () => {
   const { user, updateUser } = useAuth();
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'addresses' | 'payment' | 'notifications' | 'security' | 'preferences'
+  const [activeTab, setActiveTab] = useState('addresses'); // 'addresses' | 'payment' | 'notifications' | 'security' | 'preferences'
   const [toastMessage, setToastMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -34,19 +34,7 @@ const CustomerSettings = () => {
   });
 
   // Saved Addresses State
-  const [addresses, setAddresses] = useState([
-    {
-      id: 'addr_1',
-      tag: 'Home (Primary)',
-      isDefault: true,
-      name: user?.fullName || 'Primary User',
-      phone: user?.phone || '+91 98451 23456',
-      street: user?.address || 'Direct Delivery Location',
-      city: user?.City || 'Bengaluru',
-      state: user?.State || 'Karnataka',
-      pincode: user?.PinCode || '560038',
-    }
-  ]);
+  const [addresses, setAddresses] = useState([]);
 
   const [showAddAddressForm, setShowAddAddressForm] = useState(false);
   const [newAddr, setNewAddr] = useState({
@@ -60,9 +48,9 @@ const CustomerSettings = () => {
   });
 
   // Payment & Wallet State
-  const [walletBalance, setWalletBalance] = useState(450); // ₹450 Farmiax Cash
+  const [walletBalance, setWalletBalance] = useState(0);
   const [refundPreference, setRefundPreference] = useState('wallet'); // 'wallet' | 'source'
-  const [savedUpiList, setSavedUpiList] = useState(['customer@okaxis', 'farmbuy@ybl']);
+  const [savedUpiList, setSavedUpiList] = useState([]);
   const [newUpi, setNewUpi] = useState('');
   const [showAddUpi, setShowAddUpi] = useState(false);
 
@@ -290,7 +278,6 @@ const CustomerSettings = () => {
             }}
           >
             {[
-              { id: 'profile', label: 'Personal Profile', icon: FiUser },
               { id: 'addresses', label: 'Saved Addresses', icon: FiMapPin },
               { id: 'payment', label: 'Payments & Wallet', icon: FiCreditCard },
               { id: 'notifications', label: 'Notifications & Alerts', icon: FiBell },
@@ -327,174 +314,7 @@ const CustomerSettings = () => {
           </div>
         </div>
 
-        {/* TAB 1: PERSONAL PROFILE */}
-        {activeTab === 'profile' && (
-          <div
-            style={{
-              background: 'rgba(255, 255, 255, 0.45)',
-              backdropFilter: 'blur(16px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(16px) saturate(180%)',
-              border: '1px solid rgba(255, 255, 255, 0.6)',
-              borderTop: '1px solid rgba(255, 255, 255, 0.8)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
-              borderRadius: '20px',
-              padding: '32px',
-              color: '#1F2937',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#062414' }}>
-                  Personal Profile & Identity
-                </h3>
-                <p style={{ margin: '4px 0 0', fontSize: '13.5px', color: '#475569' }}>
-                  Update your contact details, bio, and delivery identity.
-                </p>
-              </div>
-            </div>
-
-            {/* Avatar & Fast Stats Row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '24px', padding: '20px', background: 'rgba(255, 255, 255, 0.7)', borderRadius: '16px', border: '1px solid rgba(0, 0, 0, 0.08)', marginBottom: '28px', flexWrap: 'wrap' }}>
-              <div style={{ position: 'relative' }}>
-                <img
-                  src={defaultAvatar}
-                  alt="Customer Avatar"
-                  style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #0B5D38', boxShadow: '0 4px 14px rgba(0,0,0,0.1)' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => showToast('Avatar upload dialog opened')}
-                  style={{ position: 'absolute', bottom: '0', right: '0', background: '#0B5D38', color: '#FFF', border: 'none', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}
-                  title="Change avatar"
-                >
-                  <FiEdit3 size={13} />
-                </button>
-              </div>
-
-              <div style={{ flex: 1 }}>
-                <h4 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 800, color: '#062414' }}>
-                  {profileData.fullName}
-                </h4>
-                <p style={{ margin: '0 0 8px', fontSize: '13px', color: '#475569' }}>
-                  {profileData.email} • {profileData.phone}
-                </p>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <span style={{ fontSize: '11.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '6px', background: '#DCFCE7', color: '#15803D' }}>
-                    🌾 14 Direct Farm Orders
-                  </span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '6px', background: '#DCFCE7', color: '#15803D' }}>
-                    🌿 5 Followed Farmers
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Profile Input Form */}
-            <form onSubmit={handleProfileUpdate} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#062414', marginBottom: '6px' }}>
-                  Full Legal Name
-                </label>
-                <input
-                  type="text"
-                  value={profileData.fullName}
-                  onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#1F2937', fontSize: '14px' }}
-                  required
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#062414', marginBottom: '6px' }}>
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={profileData.email}
-                  onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#1F2937', fontSize: '14px' }}
-                  required
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#062414', marginBottom: '6px' }}>
-                  Contact Phone Number
-                </label>
-                <input
-                  type="text"
-                  value={profileData.phone}
-                  onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#1F2937', fontSize: '14px' }}
-                  required
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#062414', marginBottom: '6px' }}>
-                  Gender
-                </label>
-                <select
-                  value={profileData.gender}
-                  onChange={(e) => setProfileData({ ...profileData, gender: e.target.value })}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#1F2937', fontSize: '14px' }}
-                >
-                  <option value="Female">Female</option>
-                  <option value="Male">Male</option>
-                  <option value="Other">Other / Prefer not to say</option>
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#062414', marginBottom: '6px' }}>
-                  Date of Birth
-                </label>
-                <input
-                  type="date"
-                  value={profileData.dob}
-                  onChange={(e) => setProfileData({ ...profileData, dob: e.target.value })}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#1F2937', fontSize: '14px' }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#062414', marginBottom: '6px' }}>
-                  City / Location
-                </label>
-                <input
-                  type="text"
-                  value={profileData.city}
-                  onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#1F2937', fontSize: '14px' }}
-                />
-              </div>
-
-              <div style={{ gridColumn: '1 / -1' }}>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#062414', marginBottom: '6px' }}>
-                  Organic Food & Harvest Preferences Bio
-                </label>
-                <textarea
-                  value={profileData.bio}
-                  onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
-                  style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#1F2937', fontSize: '14px', height: '80px', resize: 'vertical' }}
-                />
-              </div>
-
-              <div style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn-dark-green"
-                  style={{ padding: '12px 28px', fontSize: '14px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-                >
-                  <FiSave size={16} /> {loading ? 'Saving Changes...' : 'Save Profile Details'}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* TAB 2: SAVED ADDRESSES */}
+        {/* TAB 1: SAVED ADDRESSES */}
         {activeTab === 'addresses' && (
           <div
             style={{
@@ -530,7 +350,7 @@ const CustomerSettings = () => {
 
             {/* Form to Add New Address */}
             {showAddAddressForm && (
-              <form onSubmit={handleAddAddress} style={{ background: '#FFFFFF', borderRadius: '16px', padding: '24px', marginBottom: '24px', border: '1px solid #CBD5E1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', boxShadow: '0 4px 16px rgba(0,0,0,0.05)' }}>
+              <form onSubmit={handleAddAddress} style={{ background: 'rgba(255, 255, 255, 0.45)', backdropFilter: 'blur(16px) saturate(180%)', WebkitBackdropFilter: 'blur(16px) saturate(180%)', borderRadius: '16px', padding: '24px', marginBottom: '24px', border: '1px solid rgba(255, 255, 255, 0.6)', borderTop: '1px solid rgba(255, 255, 255, 0.8)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}>
                 <h4 style={{ gridColumn: 'span 2', margin: '0 0 8px', fontSize: '15px', color: '#0B5D38', fontWeight: 800 }}>
                   Enter New Delivery Details
                 </h4>
@@ -611,16 +431,18 @@ const CustomerSettings = () => {
                 <div
                   key={addr.id}
                   style={{
-                    border: addr.isDefault ? '2px solid #0B5D38' : '1px solid rgba(0, 0, 0, 0.1)',
+                    border: addr.isDefault ? '2px solid #0B5D38' : '1px solid rgba(255, 255, 255, 0.6)',
+                    borderTop: addr.isDefault ? '2px solid #0B5D38' : '1px solid rgba(255, 255, 255, 0.8)',
                     borderRadius: '16px',
                     padding: '24px',
-                    background: addr.isDefault ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)',
-                    backdropFilter: 'blur(12px)',
+                    background: addr.isDefault ? 'rgba(255, 255, 255, 0.65)' : 'rgba(255, 255, 255, 0.45)',
+                    backdropFilter: 'blur(16px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(16px) saturate(180%)',
                     position: 'relative',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
                   }}
                 >
                   <div>
@@ -730,12 +552,15 @@ const CustomerSettings = () => {
                     minWidth: '280px',
                     padding: '16px 20px',
                     borderRadius: '14px',
-                    border: refundPreference === 'wallet' ? '2px solid #0B5D38' : '1px solid rgba(0, 0, 0, 0.12)',
-                    background: refundPreference === 'wallet' ? '#DCFCE7' : 'rgba(255, 255, 255, 0.7)',
+                    border: refundPreference === 'wallet' ? '2px solid #0B5D38' : '1px solid rgba(255, 255, 255, 0.6)',
+                    background: refundPreference === 'wallet' ? 'rgba(220, 252, 231, 0.65)' : 'rgba(255, 255, 255, 0.45)',
+                    backdropFilter: 'blur(16px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(16px) saturate(180%)',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '14px',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
                   }}
                   onClick={() => {
                     setRefundPreference('wallet');
@@ -755,12 +580,15 @@ const CustomerSettings = () => {
                     minWidth: '280px',
                     padding: '16px 20px',
                     borderRadius: '14px',
-                    border: refundPreference === 'source' ? '2px solid #0B5D38' : '1px solid rgba(0, 0, 0, 0.12)',
-                    background: refundPreference === 'source' ? '#DCFCE7' : 'rgba(255, 255, 255, 0.7)',
+                    border: refundPreference === 'source' ? '2px solid #0B5D38' : '1px solid rgba(255, 255, 255, 0.6)',
+                    background: refundPreference === 'source' ? 'rgba(220, 252, 231, 0.65)' : 'rgba(255, 255, 255, 0.45)',
+                    backdropFilter: 'blur(16px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(16px) saturate(180%)',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '14px',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
                   }}
                   onClick={() => {
                     setRefundPreference('source');
@@ -814,11 +642,15 @@ const CustomerSettings = () => {
                     style={{
                       padding: '14px 20px',
                       borderRadius: '12px',
-                      background: 'rgba(255, 255, 255, 0.7)',
-                      border: '1px solid rgba(0, 0, 0, 0.08)',
+                      background: 'rgba(255, 255, 255, 0.45)',
+                      backdropFilter: 'blur(16px) saturate(180%)',
+                      WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+                      border: '1px solid rgba(255, 255, 255, 0.6)',
+                      borderTop: '1px solid rgba(255, 255, 255, 0.8)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
                     }}
                   >
                     <span style={{ fontWeight: 700, fontSize: '14px', color: '#0B5D38' }}>⚡ {upi}</span>
@@ -875,8 +707,12 @@ const CustomerSettings = () => {
                     justifyContent: 'space-between',
                     padding: '16px 20px',
                     borderRadius: '14px',
-                    background: 'rgba(255, 255, 255, 0.7)',
-                    border: '1px solid rgba(0, 0, 0, 0.08)',
+                    background: 'rgba(255, 255, 255, 0.45)',
+                    backdropFilter: 'blur(16px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+                    border: '1px solid rgba(255, 255, 255, 0.6)',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.8)',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
                   }}
                 >
                   <div>

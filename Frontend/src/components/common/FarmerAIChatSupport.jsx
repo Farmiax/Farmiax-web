@@ -121,20 +121,6 @@ const FarmerAIChatSupport = () => {
 
   return (
     <>
-      {/* Floating Button in Bottom-Right */}
-      <button 
-        className="farmer-support-floating-btn"
-        onClick={() => setIsOpen(!isOpen)}
-        title="Chat with Farmiax AI Support"
-        aria-label="Customer Support AI Chat"
-      >
-        <div className="btn-icon-wrapper">
-          <i className="ri-customer-service-2-fill support-icon"></i>
-          <i className="ri-sparkling-fill sparkle-badge"></i>
-        </div>
-        <span className="btn-label">Customer Support</span>
-      </button>
-
       {/* Interactive AI Chat Window */}
       {isOpen && (
         <div className="farmer-ai-chat-window">

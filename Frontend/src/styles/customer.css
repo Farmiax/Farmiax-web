@@ -2700,3 +2700,94 @@ h1, h2, h3, .section-title, .product-title, .profile-card-header h2, .profile-ba
   display: none;
   /* Chrome, Safari and Opera */
 }
+
+/* =========================================================
+   COMPREHENSIVE MOBILE RESPONSIVENESS OVERRIDES
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .cart-main-grid,
+  .shop-main-layout,
+  .customer-profile-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .cart-summary-box,
+  .shop-sidebar {
+    position: static;
+    width: 100%;
+  }
+
+  .cart-page-wrapper,
+  .shop-page-wrapper,
+  .customer-page-wrapper {
+    padding: 16px;
+  }
+
+  /* Make product grids stack neatly */
+  .products-grid,
+  .wishlist-grid,
+  .farmer-list-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Smaller mobile screens */
+  .products-grid,
+  .wishlist-grid,
+  .farmer-list-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .settings-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-form-grid > * {
+    grid-column: span 1 !important;
+  }
+
+  .cart-item-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+  }
+
+  .cart-item-details {
+    width: 100%;
+  }
+
+  /* Fix orders tables */
+  .orders-table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Buttons */
+  button, 
+  .btn,
+  .btn-primary,
+  .btn-secondary {
+    min-height: 44px; /* Touch target size */
+  }
+
+  /* Typography */
+  h1 { font-size: 24px !important; }
+  h2 { font-size: 20px !important; }
+  h3 { font-size: 18px !important; }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+}

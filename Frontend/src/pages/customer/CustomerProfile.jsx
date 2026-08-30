@@ -283,8 +283,8 @@ const CustomerProfile = () => {
                   </>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                    <FiTruck size={32} color="var(--border-light)" style={{ marginBottom: '12px' }} />
-                    <p style={{ color: 'var(--text-muted)', fontSize: '13px', margin: 0 }}>No active orders to track right now.</p>
+                    <FiTruck size={32} color="#64748B" style={{ marginBottom: '12px' }} />
+                    <p style={{ color: '#475569', fontSize: '13px', margin: 0 }}>No active orders to track right now.</p>
                     <button className="offer-btn" style={{ marginTop: '16px' }} onClick={() => navigate('/customer/shop')}>Start Shopping</button>
                   </div>
                 )}
@@ -320,32 +320,13 @@ const CustomerProfile = () => {
             </button>
           </div>
 
-          {/* Today's Offer */}
-          <div className="dashboard-card">
-            <div className="offer-widget-title">
-              <div className="icon"><FiTag size={12} /></div>
-              Today's Offer
-            </div>
 
-            <div className="offer-banner">
-              <p>Fresh Vegetables</p>
-              <h3>20% OFF</h3>
-              <p className="sub">On all vegetables</p>
-              <img src={capsicumImg} alt="Offer" className="offer-banner-img" />
-            </div>
-
-            <div className="offer-actions">
-              <div className="offer-code">Use Code: FARM20</div>
-              <button className="offer-btn" onClick={() => navigate('/customer/shop?tab=offers')}>Shop Now</button>
-            </div>
-          </div>
 
           {/* Quick Links */}
           <div className="dashboard-card" style={{ padding: '16px' }}>
             <div className="quick-links-grid">
               <Link to="/customer/orders" className="quick-link-item"><FiBox size={16} /> Orders</Link>
               <Link to="/customer/wishlist" className="quick-link-item"><FiHeart size={16} /> Wishlist</Link>
-              <Link to="/customer/profile" className="quick-link-item"><FiSettings size={16} /> Profile</Link>
               <Link to="/customer#contact" className="quick-link-item"><FiHeadphones size={16} /> Support</Link>
             </div>
           </div>

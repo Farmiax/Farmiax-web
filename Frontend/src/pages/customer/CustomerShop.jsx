@@ -137,26 +137,30 @@ const CustomerShop = () => {
           {/* Offers Announcement Banner */}
           {urlTab === 'offers' && (
             <div style={{
-              background: 'linear-gradient(135deg, #1D4533 0%, #15803D 100%)',
-              color: '#FFFFFF',
-              borderRadius: '16px',
+              background: 'rgba(255, 255, 255, 0.45)',
+              backdropFilter: 'blur(16px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+              borderTop: '1px solid rgba(255, 255, 255, 0.8)',
+              color: '#1F2937',
+              borderRadius: '20px',
               padding: '24px 32px',
               marginBottom: '24px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              boxShadow: '0 10px 25px -5px rgba(29, 69, 51, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
             }}>
               <div>
                 <span style={{ background: '#FCE06D', color: '#17221D', padding: '4px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 700, display: 'inline-block', marginBottom: '8px' }}>
                   LIMITED HARVEST OFFERS
                 </span>
-                <h2 style={{ fontSize: '24px', fontWeight: 800, margin: '4px 0' }}>Special Seasonal Discounts 🔥</h2>
-                <p style={{ margin: 0, opacity: 0.9, fontSize: '14px' }}>Get up to 20% OFF on direct harvest produce. Use coupon code <strong>FARM20</strong> at checkout.</p>
+                <h2 style={{ fontSize: '24px', fontWeight: 800, margin: '4px 0', color: '#062414' }}>Special Seasonal Discounts 🔥</h2>
+                <p style={{ margin: 0, color: '#475569', fontSize: '14px' }}>Get up to 20% OFF on direct harvest produce. Use coupon code <strong>FARM20</strong> at checkout.</p>
               </div>
               <button
                 onClick={() => setSearchParams({})}
-                style={{ background: '#FAF7F2', color: '#1D4533', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}
+                style={{ background: '#0B5D38', color: '#FFFFFF', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}
               >
                 View All Products
               </button>
@@ -167,11 +171,11 @@ const CustomerShop = () => {
             {/* Left Sidebar Filters */}
             <aside className={`shop-sidebar-filters ${showMobileFilters ? 'mobile-show' : ''}`}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h3 className="text-lg font-bold" style={{ margin: 0, color: '#FFFFFF' }}>Filters</h3>
+                <h3 className="text-lg font-bold" style={{ margin: 0, color: '#062414' }}>Filters</h3>
                 {(selectedCategory !== 'All' || searchQuery || ratingFilter > 0 || minPrice > 10 || maxPrice < 2000) && (
                   <button
                     onClick={handleClearFilters}
-                    style={{ background: 'none', border: 'none', color: '#86EFAC', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: '#0B5D38', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
                   >
                     Reset All
                   </button>
@@ -191,18 +195,18 @@ const CustomerShop = () => {
                       width: '100%',
                       padding: '8px 12px 8px 32px',
                       borderRadius: '8px',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      color: '#FFFFFF',
+                      border: '1px solid rgba(0, 0, 0, 0.2)',
+                      background: 'rgba(255, 255, 255, 0.6)',
+                      color: '#062414',
                       fontSize: '13px',
                       outline: 'none',
                     }}
                   />
-                  <FiSearch style={{ position: 'absolute', left: '10px', top: '10px', color: '#86EFAC' }} />
+                  <FiSearch style={{ position: 'absolute', left: '10px', top: '10px', color: '#0B5D38' }} />
                   {searchQuery && (
                     <FiX
                       onClick={() => setSearchQuery('')}
-                      style={{ position: 'absolute', right: '10px', top: '10px', color: 'rgba(255, 255, 255, 0.7)', cursor: 'pointer' }}
+                      style={{ position: 'absolute', right: '10px', top: '10px', color: 'rgba(0, 0, 0, 0.5)', cursor: 'pointer' }}
                     />
                   )}
                 </div>
@@ -233,7 +237,7 @@ const CustomerShop = () => {
                   placeholder="Min"
                   min="0"
                 />
-                <span style={{ color: '#86EFAC', fontWeight: 600 }}>to</span>
+                <span style={{ color: '#0B5D38', fontWeight: 600 }}>to</span>
                 <input
                   type="number"
                   value={maxPrice}
@@ -253,9 +257,9 @@ const CustomerShop = () => {
                       name="rating"
                       checked={ratingFilter === star}
                       onChange={() => setRatingFilter(star)}
-                      style={{ accentColor: '#86EFAC' }}
+                      style={{ accentColor: '#0B5D38' }}
                     />
-                    <span style={{ color: '#FFFFFF' }}>{star > 0 ? `${star}★ & Above` : 'All Ratings'}</span>
+                    <span style={{ color: '#1F2937' }}>{star > 0 ? `${star}★ & Above` : 'All Ratings'}</span>
                   </label>
                 ))}
               </div>
@@ -295,12 +299,12 @@ const CustomerShop = () => {
                   </button>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold" style={{ color: '#DCFCE7' }}>Sort by:</span>
+                    <span className="text-xs font-semibold" style={{ color: '#DCFCE7' }}>Sort by: </span>
                     <select
                       className="shop-sort-select"
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      style={{ background: 'rgba(255, 255, 255, 0.85)', border: '1px solid #CBD5E1', color: '#1F2937', borderRadius: '8px', padding: '6px 12px' }}
+                      style={{ background: 'rgba(255, 255, 255, 0.85)', border: '1px solid #CBD5E1', color: '#1F2937', borderRadius: '10px', padding: '2px 5px' }}
                     >
                       <option value="popularity">Popularity</option>
                       <option value="price-asc">Price: Low to High</option>

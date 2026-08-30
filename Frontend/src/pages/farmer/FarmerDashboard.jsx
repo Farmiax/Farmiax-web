@@ -72,10 +72,7 @@ const FarmerDashboard = () => {
         date: ord.createdAt ? new Date(ord.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }) : `Order ${idx + 1}`,
         revenue: Number(ord.totalAmount || ord.actualAmount || 0),
       }))
-    : [
-        { date: 'Day 1', revenue: 0 },
-        { date: 'Today', revenue: totalRevenue },
-      ];
+    : [];
 
   const recentOrdersList = farmerOrders.slice(0, 5);
 
@@ -96,11 +93,11 @@ const FarmerDashboard = () => {
       <div className="farmer-dashboard-view">
         {/* Welcome Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <h1 style={{ fontSize: '28px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+          <div className="page-header-box">
+            <h1 style={{ fontSize: '28px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
               Welcome back, {user?.fullName || 'Farmer Partner'} 🌾
             </h1>
-            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '15px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
+            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.95)', fontSize: '15px', textShadow: '0 1px 3px rgba(0,0,0,0.3)', fontWeight: 500 }}>
               Here is what's happening with your farm crops and orders today.
             </p>
           </div>
@@ -142,9 +139,6 @@ const FarmerDashboard = () => {
             <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '0 0 8px', color: '#FFFFFF', letterSpacing: '-0.5px' }}>
               ₹{totalRevenue.toLocaleString()}
             </h2>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#4ADE80', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <FiTrendingUp /> +18.4% from last month
-            </span>
           </div>
 
           {/* Orders */}
@@ -160,9 +154,6 @@ const FarmerDashboard = () => {
             <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '0 0 8px', color: '#FFFFFF', letterSpacing: '-0.5px' }}>
               {totalOrdersCount}
             </h2>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#4ADE80', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <FiTrendingUp /> +12% growth rate
-            </span>
           </div>
 
           {/* Products Listed */}
@@ -194,16 +185,16 @@ const FarmerDashboard = () => {
               </div>
             </div>
             <h2 style={{ fontSize: '32px', fontWeight: 800, margin: '0 0 8px', color: '#FDE047', letterSpacing: '-0.5px' }}>
-              4.9 ★
+              0.0 ★
             </h2>
             <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255, 255, 255, 0.85)' }}>
-              Based on 64 buyer reviews
+              No reviews yet
             </span>
           </div>
         </div>
 
         {/* Charts Section Glass Boxes */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '28px' }}>
+        <div className="dashboard-charts-grid" style={{ display: 'grid', gap: '24px', marginBottom: '28px' }}>
           {/* Revenue Chart Box */}
           <div className="glass-box" style={{ padding: '26px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -212,7 +203,7 @@ const FarmerDashboard = () => {
                 <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.8)' }}>Direct harvest proceeds across settlement periods</p>
               </div>
               <span style={{ background: 'rgba(34, 197, 94, 0.2)', border: '1px solid rgba(74, 222, 128, 0.4)', color: '#86EFAC', fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '8px' }}>
-                August 2025
+                {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </span>
             </div>
 
@@ -300,17 +291,17 @@ const FarmerDashboard = () => {
                         #{String(ordId).slice(-8)}
                       </td>
                       <td style={{ color: '#FFFFFF', fontWeight: 600 }}>
-                        {ord.customer?.fullName || ord.customer || 'Customer'}
+                        {ord.customer?.fullName || ord.customer || 'Unknown Customer'}
                       </td>
                       <td style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-                        {ord.Products?.length ? `${ord.Products.length} items` : (ord.items || '1 item')}
+                        {ord.Products?.length ? `${ord.Products.length} items` : (ord.items || '0 items')}
                       </td>
                       <td style={{ fontWeight: 800, color: '#4ADE80', fontSize: '15px' }}>
                         ₹{ord.totalAmount || ord.amount || 0}
                       </td>
                       <td>
                         <span className={`status-pill ${getStatusClass(ord.status)}`}>
-                          {ord.status || 'Delivered'}
+                          {ord.status || 'Pending'}
                         </span>
                       </td>
                       <td style={{ textAlign: 'right' }}>
@@ -321,9 +312,10 @@ const FarmerDashboard = () => {
                             padding: '6px 14px',
                             fontSize: '12px',
                             textDecoration: 'none',
-                            background: 'rgba(255, 255, 255, 0.15)',
-                            border: '1px solid rgba(255, 255, 255, 0.4)',
-                            color: '#FFFFFF',
+                            background: 'linear-gradient(135deg, #15803D 0%, #166534 100%)',
+                boxShadow: '0 4px 16px rgba(22, 101, 52, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                color: '#FFFFFF',
                             borderRadius: '8px',
                           }}
                         >
@@ -343,3 +335,4 @@ const FarmerDashboard = () => {
 };
 
 export default FarmerDashboard;
+

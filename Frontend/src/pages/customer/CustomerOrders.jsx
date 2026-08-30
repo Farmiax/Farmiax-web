@@ -130,7 +130,17 @@ const CustomerOrders = () => {
                   <p>Loading your order history...</p>
                 </div>
               ) : filteredOrders.length === 0 ? (
-                <div style={{ padding: '60px 20px', textAlign: 'center', background: '#FFF', borderRadius: '16px', border: '1px dashed #CBD5E1' }}>
+                <div style={{
+                  padding: '60px 20px',
+                  textAlign: 'center',
+                  background: 'rgba(255, 255, 255, 0.45)',
+                  backdropFilter: 'blur(16px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+                  borderRadius: '20px',
+                  border: '1px solid rgba(255, 255, 255, 0.6)',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.8)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)'
+                }}>
                   <FiPackage size={48} style={{ color: '#94A3B8', marginBottom: '12px' }} />
                   <h3 style={{ fontSize: '18px', fontWeight: 700, margin: '0 0 6px', color: '#1E293B' }}>No orders in this category</h3>
                   <p style={{ color: '#64748B', fontSize: '13px', marginBottom: '20px' }}>Explore authentic products and place your first harvest order.</p>

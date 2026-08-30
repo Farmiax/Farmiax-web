@@ -94,17 +94,17 @@ const FarmerProfile = () => {
                 {farmerInitials}
               </div>
 
-              <div>
+              <div className="page-header-box">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 800, color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>{farmData.farmerName}</h1>
+                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 800, color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{farmData.farmerName}</h1>
                   <span style={{ background: 'rgba(34, 197, 94, 0.25)', border: '1px solid rgba(74, 222, 128, 0.6)', color: '#86EFAC', padding: '3px 12px', borderRadius: '999px', fontSize: '12px', fontWeight: 800 }}>
-                    ✓ Verified Producer
+                    <i className="ri-verified-badge-fill" style={{ marginRight: '4px' }}></i>
+                    Verified Producer
                   </span>
                 </div>
-                <p style={{ margin: '4px 0 0', fontSize: '15px', color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600 }}>{farmData.farmName}</p>
-                <p style={{ margin: '4px 0 0', fontSize: '13.5px', color: 'rgba(255, 255, 255, 0.8)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <FiMapPin size={14} color="#4ADE80" /> {farmData.location}
-                </p>
+                <span style={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.9)', textShadow: '0 1px 3px rgba(0,0,0,0.3)', display: 'block', marginTop: '4px' }}>
+                  {farmData.farmName} • {farmData.location}
+                </span>
               </div>
             </div>
 

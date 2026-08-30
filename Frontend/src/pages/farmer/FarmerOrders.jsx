@@ -145,8 +145,8 @@ const FarmerOrders = () => {
       <div className="farmer-orders-view">
         {/* Page Top Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+          <div className="page-header-box">
+            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
               Customer Orders & Dispatch
             </h1>
             <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
@@ -167,7 +167,8 @@ const FarmerOrders = () => {
                 border: '1px solid rgba(255, 255, 255, 0.35)',
                 fontSize: '13.5px',
                 outline: 'none',
-                background: 'rgba(255, 255, 255, 0.15)',
+                background: 'rgba(0, 0, 0, 0.65)',
+                backdropFilter: 'blur(10px)',
                 color: '#FFFFFF',
               }}
             />
@@ -186,8 +187,8 @@ const FarmerOrders = () => {
                 style={{
                   padding: '9px 18px',
                   borderRadius: '10px',
-                  border: isTabActive ? '1.5px solid rgba(255, 255, 255, 0.8)' : '1px solid rgba(255, 255, 255, 0.3)',
-                  background: isTabActive ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.12)',
+                  border: isTabActive ? '1px solid rgba(255, 255, 255, 0.4)' : '1px solid rgba(255, 255, 255, 0.2)',
+                  background: isTabActive ? 'linear-gradient(135deg, #15803D 0%, #166534 100%)' : 'rgba(0, 0, 0, 0.65)',
                   color: '#FFFFFF',
                   fontWeight: 700,
                   fontSize: '13px',
@@ -195,7 +196,7 @@ const FarmerOrders = () => {
                   whiteSpace: 'nowrap',
                   backdropFilter: 'blur(10px)',
                   transition: 'all 0.2s ease',
-                  boxShadow: isTabActive ? '0 4px 14px rgba(0, 0, 0, 0.15)' : 'none',
+                  boxShadow: isTabActive ? '0 4px 16px rgba(22, 101, 52, 0.4)' : 'none',
                 }}
               >
                 {tab}
@@ -269,9 +270,10 @@ const FarmerOrders = () => {
                               style={{
                                 padding: '6px 12px',
                                 fontSize: '12px',
-                                background: 'rgba(255, 255, 255, 0.15)',
-                                border: '1px solid rgba(255, 255, 255, 0.4)',
-                                color: '#FFFFFF',
+                                background: 'linear-gradient(135deg, #15803D 0%, #166534 100%)',
+                boxShadow: '0 4px 16px rgba(22, 101, 52, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                color: '#FFFFFF',
                                 borderRadius: '8px',
                               }}
                               title="View Order Details"
@@ -397,3 +399,6 @@ const FarmerOrders = () => {
 };
 
 export default FarmerOrders;
+
+
+

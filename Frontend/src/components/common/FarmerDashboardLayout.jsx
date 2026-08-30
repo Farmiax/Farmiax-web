@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logo from './Logo';
 import FarmerAIChatSupport from './FarmerAIChatSupport';
@@ -6,7 +6,8 @@ import { useAuth } from '../../context/AuthContext';
 import {
   FiGrid, FiBox, FiShoppingBag, FiTruck, FiUsers, FiDollarSign,
   FiBarChart2, FiCreditCard, FiStar, FiMessageSquare, FiUser,
-  FiSettings, FiBell, FiSearch, FiLogOut, FiMenu, FiX, FiHelpCircle
+  FiSettings, FiBell, FiSearch, FiLogOut, FiMenu, FiX, FiHelpCircle,
+  FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
 import '../../styles/farmer-dashboard.css';
 
@@ -15,6 +16,26 @@ const FarmerDashboardLayout = ({ children, activeNav = '' }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    const saved = localStorage.getItem('farmiax_farmer_sidebar_open');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  const toggleSidebar = () => {
+    const newState = !isSidebarOpen;
+    setIsSidebarOpen(newState);
+    localStorage.setItem('farmiax_farmer_sidebar_open', JSON.stringify(newState));
+  };
+
+  useEffect(() => {
+    if (mobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [mobileSidebarOpen]);
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const navLinks = [
@@ -28,7 +49,6 @@ const FarmerDashboardLayout = ({ children, activeNav = '' }) => {
     { label: 'Payouts & KYC', path: '/farmer/payouts', icon: FiCreditCard },
     { label: 'Reviews', path: '/farmer/reviews', icon: FiStar },
     { label: 'Messages', path: '/farmer/messages', icon: FiMessageSquare },
-    { label: 'Farm Profile', path: '/farmer/profile', icon: FiUser },
     { label: 'Settings', path: '/farmer/settings', icon: FiSettings },
   ];
 
@@ -39,9 +59,35 @@ const FarmerDashboardLayout = ({ children, activeNav = '' }) => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      setSearchQuery('');
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return;
+
+    if (q.includes('order')) {
+      navigate('/farmer/orders');
+    } else if (q.includes('product') || q.includes('crop')) {
+      navigate('/farmer/products');
+    } else if (q.includes('inventory') || q.includes('stock')) {
+      navigate('/farmer/inventory');
+    } else if (q.includes('customer') || q.includes('buyer')) {
+      navigate('/farmer/customers');
+    } else if (q.includes('earning') || q.includes('revenue')) {
+      navigate('/farmer/earnings');
+    } else if (q.includes('analytic') || q.includes('report')) {
+      navigate('/farmer/analytics');
+    } else if (q.includes('payout') || q.includes('kyc')) {
+      navigate('/farmer/payouts');
+    } else if (q.includes('review') || q.includes('rating')) {
+      navigate('/farmer/reviews');
+    } else if (q.includes('message') || q.includes('chat')) {
+      navigate('/farmer/messages');
+    } else if (q.includes('setting') || q.includes('profile')) {
+      navigate('/farmer/settings');
+    } else {
+      // Fallback if not specifically recognized, just clear or stay
+      // but maybe just clear it
     }
+    
+    setSearchQuery('');
   };
 
   const farmerName = user?.fullName || 'Farmer Partner';
@@ -65,19 +111,22 @@ const FarmerDashboardLayout = ({ children, activeNav = '' }) => {
       )}
 
       {/* Sidebar Navigation */}
-      <aside className={`farmer-sidebar ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
-        <div className="farmer-sidebar-logo" style={{ padding: '20px 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Logo size="md" imgStyle={{ filter: 'drop-shadow(0 2px 8px rgba(255,255,255,0.4))' }} />
+      <aside className={`farmer-sidebar ${mobileSidebarOpen ? 'mobile-open' : ''} ${isSidebarOpen ? '' : 'collapsed'}`}>
+        <div className="farmer-sidebar-logo">
+          {isSidebarOpen ? (
+            <Logo size="md" imgStyle={{ filter: 'drop-shadow(0 2px 8px rgba(255,255,255,0.4))' }} />
+          ) : (
+            <Logo size="sm" imgStyle={{ filter: 'drop-shadow(0 2px 8px rgba(255,255,255,0.4))' }} />
+          )}
           <button
-            className="mobile-close-btn"
-            onClick={() => setMobileSidebarOpen(false)}
-            style={{ background: 'none', border: 'none', color: '#FFFFFF', cursor: 'pointer', display: 'none' }}
+            className="sidebar-toggle-btn"
+            onClick={toggleSidebar}
           >
-            <FiX size={20} />
+            {isSidebarOpen ? <FiChevronLeft size={16} /> : <FiChevronRight size={16} />}
           </button>
         </div>
 
-        <div style={{ padding: '0 16px 14px' }}>
+        <div className="farmer-verified-badge" style={{ padding: '0 16px 14px' }}>
           <div style={{ background: 'rgba(34, 197, 94, 0.2)', border: '1px solid rgba(74, 222, 128, 0.45)', borderRadius: '12px', padding: '10px 14px' }}>
             <p style={{ margin: 0, fontSize: '11px', color: '#86EFAC', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>✓ Verified Producer</p>
             <p style={{ margin: '2px 0 0', fontSize: '13.5px', fontWeight: 700, color: '#FFFFFF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{farmTitle}</p>
@@ -95,27 +144,19 @@ const FarmerDashboardLayout = ({ children, activeNav = '' }) => {
                 className={`farmer-nav-item ${isActive ? 'active' : ''}`}
                 onClick={() => setMobileSidebarOpen(false)}
               >
-                <Icon style={{ marginRight: '10px', fontSize: '18px' }} />
+                <Icon style={{ marginRight: isSidebarOpen ? '10px' : '0', fontSize: '18px' }} />
                 <span>{item.label}</span>
               </Link>
             );
           })}
 
-          <button
+          <button 
+            className="farmer-nav-item logout" 
             onClick={handleLogout}
-            className="farmer-nav-item logout"
-            style={{
-              width: '100%',
-              background: 'transparent',
-              border: 'none',
-              textAlign: 'left',
-              cursor: 'pointer',
-              marginTop: '12px',
-              color: '#F87171',
-            }}
+            style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'flex-start' : 'center', padding: '12px 16px' }}
           >
-            <FiLogOut style={{ marginRight: '10px', fontSize: '18px' }} />
-            <span>Sign Out</span>
+            <FiLogOut style={{ marginRight: isSidebarOpen ? '10px' : '0', fontSize: '18px', color: '#F87171' }} />
+            {isSidebarOpen && <span style={{ color: '#F87171', fontWeight: 700 }}>Logout Securely</span>}
           </button>
         </nav>
       </aside>
@@ -155,23 +196,13 @@ const FarmerDashboardLayout = ({ children, activeNav = '' }) => {
           <div className="farmer-header-right">
             <button
               onClick={() => window.openFarmerSupportChat && window.openFarmerSupportChat()}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '8px 14px',
-                background: 'rgba(255, 255, 255, 0.15)',
-                border: '1px solid rgba(255, 255, 255, 0.35)',
-                borderRadius: '10px',
-                color: '#FFFFFF',
-                fontWeight: 600,
-                fontSize: '13px',
-                cursor: 'pointer',
-                backdropFilter: 'blur(8px)',
-              }}
+              className="farmer-header-ai-btn"
               title="AI Assistant Support"
             >
-              <FiHelpCircle size={16} color="#86EFAC" />
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <i className="ri-customer-service-2-fill" style={{ fontSize: '18px' }}></i>
+                <i className="ri-sparkling-fill" style={{ position: 'absolute', top: '-4px', right: '-6px', fontSize: '10px', color: '#FCE06D' }}></i>
+              </div>
               <span>AI Support</span>
             </button>
 
@@ -188,17 +219,6 @@ const FarmerDashboardLayout = ({ children, activeNav = '' }) => {
               title="Notifications"
             >
               <FiBell size={19} style={{ color: '#FFFFFF' }} />
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '6px',
-                  right: '6px',
-                  width: '8px',
-                  height: '8px',
-                  background: '#22C55E',
-                  borderRadius: '50%',
-                }}
-              />
             </Link>
 
             <Link

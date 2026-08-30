@@ -72,8 +72,8 @@ const FarmerCustomers = () => {
       <div className="farmer-customers-view">
         {/* Page Top Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+          <div className="page-header-box">
+            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
               Direct Buyer Relationships & Customers
             </h1>
             <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
@@ -94,7 +94,8 @@ const FarmerCustomers = () => {
                 border: '1px solid rgba(255, 255, 255, 0.35)',
                 fontSize: '13.5px',
                 outline: 'none',
-                background: 'rgba(255, 255, 255, 0.15)',
+                background: 'rgba(0, 0, 0, 0.65)',
+                backdropFilter: 'blur(10px)',
                 color: '#FFFFFF',
               }}
             />
@@ -197,3 +198,6 @@ const FarmerCustomers = () => {
 };
 
 export default FarmerCustomers;
+
+
+

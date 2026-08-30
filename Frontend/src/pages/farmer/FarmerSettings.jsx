@@ -71,14 +71,15 @@ const FarmerSettings = () => {
   return (
     <FarmerDashboardLayout activeNav="settings">
       <div className="farmer-settings-view">
-        {/* Header */}
-        <div style={{ marginBottom: '24px' }}>
-          <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-            Farmer Account Settings & Security
-          </h1>
-          <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
-            Configure notification preferences, login passwords, and account security.
-          </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+          <div className="page-header-box">
+            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              Farmer Account Settings & Security
+            </h1>
+            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14.5px', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+              Configure notification preferences, login passwords, and account security.
+            </p>
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>

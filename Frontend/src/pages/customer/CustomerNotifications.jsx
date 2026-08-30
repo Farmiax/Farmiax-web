@@ -136,18 +136,18 @@ const CustomerNotifications = () => {
         {/* Page Banner Header */}
         <div
           style={{
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 40%), rgba(6, 36, 20, 0.65)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderTop: '1px solid rgba(255, 255, 255, 0.4)',
+            background: 'rgba(255, 255, 255, 0.45)',
+            backdropFilter: 'blur(16px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.6)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.8)',
             borderRadius: '20px',
             padding: '32px 40px',
-            color: '#FFFFFF',
+            color: '#1F2937',
             marginBottom: '32px',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
           }}
         >
           <div style={{ position: 'relative', zIndex: 2 }}>
@@ -158,20 +158,20 @@ const CustomerNotifications = () => {
                     width: '56px',
                     height: '56px',
                     borderRadius: '16px',
-                    background: 'rgba(255, 255, 255, 0.15)',
+                    background: 'rgba(255, 255, 255, 0.6)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#86EFAC',
+                    color: '#0B5D38',
                   }}
                 >
                   <FiBell size={30} />
                 </div>
                 <div>
-                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.5px' }}>
+                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 800, color: '#062414', letterSpacing: '-0.5px' }}>
                     Notifications & Harvest Alerts
                   </h1>
-                  <p style={{ margin: '4px 0 0', opacity: 0.9, fontSize: '14px', color: '#FFFFFF' }}>
+                  <p style={{ margin: '4px 0 0', opacity: 0.9, fontSize: '14px', color: '#475569' }}>
                     Stay updated with subscribed farmer harvests, new producer launches, and exclusive product discounts.
                   </p>
                 </div>
@@ -183,7 +183,7 @@ const CustomerNotifications = () => {
                   <button
                     onClick={markAllAsRead}
                     style={{
-                      background: 'rgba(255, 255, 255, 0.15)',
+                      background: '#0B5D38',
                       color: '#FFFFFF',
                       border: 'none',
                       padding: '10px 18px',
@@ -204,9 +204,9 @@ const CustomerNotifications = () => {
                   <button
                     onClick={clearAllNotifications}
                     style={{
-                      background: 'rgba(239, 68, 68, 0.2)',
-                      color: '#FCA5A5',
-                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      background: 'transparent',
+                      color: '#EF4444',
+                      border: '1.5px solid #EF4444',
                       padding: '10px 18px',
                       borderRadius: '12px',
                       fontWeight: 700,
@@ -231,7 +231,7 @@ const CustomerNotifications = () => {
                 gap: '10px',
                 marginTop: '28px',
                 paddingTop: '20px',
-                borderTop: '1px solid rgba(255,255,255,0.15)',
+                borderTop: '1px solid rgba(0,0,0,0.08)',
                 overflowX: 'auto',
               }}
             >
@@ -249,8 +249,8 @@ const CustomerNotifications = () => {
                     padding: '8px 16px',
                     borderRadius: '999px',
                     border: 'none',
-                    background: activeFilter === filter.id ? '#86EFAC' : 'rgba(255,255,255,0.12)',
-                    color: activeFilter === filter.id ? '#062414' : '#FFFFFF',
+                    background: activeFilter === filter.id ? '#0B5D38' : 'rgba(255, 255, 255, 0.6)',
+                    color: activeFilter === filter.id ? '#FFFFFF' : '#062414',
                     fontWeight: 700,
                     fontSize: '13px',
                     cursor: 'pointer',

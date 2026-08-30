@@ -91,13 +91,15 @@ const FarmerMessages = () => {
   return (
     <FarmerDashboardLayout activeNav="messages">
       <div className="farmer-messages-view">
-        <div style={{ marginBottom: '20px' }}>
-          <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-            Customer Inquiries & Messages
-          </h1>
-          <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
-            Direct messaging channel with your produce buyers.
-          </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+          <div className="page-header-box">
+            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              Customer Inquiries & Messages
+            </h1>
+            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14.5px', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+              Direct messaging channel with your produce buyers.
+            </p>
+          </div>
         </div>
 
         {/* 2-Column Chat Glass Layout */}
@@ -215,8 +217,9 @@ const FarmerMessages = () => {
                         padding: '12px 18px',
                         borderRadius: '12px',
                         border: '1px solid rgba(255, 255, 255, 0.3)',
-                        background: 'rgba(255, 255, 255, 0.15)',
-                        color: '#FFFFFF',
+                        background: 'rgba(0, 0, 0, 0.65)',
+                backdropFilter: 'blur(10px)',
+                color: '#FFFFFF',
                         fontSize: '14px',
                         outline: 'none',
                       }}
@@ -247,3 +250,4 @@ const FarmerMessages = () => {
 };
 
 export default FarmerMessages;
+

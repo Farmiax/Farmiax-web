@@ -50,8 +50,8 @@ const FarmerEarnings = () => {
       <div className="farmer-earnings-view">
         {/* Page Top Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+          <div className="page-header-box">
+            <h1 style={{ fontSize: '26px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
               Farmer Earnings & Revenue Settlements
             </h1>
             <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textShadow: '0 1px 3px rgba(0,0,0,0.2)' }}>
@@ -68,9 +68,10 @@ const FarmerEarnings = () => {
               gap: '8px',
               padding: '10px 18px',
               fontSize: '13.5px',
-              background: 'rgba(255, 255, 255, 0.15)',
-              border: '1px solid rgba(255, 255, 255, 0.4)',
-              color: '#FFFFFF',
+              background: 'linear-gradient(135deg, #15803D 0%, #166534 100%)',
+                boxShadow: '0 4px 16px rgba(22, 101, 52, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                color: '#FFFFFF',
               borderRadius: '10px',
             }}
           >
@@ -169,3 +170,6 @@ const FarmerEarnings = () => {
 };
 
 export default FarmerEarnings;
+
+
+

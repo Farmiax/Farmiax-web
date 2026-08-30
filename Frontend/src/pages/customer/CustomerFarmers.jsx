@@ -202,33 +202,20 @@ const CustomerFarmers = () => {
         <div
           className="farmers-banner-header"
           style={{
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 40%), rgba(6, 36, 20, 0.65)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderTop: '1px solid rgba(255, 255, 255, 0.4)',
+            background: 'rgba(255, 255, 255, 0.45)',
+            backdropFilter: 'blur(16px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.6)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.8)',
             borderRadius: '20px',
             padding: '32px 40px',
-            color: '#FFFFFF',
+            color: '#1F2937',
             marginBottom: '32px',
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
           }}
         >
-          <div
-            style={{
-              position: 'absolute',
-              top: '-20px',
-              right: '-10px',
-              opacity: 0.08,
-              color: '#FFFFFF',
-              pointerEvents: 'none',
-            }}
-          >
-            <FiUsers size={220} />
-          </div>
-
           <div style={{ position: 'relative', zIndex: 2 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -247,10 +234,10 @@ const CustomerFarmers = () => {
                   <FiUsers size={30} />
                 </div>
                 <div>
-                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.5px' }}>
+                  <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 800, color: '#062414', letterSpacing: '-0.5px' }}>
                     Subscribed Farmers & Live Harvest Feed
                   </h1>
-                  <p style={{ margin: '4px 0 0', opacity: 0.9, fontSize: '14px', color: '#FFFFFF' }}>
+                  <p style={{ margin: '4px 0 0', opacity: 0.9, fontSize: '14px', color: '#475569' }}>
                     Follow organic farmers to receive instant notifications whenever they post fresh harvest stock.
                   </p>
                 </div>
@@ -260,7 +247,7 @@ const CustomerFarmers = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div
                   style={{
-                    background: 'rgba(255, 255, 255, 0.12)',
+                    background: 'rgba(255, 255, 255, 0.6)',
                     backdropFilter: 'blur(8px)',
                     padding: '10px 18px',
                     borderRadius: '12px',
@@ -271,13 +258,13 @@ const CustomerFarmers = () => {
                     fontWeight: 700,
                   }}
                 >
-                  <FiUserCheck style={{ color: '#86EFAC', fontSize: '18px' }} />
+                  <FiUserCheck style={{ color: '#0B5D38', fontSize: '18px' }} />
                   <span>{subscribedFarmers.length} Farmers Followed</span>
                 </div>
 
                 <div
                   style={{
-                    background: 'rgba(255, 255, 255, 0.12)',
+                    background: 'rgba(255, 255, 255, 0.6)',
                     backdropFilter: 'blur(8px)',
                     padding: '10px 18px',
                     borderRadius: '12px',
@@ -288,7 +275,7 @@ const CustomerFarmers = () => {
                     fontWeight: 700,
                   }}
                 >
-                  <FiBell style={{ color: '#FDE047', fontSize: '18px' }} />
+                  <FiBell style={{ color: '#F59E0B', fontSize: '18px' }} />
                   <span>{notifIds.length} Alerts Active</span>
                 </div>
               </div>
@@ -302,7 +289,7 @@ const CustomerFarmers = () => {
                 gap: '12px',
                 marginTop: '28px',
                 paddingTop: '20px',
-                borderTop: '1px solid rgba(255,255,255,0.15)',
+                borderTop: '1px solid rgba(0,0,0,0.08)',
               }}
             >
               <button
@@ -311,8 +298,8 @@ const CustomerFarmers = () => {
                   padding: '10px 20px',
                   borderRadius: '999px',
                   border: 'none',
-                  background: activeTab === 'feed' ? '#86EFAC' : 'rgba(255,255,255,0.12)',
-                  color: activeTab === 'feed' ? '#062414' : '#FFFFFF',
+                  background: activeTab === 'feed' ? '#0B5D38' : 'rgba(255, 255, 255, 0.6)',
+                  color: activeTab === 'feed' ? '#FFFFFF' : '#062414',
                   fontWeight: 700,
                   fontSize: '13.5px',
                   cursor: 'pointer',
@@ -331,8 +318,8 @@ const CustomerFarmers = () => {
                   padding: '10px 20px',
                   borderRadius: '999px',
                   border: 'none',
-                  background: activeTab === 'subscribed' ? '#86EFAC' : 'rgba(255,255,255,0.12)',
-                  color: activeTab === 'subscribed' ? '#062414' : '#FFFFFF',
+                  background: activeTab === 'subscribed' ? '#0B5D38' : 'rgba(255, 255, 255, 0.6)',
+                  color: activeTab === 'subscribed' ? '#FFFFFF' : '#062414',
                   fontWeight: 700,
                   fontSize: '13.5px',
                   cursor: 'pointer',
@@ -351,8 +338,8 @@ const CustomerFarmers = () => {
                   padding: '10px 20px',
                   borderRadius: '999px',
                   border: 'none',
-                  background: activeTab === 'discover' ? '#86EFAC' : 'rgba(255,255,255,0.12)',
-                  color: activeTab === 'discover' ? '#062414' : '#FFFFFF',
+                  background: activeTab === 'discover' ? '#0B5D38' : 'rgba(255, 255, 255, 0.6)',
+                  color: activeTab === 'discover' ? '#FFFFFF' : '#062414',
                   fontWeight: 700,
                   fontSize: '13.5px',
                   cursor: 'pointer',

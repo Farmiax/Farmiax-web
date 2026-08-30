@@ -172,7 +172,8 @@ const TrackOrder = () => {
           <div
             style={{
               background: 'rgba(255, 255, 255, 0.45)',
-              backdropFilter: 'blur(16px)',
+              backdropFilter: 'blur(16px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(16px) saturate(180%)',
               border: '1px solid rgba(255, 255, 255, 0.6)',
               borderRadius: '24px',
               padding: '40px',

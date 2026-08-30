@@ -81,7 +81,7 @@
   height: 60px;
   margin-top: 15px;
   margin-left: -20px;
-  margin-right: -20px;
+  margin-right: 15px;
   margin-bottom: -20px;
 }
 
@@ -289,4 +289,32 @@
               radial-gradient(circle at bottom right, rgba(115, 192, 40, 0.1), transparent 40%);
   z-index: -1;
   pointer-events: none;
+}
+
+/* =========================================================
+   FARMER ANALYTICS MOBILE RESPONSIVENESS
+   ========================================================= */
+
+.analytics-charts-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .analytics-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-kpi-row {
+    grid-template-columns: 1fr;
+  }
 }
