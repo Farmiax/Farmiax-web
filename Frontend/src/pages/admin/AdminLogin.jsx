@@ -47,7 +47,9 @@ const AdminLogin = () => {
     <div
       style={{
         minHeight: '100vh',
-        background: 'radial-gradient(circle at center, #0B3D25 0%, #03140C 70%, #010805 100%)',
+        background: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('/admin-bg.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -66,17 +68,17 @@ const AdminLogin = () => {
         }}
       >
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ display: 'inline-flex', marginBottom: '16px' }}>
-            <Logo size="md" />
+        <div style={{ textAlign: 'center', marginBottom: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <Logo size="md" imgStyle={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' }} />
           </div>
-          <div style={{ display: 'inline-block', background: 'linear-gradient(135deg, #EAB308 0%, #CA8A04 100%)', color: '#000', fontSize: '11px', fontWeight: 900, padding: '3px 10px', borderRadius: '999px', letterSpacing: '0.6px', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <div style={{ background: 'linear-gradient(135deg, #EAB308 0%, #CA8A04 100%)', color: '#000', fontSize: '11px', fontWeight: 900, padding: '4px 12px', borderRadius: '999px', letterSpacing: '0.8px', textTransform: 'uppercase', marginBottom: '16px' }}>
             MASTER ADMIN ACCESS
           </div>
-          <h2 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 6px', color: '#FFFFFF' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 800, margin: '0 0 6px', color: '#111827' }}>
             Platform Control Portal
           </h2>
-          <p style={{ margin: 0, fontSize: '13.5px', color: 'rgba(255, 255, 255, 0.7)' }}>
+          <p style={{ margin: 0, fontSize: '13.5px', color: '#374151' }}>
             Sign in to manage global orders, products, farmers, and security.
           </p>
         </div>
@@ -104,11 +106,11 @@ const AdminLogin = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.85)', marginBottom: '8px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1f2937', marginBottom: '8px' }}>
               Admin Email
             </label>
             <div style={{ position: 'relative' }}>
-              <FiMail size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255, 255, 255, 0.5)' }} />
+              <FiMail size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#4b5563' }} />
               <input
                 type="email"
                 required
@@ -118,10 +120,10 @@ const AdminLogin = () => {
                 style={{
                   width: '100%',
                   padding: '12px 14px 12px 42px',
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  background: 'rgba(255, 255, 255, 0.6)',
+                  border: '1px solid rgba(0, 0, 0, 0.2)',
                   borderRadius: '12px',
-                  color: '#FFFFFF',
+                  color: '#111827',
                   fontSize: '14px',
                   outline: 'none',
                 }}
@@ -130,11 +132,11 @@ const AdminLogin = () => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.85)', marginBottom: '8px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#1f2937', marginBottom: '8px' }}>
               Master Security Password
             </label>
             <div style={{ position: 'relative' }}>
-              <FiLock size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255, 255, 255, 0.5)' }} />
+              <FiLock size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#4b5563' }} />
               <input
                 type="password"
                 required
@@ -144,10 +146,10 @@ const AdminLogin = () => {
                 style={{
                   width: '100%',
                   padding: '12px 14px 12px 42px',
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  background: 'rgba(255, 255, 255, 0.6)',
+                  border: '1px solid rgba(0, 0, 0, 0.2)',
                   borderRadius: '12px',
-                  color: '#FFFFFF',
+                  color: '#111827',
                   fontSize: '14px',
                   outline: 'none',
                 }}
@@ -164,7 +166,7 @@ const AdminLogin = () => {
               borderRadius: '12px',
               border: 'none',
               background: 'linear-gradient(135deg, #15803D 0%, #166534 100%)',
-              boxShadow: '0 4px 20px rgba(34, 197, 94, 0.3)',
+              boxShadow: '0 2px 8px rgba(34, 197, 94, 0.15)',
               color: '#FFFFFF',
               fontSize: '15px',
               fontWeight: 800,

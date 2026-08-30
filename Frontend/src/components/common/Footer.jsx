@@ -76,11 +76,11 @@ const Footer = () => {
           <ul className="footer-contact-list">
             <li>
               <i className="ri-mail-line contact-icon" />
-              <span>farmiax@zohomail.in</span>
+              <a href="mailto:farmiax@zohomail.in">farmiax@zohomail.in</a>
             </li>
             <li>
               <i className="ri-phone-line contact-icon" />
-              <span>+91 7796372787</span>
+              <a href="tel:+917796372787">+91 7796372787</a>
             </li>
             <li>
               <i className="ri-map-pin-line contact-icon" />

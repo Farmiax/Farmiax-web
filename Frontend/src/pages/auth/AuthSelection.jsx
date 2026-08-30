@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FiShoppingBag, FiTruck, FiArrowLeft } from 'react-icons/fi';
+import { FiShoppingBag, FiTruck, FiArrowLeft, FiShield } from 'react-icons/fi';
 import Logo from '../../components/common/Logo';
 import '../../styles/auth.css';
 
@@ -59,6 +59,21 @@ const AuthSelection = ({ mode = 'login' }) => {
               Sell your harvests directly at fair farmgate prices
             </p>
           </Link>
+
+          {isLogin && (
+            <Link
+              to="/admin/login"
+              className="auth-select-card"
+            >
+              <div className="auth-select-icon admin">
+                <FiShield size={28} />
+              </div>
+              <h3 className="auth-select-title">Admin</h3>
+              <p className="auth-select-desc">
+                Securely manage platform settings and oversight
+              </p>
+            </Link>
+          )}
         </div>
 
         <Link to="/" className="auth-back-home">

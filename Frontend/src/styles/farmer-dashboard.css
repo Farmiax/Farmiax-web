@@ -421,7 +421,20 @@
     color: #FFFFFF !important;
   }
   .farmer-header {
-    padding: 0 18px;
+    padding: 0 16px;
+    gap: 8px;
+  }
+  .farmer-search {
+    width: 140px; /* shrink search bar on mobile */
+  }
+  .farmer-header-ai-btn span {
+    display: none;
+  }
+  .farmer-header-right {
+    gap: 12px;
+  }
+  .header-profile span {
+    display: none;
   }
   .farmer-content {
     padding: 20px 16px;

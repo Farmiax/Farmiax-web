@@ -80,6 +80,16 @@
   margin-bottom: 12px;
 }
 
+.footer-contact-list li a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-contact-list li a:hover {
+  color: #ffffff;
+}
+
 .contact-icon {
   font-size: 16px;
   color: rgba(255, 255, 255, 0.7);

@@ -5,8 +5,11 @@
 .admin-layout-container {
   display: flex;
   min-height: 100vh;
-  background: radial-gradient(circle at top right, #09331f, #03140c 70%), #020b06;
-  color: #FFFFFF;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('/admin-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #111827;
   font-family: var(--font-main, 'Outfit', 'Inter', sans-serif);
 }
 
@@ -116,13 +119,13 @@
 
 /* Glass Box */
 .admin-glass-box {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 24px;
+  padding: 40px 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
 }
 
 /* KPI Cards */
@@ -133,13 +136,22 @@
   margin-bottom: 28px;
 }
 
+/* Global Text Override for Light Glass */
+.admin-glass-box *, .admin-kpi-card * {
+  color: #111827 !important;
+}
+
+.admin-glass-box span, .admin-kpi-card span {
+  color: #374151 !important;
+}
+
 .admin-kpi-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 22px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 24px;
+  padding: 24px;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -148,7 +160,7 @@
 
 .admin-kpi-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(74, 222, 128, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
 .admin-kpi-icon {
@@ -174,21 +186,21 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: rgba(255, 255, 255, 0.6);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.15);
+  color: #374151 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .admin-table td {
   padding: 16px 18px;
   font-size: 13.5px;
-  color: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #111827 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   vertical-align: middle;
 }
 
 .admin-table tr:hover td {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Status Badges */
@@ -242,13 +254,13 @@
 }
 
 .admin-btn-view {
-  background: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.5);
+  color: #111827;
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 .admin-btn-view:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .admin-btn-delete {
@@ -290,19 +302,75 @@
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .admin-sidebar {
     position: fixed;
     height: 100vh;
     left: -260px;
+    z-index: 100;
   }
   .admin-sidebar.open-mobile {
     left: 0;
   }
+  .admin-desktop-toggle {
+    display: none !important;
+  }
+  .admin-mobile-menu-btn {
+    display: flex !important;
+  }
+  
+  .admin-kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (min-width: 1025px) {
+  .admin-mobile-menu-btn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
   .admin-top-header {
     padding: 0 16px;
+    height: 60px;
   }
+  
+  .admin-header-title {
+    display: none !important;
+  }
+  
+  .admin-server-badge span:last-child {
+    display: none !important;
+  }
+  
+  .admin-profile-text {
+    display: none !important;
+  }
+  
   .admin-content-view {
-    padding: 20px 16px;
+    padding: 16px;
+  }
+  
+  .admin-glass-box {
+    padding: 24px 16px;
+  }
+  
+  /* Stack grid layouts globally */
+  div[style*="grid-template-columns: 2fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Table wrappers for horizontal scrolling */
+  .admin-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+    width: calc(100% + 32px);
+  }
+  
+  .admin-kpi-grid {
+    grid-template-columns: 1fr;
   }
 }

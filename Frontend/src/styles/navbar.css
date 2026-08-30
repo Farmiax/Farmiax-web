@@ -156,10 +156,10 @@
 @media (max-width: 1024px) {
   .navbar-desktop-links,
   .navbar-desktop-actions {
-    display: none;
+    display: none !important;
   }
   .navbar-toggle {
-    display: block;
+    display: block !important;
   }
   .navbar-mobile-menu {
     display: block;
