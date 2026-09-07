@@ -5,10 +5,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts: ['farmiax-evps.onrender.com'],
+    allowedHosts: ['farmiax.onrender.com'],
   },
 
   preview: {
-    allowedHosts: ['farmiax-evps.onrender.com'],
+    allowedHosts: ['farmiax.onrender.com'],
   },
 })
