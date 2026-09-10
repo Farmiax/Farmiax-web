@@ -93,7 +93,7 @@ const AdminOrders = () => {
       toast.success('Order record deleted from registry.');
       setDeleteOrderId(null);
       fetchOrders();
-    } catch (err) {
+    } catch {
       toast.error('Failed to delete order record');
     } finally {
       setSubmitting(false);

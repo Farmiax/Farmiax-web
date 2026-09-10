@@ -68,8 +68,8 @@ const CustomerDashboardLayout = ({ children }) => {
     <div className="dashboard-container">
       {/* Mobile Drawer Overlay */}
       {mobileMenuOpen && (
-        <div 
-          className="sidebar-overlay" 
+        <div
+          className="sidebar-overlay"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -88,9 +88,9 @@ const CustomerDashboardLayout = ({ children }) => {
           >
             {isSidebarOpen ? <FiChevronLeft size={16} /> : <FiChevronRight size={16} />}
           </button>
-          
-          <button 
-            className="mobile-close-btn" 
+
+          <button
+            className="mobile-close-btn"
             onClick={() => setMobileMenuOpen(false)}
           >
             <FiX size={20} />
@@ -194,42 +194,6 @@ const CustomerDashboardLayout = ({ children }) => {
             {children}
           </div>
 
-          {/* Static Features Footer */}
-          <div style={{
-            marginTop: 'auto',
-            background: '#0B5D38',
-            borderTop: '1px solid rgba(255, 255, 255, 0.15)',
-            padding: '18px 40px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: '13px',
-            color: '#FFFFFF',
-            fontWeight: 600,
-            flexWrap: 'wrap',
-            gap: '12px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
-              <FiCheckCircle style={{ color: '#86EFAC', fontSize: '18px' }} />
-              100% Fresh & Natural
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
-              <FiUsers style={{ color: '#86EFAC', fontSize: '18px' }} />
-              Direct from Farmers
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
-              <FiShield style={{ color: '#86EFAC', fontSize: '18px' }} />
-              Secure Payments
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
-              <FiTruck style={{ color: '#86EFAC', fontSize: '18px' }} />
-              On-time Delivery
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
-              <FiRefreshCcw style={{ color: '#86EFAC', fontSize: '18px' }} />
-              Easy Returns
-            </div>
-          </div>
         </div>
       </div>
     </div>

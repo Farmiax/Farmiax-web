@@ -418,33 +418,7 @@
 
 /* Responsive Overrides */
 @media (max-width: 1024px) {
-  .farmer-layout {
-    flex-direction: column;
-  }
-  .farmer-sidebar {
-    width: 100%;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    position: relative;
-    padding: 16px;
-  }
-  .farmer-sidebar-logo {
-    justify-content: center;
-    margin-bottom: 16px;
-  }
-  .farmer-sidebar-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-  }
-  .farmer-nav-item {
-    padding: 8px 12px;
-  }
-  .farmer-dashboard-main {
-    padding: 20px 16px;
-  }
+
   
   /* Stack grid layouts */
   .farmer-stats-grid {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import FarmerDashboardLayout from '../../components/common/FarmerDashboardLayout';
 import { useAuth } from '../../context/AuthContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchInitialData } from '../../store/dataSlice';
 import productService from '../../services/productService';
 import { getImageUrl } from '../../utils/helpers';
 import {
@@ -13,8 +15,13 @@ import '../../styles/farmer-dashboard.css';
 
 const FarmerProducts = () => {
   const { user } = useAuth();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { products: allProducts, loading } = useSelector((state) => state.data);
+
+  const products = React.useMemo(() => {
+    return allProducts.filter((p) => p.farmer === user?._id || p.farmer?._id === user?._id || p.farmerId === user?._id);
+  }, [allProducts, user?._id]);
+
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,23 +41,7 @@ const FarmerProducts = () => {
     imageUrlPreview: '',
   });
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const res = await productService.getFarmerProducts(user?._id);
-      const prods = Array.isArray(res) ? res : (res?.data || []);
-      setProducts(prods);
-    } catch (err) {
-      console.warn('Farmer products load note:', err);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [user?._id]);
+  // Redux fetchInitialData handles loading the products at the App level.
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
@@ -115,40 +106,23 @@ const FarmerProducts = () => {
       if (editingProduct) {
         const prodId = editingProduct._id || editingProduct.id;
         dataPayload.append('productId', prodId);
-        try {
-          await productService.updateProduct(dataPayload);
-        } catch {
-          // Fallback optimistic local update
-        }
-        setProducts((prev) =>
-          prev.map((p) =>
-            (p._id === prodId || p.id === prodId)
-              ? { ...p, ...formData, _id: prodId }
-              : p
-          )
-        );
+        
+        // Wait for backend to confirm update before updating state
+        await productService.updateProduct(dataPayload);
+        dispatch(fetchInitialData());
         toast.success('Crop updated successfully! 🌿');
       } else {
-        let createdProd = null;
-        try {
-          const res = await productService.addProduct(dataPayload);
-          createdProd = res?.data || res;
-        } catch {
-          // Optimistic fallback
-        }
-        const newEntry = createdProd || {
-          _id: `fp-${Date.now()}`,
-          ...formData,
-          image: formData.imageUrlPreview || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80',
-        };
-        setProducts((prev) => [newEntry, ...prev]);
+        // Wait for backend to confirm addition
+        await productService.addProduct(dataPayload);
+        dispatch(fetchInitialData());
         toast.success('New crop added to your farm catalog! 🎉');
       }
 
       setShowModal(false);
     } catch (err) {
       console.error(err);
-      toast.error('Error saving product');
+      const errorMessage = err.response?.data?.message || err.message || 'Error saving product';
+      toast.error(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -158,11 +132,12 @@ const FarmerProducts = () => {
     if (!window.confirm('Are you sure you want to remove this crop from your catalog?')) return;
     try {
       await productService.deleteFarmerProduct(prodId);
-    } catch {
-      // Ignored
+      dispatch(fetchInitialData());
+      toast.success('Product removed from catalog');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to remove product');
     }
-    setProducts((prev) => prev.filter((p) => p._id !== prodId && p.id !== prodId));
-    toast.success('Product removed from catalog');
   };
 
   const filteredProducts = products.filter((p) => {

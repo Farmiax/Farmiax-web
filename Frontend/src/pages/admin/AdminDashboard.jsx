@@ -4,7 +4,7 @@ import AdminDashboardLayout from '../../components/admin/AdminDashboardLayout';
 import adminService from '../../services/adminService';
 import {
   FiDollarSign, FiShoppingBag, FiBox, FiUsers,
-  FiTrendingUp, FiArrowUpRight, FiRefreshCw, FiEye
+  FiTrendingUp, FiRefreshCw, FiEye
 } from 'react-icons/fi';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip,
@@ -48,7 +48,6 @@ const AdminDashboard = () => {
   // Compute Platform Metrics
   const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.totalAmount) || Number(o.actualAmount) || 0), 0);
   const activeFarmersCount = farmers.filter((f) => f.farmeractive === 'Active' || f.farmeractive === 'active').length;
-  const deliveredOrdersCount = orders.filter((o) => o.status === 'Delivered').length;
 
   // Chart data calculation
   const monthlyData = [

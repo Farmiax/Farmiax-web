@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
 import { useCart } from '../../context/CartContext';
+import { useSelector } from 'react-redux';
 import api from '../../services/api';
 import {
   FiUsers, FiBell, FiBellOff, FiUserCheck, FiUserPlus, FiShoppingBag,
@@ -16,10 +17,8 @@ const CustomerFarmers = () => {
   const [activeTab, setActiveTab] = useState('feed'); // 'feed' | 'subscribed' | 'discover'
   const [toastMessage, setToastMessage] = useState('');
 
-  // Live Farmers and Products state loaded directly from Backend API
-  const [farmers, setFarmers] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Load Live Farmers and Products from Redux
+  const { farmers, products: allProducts, loading } = useSelector((state) => state.data);
 
   // Persisted Subscriptions State from localStorage
   const [followedIds, setFollowedIds] = useState(() => {
@@ -57,53 +56,6 @@ const CustomerFarmers = () => {
       console.warn('LocalStorage save error:', e);
     }
   }, [notifIds]);
-
-  // Fetch real farmers & products from Backend APIs
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [farmersRes, productsRes] = await Promise.allSettled([
-          api.get('/users/all-Farmers'),
-          api.get('/product/all-products')
-        ]);
-
-        let loadedFarmers = [];
-        if (farmersRes.status === 'fulfilled') {
-          const fetchedFarmers = farmersRes.value.data?.data || farmersRes.value.data?.allFarmer || farmersRes.value.data || [];
-          if (Array.isArray(fetchedFarmers) && fetchedFarmers.length > 0) {
-            loadedFarmers = fetchedFarmers.map((f, idx) => ({
-              id: f._id || f.id || `farmer_${idx}`,
-              name: f.fullName || f.name || 'Organic Farmer',
-              farmName: f.farmName || (f.City ? `${f.City} Fresh Organics` : 'Local Farmiax Organics'),
-              location: [f.City, f.State].filter(Boolean).join(', ') || 'Tamil Nadu',
-              rating: (4.7 + (idx % 3) * 0.1).toFixed(1),
-              orders: 100 + idx * 45,
-              avatar: f.avatar && f.avatar !== 'Not Photo' ? f.avatar : 'https://images.unsplash.com/photo-1595844730298-b960ff86faa1?auto=format&fit=crop&w=200&q=80',
-              coverImg: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80',
-              isOrganic: true,
-              rawObj: f
-            }));
-          }
-        }
-
-        setFarmers(loadedFarmers);
-
-        if (productsRes.status === 'fulfilled') {
-          const prods = productsRes.value.data?.products || productsRes.value.data?.data || productsRes.value.data || [];
-          setAllProducts(Array.isArray(prods) ? prods : []);
-        }
-      } catch (err) {
-        console.warn('Backend API fetch error:', err?.message);
-        setFarmers([]);
-        setAllProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -290,6 +242,10 @@ const CustomerFarmers = () => {
                 marginTop: '28px',
                 paddingTop: '20px',
                 borderTop: '1px solid rgba(0,0,0,0.08)',
+                overflowX: 'auto',
+                whiteSpace: 'nowrap',
+                WebkitOverflowScrolling: 'touch',
+                paddingBottom: '8px'
               }}
             >
               <button
@@ -307,6 +263,7 @@ const CustomerFarmers = () => {
                   alignItems: 'center',
                   gap: '8px',
                   transition: 'all 0.2s',
+                  flexShrink: 0,
                 }}
               >
                 <FiClock size={16} /> Harvest Feed Posts ({feedItems.length})
@@ -327,6 +284,7 @@ const CustomerFarmers = () => {
                   alignItems: 'center',
                   gap: '8px',
                   transition: 'all 0.2s',
+                  flexShrink: 0,
                 }}
               >
                 <FiUserCheck size={16} /> My Subscribed Farmers ({subscribedFarmers.length})
@@ -347,6 +305,7 @@ const CustomerFarmers = () => {
                   alignItems: 'center',
                   gap: '8px',
                   transition: 'all 0.2s',
+                  flexShrink: 0,
                 }}
               >
                 <FiUserPlus size={16} /> Discover Organic Farmers ({discoverFarmers.length})

@@ -3,7 +3,7 @@ import AdminDashboardLayout from '../../components/admin/AdminDashboardLayout';
 import adminService from '../../services/adminService';
 import { getImageUrl } from '../../utils/helpers';
 import {
-  FiSearch, FiUsers, FiMapPin, FiPhone, FiMail,
+  FiSearch, FiMapPin,
   FiCheckCircle, FiXCircle, FiRefreshCw, FiEye, FiX
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
@@ -24,7 +24,7 @@ const AdminFarmers = () => {
       const list = Array.isArray(data) ? data : (data?.data || []);
       setFarmers(list);
       setFilteredFarmers(list);
-    } catch (err) {
+    } catch {
       toast.error('Failed to load registered farmers directory');
     } finally {
       setLoading(false);

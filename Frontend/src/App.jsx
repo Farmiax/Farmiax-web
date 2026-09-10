@@ -1,5 +1,9 @@
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import store from './store';
+import { fetchInitialData } from './store/dataSlice';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
@@ -65,86 +69,107 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminFarmers from './pages/admin/AdminFarmers';
 import AdminSettings from './pages/admin/AdminSettings';
 
+function DataInitializer({ children }) {
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector(state => state.data);
+
+  useEffect(() => {
+    dispatch(fetchInitialData());
+  }, [dispatch]);
+
+
+
+  if (error) {
+    console.warn("Could not load initial data:", error);
+  }
+
+  return children;
+}
+
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <BrowserRouter>
-            <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-            <Routes>
-              {/* Landing & Informational (Public) */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/contact" element={<ContactSupport />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsConditions />} />
-              <Route path="/shipping" element={<ShippingPolicy />} />
-              <Route path="/returns" element={<ReturnPolicy />} />
+    <Provider store={store}>
+      <AuthProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <DataInitializer>
+              <BrowserRouter>
+                <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+                <Routes>
+                  {/* Landing & Informational (Public) */}
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/about" element={<AboutUs />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/contact" element={<ContactSupport />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/terms" element={<TermsConditions />} />
+                  <Route path="/shipping" element={<ShippingPolicy />} />
+                  <Route path="/returns" element={<ReturnPolicy />} />
 
-              {/* Authentication Routes (Guest Only) */}
-              <Route path="/login" element={<GuestRoute><AuthSelection mode="login" /></GuestRoute>} />
-              <Route path="/register" element={<GuestRoute><AuthSelection mode="register" /></GuestRoute>} />
-              <Route path="/customer/signin" element={<GuestRoute><CustomerAuth initialMode="signin" /></GuestRoute>} />
-              <Route path="/customer/signup" element={<GuestRoute><CustomerAuth initialMode="signup" /></GuestRoute>} />
-              <Route path="/farmer/signin" element={<GuestRoute><FarmerSignIn /></GuestRoute>} />
-              <Route path="/farmer/signup" element={<GuestRoute><FarmerSignUp /></GuestRoute>} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
+                  {/* Authentication Routes (Guest Only) */}
+                  <Route path="/login" element={<GuestRoute><AuthSelection mode="login" /></GuestRoute>} />
+                  <Route path="/register" element={<GuestRoute><AuthSelection mode="register" /></GuestRoute>} />
+                  <Route path="/customer/signin" element={<GuestRoute><CustomerAuth initialMode="signin" /></GuestRoute>} />
+                  <Route path="/customer/signup" element={<GuestRoute><CustomerAuth initialMode="signup" /></GuestRoute>} />
+                  <Route path="/farmer/signin" element={<GuestRoute><FarmerSignIn /></GuestRoute>} />
+                  <Route path="/farmer/signup" element={<GuestRoute><FarmerSignUp /></GuestRoute>} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
 
-              {/* Customer Routes (Protected: customer role) */}
-              <Route path="/customer" element={<Navigate to="/customer/dashboard" replace />} />
-              <Route path="/customer/dashboard" element={<RoleProtectedRoute requiredRole="customer"><CustomerProfile /></RoleProtectedRoute>} />
-              <Route path="/customer/profile" element={<RoleProtectedRoute requiredRole="customer"><CustomerProfile /></RoleProtectedRoute>} />
-              <Route path="/customer/personal-profile" element={<RoleProtectedRoute requiredRole="customer"><CustomerAccountProfile /></RoleProtectedRoute>} />
-              <Route path="/customer/shop" element={<RoleProtectedRoute requiredRole="customer"><CustomerShop /></RoleProtectedRoute>} />
-              <Route path="/customer/product/:id" element={<RoleProtectedRoute requiredRole="customer"><CustomerProductDetails /></RoleProtectedRoute>} />
-              <Route path="/customer/cart" element={<RoleProtectedRoute requiredRole="customer"><CustomerCart /></RoleProtectedRoute>} />
-              <Route path="/customer/checkout" element={<RoleProtectedRoute requiredRole="customer"><CustomerCheckout /></RoleProtectedRoute>} />
-              <Route path="/customer/order-success" element={<RoleProtectedRoute requiredRole="customer"><OrderSuccess /></RoleProtectedRoute>} />
-              <Route path="/customer/track-order" element={<RoleProtectedRoute requiredRole="customer"><TrackOrder /></RoleProtectedRoute>} />
-              <Route path="/customer/track-order/:id" element={<RoleProtectedRoute requiredRole="customer"><TrackOrder /></RoleProtectedRoute>} />
-              <Route path="/customer/orders" element={<RoleProtectedRoute requiredRole="customer"><CustomerOrders /></RoleProtectedRoute>} />
-              <Route path="/customer/wishlist" element={<RoleProtectedRoute requiredRole="customer"><CustomerWishlist /></RoleProtectedRoute>} />
-              <Route path="/customer/farmers" element={<RoleProtectedRoute requiredRole="customer"><CustomerFarmers /></RoleProtectedRoute>} />
-              <Route path="/customer/notifications" element={<RoleProtectedRoute requiredRole="customer"><CustomerNotifications /></RoleProtectedRoute>} />
-              <Route path="/customer/settings" element={<RoleProtectedRoute requiredRole="customer"><CustomerSettings /></RoleProtectedRoute>} />
-              <Route path="/customer/setting" element={<RoleProtectedRoute requiredRole="customer"><CustomerSettings /></RoleProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><CustomerSettings /></ProtectedRoute>} />
+                  {/* Customer Routes (Protected: customer role) */}
+                  <Route path="/customer" element={<Navigate to="/customer/dashboard" replace />} />
+                  <Route path="/customer/dashboard" element={<RoleProtectedRoute requiredRole="customer"><CustomerProfile /></RoleProtectedRoute>} />
+                  <Route path="/customer/profile" element={<RoleProtectedRoute requiredRole="customer"><CustomerProfile /></RoleProtectedRoute>} />
+                  <Route path="/customer/personal-profile" element={<RoleProtectedRoute requiredRole="customer"><CustomerAccountProfile /></RoleProtectedRoute>} />
+                  <Route path="/customer/shop" element={<RoleProtectedRoute requiredRole="customer"><CustomerShop /></RoleProtectedRoute>} />
+                  <Route path="/customer/product/:id" element={<RoleProtectedRoute requiredRole="customer"><CustomerProductDetails /></RoleProtectedRoute>} />
+                  <Route path="/customer/cart" element={<RoleProtectedRoute requiredRole="customer"><CustomerCart /></RoleProtectedRoute>} />
+                  <Route path="/customer/checkout" element={<RoleProtectedRoute requiredRole="customer"><CustomerCheckout /></RoleProtectedRoute>} />
+                  <Route path="/customer/order-success" element={<RoleProtectedRoute requiredRole="customer"><OrderSuccess /></RoleProtectedRoute>} />
+                  <Route path="/customer/track-order" element={<RoleProtectedRoute requiredRole="customer"><TrackOrder /></RoleProtectedRoute>} />
+                  <Route path="/customer/track-order/:id" element={<RoleProtectedRoute requiredRole="customer"><TrackOrder /></RoleProtectedRoute>} />
+                  <Route path="/customer/orders" element={<RoleProtectedRoute requiredRole="customer"><CustomerOrders /></RoleProtectedRoute>} />
+                  <Route path="/customer/wishlist" element={<RoleProtectedRoute requiredRole="customer"><CustomerWishlist /></RoleProtectedRoute>} />
+                  <Route path="/customer/farmers" element={<RoleProtectedRoute requiredRole="customer"><CustomerFarmers /></RoleProtectedRoute>} />
+                  <Route path="/customer/notifications" element={<RoleProtectedRoute requiredRole="customer"><CustomerNotifications /></RoleProtectedRoute>} />
+                  <Route path="/customer/settings" element={<RoleProtectedRoute requiredRole="customer"><CustomerSettings /></RoleProtectedRoute>} />
+                  <Route path="/customer/setting" element={<RoleProtectedRoute requiredRole="customer"><CustomerSettings /></RoleProtectedRoute>} />
+                  <Route path="/settings" element={<ProtectedRoute><CustomerSettings /></ProtectedRoute>} />
 
-              {/* Farmer Routes (Protected: farmer role) */}
-              <Route path="/farmer" element={<Navigate to="/farmer/dashboard" replace />} />
-              <Route path="/farmer/dashboard" element={<RoleProtectedRoute requiredRole="farmer"><FarmerDashboard /></RoleProtectedRoute>} />
-              <Route path="/farmer/products" element={<RoleProtectedRoute requiredRole="farmer"><FarmerProducts /></RoleProtectedRoute>} />
-              <Route path="/farmer/orders" element={<RoleProtectedRoute requiredRole="farmer"><FarmerOrders /></RoleProtectedRoute>} />
-              <Route path="/farmer/inventory" element={<RoleProtectedRoute requiredRole="farmer"><FarmerInventory /></RoleProtectedRoute>} />
-              <Route path="/farmer/analytics" element={<RoleProtectedRoute requiredRole="farmer"><FarmerAnalytics /></RoleProtectedRoute>} />
-              <Route path="/farmer/earnings" element={<RoleProtectedRoute requiredRole="farmer"><FarmerEarnings /></RoleProtectedRoute>} />
-              <Route path="/farmer/payouts" element={<RoleProtectedRoute requiredRole="farmer"><FarmerPayouts /></RoleProtectedRoute>} />
-              <Route path="/farmer/profile" element={<RoleProtectedRoute requiredRole="farmer"><FarmerProfile /></RoleProtectedRoute>} />
-              <Route path="/farmer/settings" element={<RoleProtectedRoute requiredRole="farmer"><FarmerSettings /></RoleProtectedRoute>} />
-              <Route path="/farmer/customers" element={<RoleProtectedRoute requiredRole="farmer"><FarmerCustomers /></RoleProtectedRoute>} />
-              <Route path="/farmer/reviews" element={<RoleProtectedRoute requiredRole="farmer"><FarmerReviews /></RoleProtectedRoute>} />
-              <Route path="/farmer/messages" element={<RoleProtectedRoute requiredRole="farmer"><FarmerMessages /></RoleProtectedRoute>} />
-              <Route path="/farmer/notifications" element={<RoleProtectedRoute requiredRole="farmer"><FarmerNotifications /></RoleProtectedRoute>} />
+                  {/* Farmer Routes (Protected: farmer role) */}
+                  <Route path="/farmer" element={<Navigate to="/farmer/dashboard" replace />} />
+                  <Route path="/farmer/dashboard" element={<RoleProtectedRoute requiredRole="farmer"><FarmerDashboard /></RoleProtectedRoute>} />
+                  <Route path="/farmer/products" element={<RoleProtectedRoute requiredRole="farmer"><FarmerProducts /></RoleProtectedRoute>} />
+                  <Route path="/farmer/orders" element={<RoleProtectedRoute requiredRole="farmer"><FarmerOrders /></RoleProtectedRoute>} />
+                  <Route path="/farmer/inventory" element={<RoleProtectedRoute requiredRole="farmer"><FarmerInventory /></RoleProtectedRoute>} />
+                  <Route path="/farmer/analytics" element={<RoleProtectedRoute requiredRole="farmer"><FarmerAnalytics /></RoleProtectedRoute>} />
+                  <Route path="/farmer/earnings" element={<RoleProtectedRoute requiredRole="farmer"><FarmerEarnings /></RoleProtectedRoute>} />
+                  <Route path="/farmer/payouts" element={<RoleProtectedRoute requiredRole="farmer"><FarmerPayouts /></RoleProtectedRoute>} />
+                  <Route path="/farmer/profile" element={<RoleProtectedRoute requiredRole="farmer"><FarmerProfile /></RoleProtectedRoute>} />
+                  <Route path="/farmer/settings" element={<RoleProtectedRoute requiredRole="farmer"><FarmerSettings /></RoleProtectedRoute>} />
+                  <Route path="/farmer/customers" element={<RoleProtectedRoute requiredRole="farmer"><FarmerCustomers /></RoleProtectedRoute>} />
+                  <Route path="/farmer/reviews" element={<RoleProtectedRoute requiredRole="farmer"><FarmerReviews /></RoleProtectedRoute>} />
+                  <Route path="/farmer/messages" element={<RoleProtectedRoute requiredRole="farmer"><FarmerMessages /></RoleProtectedRoute>} />
+                  <Route path="/farmer/notifications" element={<RoleProtectedRoute requiredRole="farmer"><FarmerNotifications /></RoleProtectedRoute>} />
 
-              {/* Master Admin Suite Routes */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-              <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
-              <Route path="/admin/products" element={<AdminProtectedRoute><AdminProducts /></AdminProtectedRoute>} />
-              <Route path="/admin/orders" element={<AdminProtectedRoute><AdminOrders /></AdminProtectedRoute>} />
-              <Route path="/admin/farmers" element={<AdminProtectedRoute><AdminFarmers /></AdminProtectedRoute>} />
-              <Route path="/admin/settings" element={<AdminProtectedRoute><AdminSettings /></AdminProtectedRoute>} />
+                  {/* Master Admin Suite Routes */}
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+                  <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
+                  <Route path="/admin/products" element={<AdminProtectedRoute><AdminProducts /></AdminProtectedRoute>} />
+                  <Route path="/admin/orders" element={<AdminProtectedRoute><AdminOrders /></AdminProtectedRoute>} />
+                  <Route path="/admin/farmers" element={<AdminProtectedRoute><AdminFarmers /></AdminProtectedRoute>} />
+                  <Route path="/admin/settings" element={<AdminProtectedRoute><AdminSettings /></AdminProtectedRoute>} />
 
-              {/* Error Routes */}
-              <Route path="/unauthorized" element={<Unauthorized />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </WishlistProvider>
-      </CartProvider>
-    </AuthProvider>
+                  {/* Error Routes */}
+                  <Route path="/unauthorized" element={<Unauthorized />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </DataInitializer>
+          </WishlistProvider>
+        </CartProvider>
+      </AuthProvider>
+    </Provider>
   );
 }
 

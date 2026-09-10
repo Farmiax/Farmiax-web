@@ -3,8 +3,8 @@ import { Link, useSearchParams } from 'react-router-dom';
 import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useSelector } from 'react-redux';
 import { FiHeart, FiShoppingBag, FiStar, FiFilter, FiTag, FiSearch, FiX } from 'react-icons/fi';
-import productService from '../../services/productService';
 import { getImageUrl } from '../../utils/helpers';
 
 const CustomerShop = () => {
@@ -22,32 +22,15 @@ const CustomerShop = () => {
   const [maxPrice, setMaxPrice] = useState(2000);
   const [ratingFilter, setRatingFilter] = useState(0);
   const [sortBy, setSortBy] = useState('popularity');
-  const [productsList, setProductsList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+  const { products: productsList, loading } = useSelector((state) => state.data);
 
   // Sync category & search from URL
   useEffect(() => {
     if (urlCategory) setSelectedCategory(urlCategory);
     if (urlSearch) setSearchQuery(urlSearch);
   }, [urlCategory, urlSearch]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const data = await productService.getAllProducts();
-        const prods = Array.isArray(data) ? data : (data?.data || []);
-        setProductsList(prods);
-      } catch (error) {
-        console.warn('Products fetch note:', error?.message);
-        setProductsList([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
 
   // Compute dynamic categories
   const dynamicCategories = useMemo(() => {

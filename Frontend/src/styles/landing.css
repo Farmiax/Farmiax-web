@@ -249,6 +249,40 @@
   justify-content: center;
 }
 
+@media (max-width: 768px) {
+  .user-paths-grid {
+    gap: 12px;
+  }
+  .path-card {
+    padding: 16px 10px;
+  }
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+  .card-subtitle {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+  .path-benefits li {
+    font-size: 10.5px;
+    gap: 4px;
+  }
+  .check-bullet {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+  }
+  .card-action-btn {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  .card-top-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 /* Why Choose Banner (Hero Bottom) */
 .why-choose-banner-wrapper {
   max-width: 900px;

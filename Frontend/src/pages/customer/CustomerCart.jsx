@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
 import { useCart } from '../../context/CartContext';
-import api from '../../services/api';
+import { useSelector } from 'react-redux';
 import {
   FiShoppingCart, FiTrash2, FiArrowLeft, FiArrowRight, FiHeart,
   FiShield, FiCheckCircle, FiTruck, FiTag, FiPercent, FiGift, FiPlus
@@ -20,6 +20,7 @@ const AVAILABLE_COUPONS = [
 const CustomerCart = () => {
   const navigate = useNavigate();
   const { cartProducts, updateCartItem, removeFromCart, addToCart: addContextCart } = useCart();
+  const { products: allProds } = useSelector(state => state.data);
 
   const items = cartProducts || [];
 
@@ -30,23 +31,20 @@ const CustomerCart = () => {
   const [toastMessage, setToastMessage] = useState('');
   const [deliveryMode, setDeliveryMode] = useState('standard');
 
+  // Auto-scroll to top
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        const response = await api.get('/product/all-products');
-        const allProds = response.data?.products || response.data?.data || response.data || [];
-        if (Array.isArray(allProds) && allProds.length > 0) {
-          // Exclude items already in cart
-          const cartIds = items.map((i) => i.id || i._id);
-          const filtered = allProds.filter((p) => !cartIds.includes(p._id || p.id)).slice(0, 4);
-          setRecommendedAddOns(filtered);
-        }
-      } catch (err) {
-        console.warn('Backend products fetch notice:', err?.message);
-      }
-    };
-    fetchRecommendations();
-  }, [items.length]);
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Fetch Recommended Add-ons (e.g., from Redux global state)
+  useEffect(() => {
+    if (Array.isArray(allProds) && allProds.length > 0) {
+      // Exclude items already in cart
+      const cartIds = items.map((i) => i.id || i._id);
+      const filtered = allProds.filter((p) => !cartIds.includes(p._id || p.id)).slice(0, 4);
+      setRecommendedAddOns(filtered);
+    }
+  }, [items, allProds]);
 
   const showToast = (msg) => {
     setToastMessage(msg);

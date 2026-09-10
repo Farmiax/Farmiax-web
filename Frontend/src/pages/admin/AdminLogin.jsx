@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import adminService from '../../services/adminService';
 import Logo from '../../components/common/Logo';
-import { FiLock, FiMail, FiShield, FiAlertCircle, FiArrowRight, FiCheckCircle } from 'react-icons/fi';
+import { FiLock, FiMail, FiAlertCircle, FiArrowRight } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import '../../styles/admin.css';
 
@@ -31,11 +31,8 @@ const AdminLogin = () => {
       } else {
         setErrorMsg('Invalid response from admin gateway. Please verify credentials.');
       }
-    } catch (err) {
-      console.error('Admin login error:', err);
+    } catch {
       setErrorMsg(
-        err.response?.data?.message ||
-        err.response?.data?.Message ||
         'Invalid Admin credentials. Check email and password.'
       );
     } finally {

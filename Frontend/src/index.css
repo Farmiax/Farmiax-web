@@ -79,6 +79,12 @@
   --navbar-height: 72px;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -95,7 +101,7 @@ body {
 }
 
 #root {
-  min-height: 100vh;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -478,4 +484,97 @@ input, select, textarea {
   h1 { font-size: 1.625rem; }
   h2 { font-size: 1.375rem; }
   body { font-size: 15px; }
+}
+
+/* ========================================
+   GLOBAL RESPONSIVE OVERRIDES
+   Ensures all pages adapt to desktop, tablet, and mobile
+   ======================================== */
+
+/* Tablet (1024px and below) */
+@media (max-width: 1024px) {
+  .user-paths-grid,
+  .dashboard-charts-grid,
+  .farmer-stats-grid,
+  .customer-grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  }
+  
+  .hero-content,
+  .section {
+    padding: 32px 16px !important;
+  }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+  /* Force all grids to single column on mobile if they have multiple columns */
+  .grid,
+  .dashboard-charts-grid,
+  .farmer-stats-grid,
+  .farmer-dashboard-grid,
+  .products-grid,
+  .categories-grid,
+  .summary-cards-row,
+  div[style*="grid-template-columns: 1fr 1fr"],
+  div[style*="grid-template-columns: 1fr 1.6fr"],
+  div[style*="grid-template-columns: 2fr 1fr"],
+  div[style*="grid-template-columns: repeat(4, 1fr)"],
+  div[style*="grid-template-columns: minmax(0, 1fr) 280px"],
+  div[style*="grid-template-columns: 1fr 340px"] {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Fix dashboard horizontal scrolling */
+  .dashboard-layout-grid {
+    flex-direction: column !important;
+  }
+  .dashboard-center-col {
+    min-width: 0 !important;
+  }
+  .dashboard-right-col {
+    width: 100% !important;
+  }
+  
+  /* Force flex containers to stack if they contain text/inputs */
+  .flex-row-mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  /* Adjust container padding */
+  .container {
+    padding: 0 16px !important;
+    width: 100% !important;
+  }
+  
+  /* Make all inputs and buttons full width on mobile */
+  .form-input,
+  .form-select,
+  .btn-mobile-full {
+    width: 100% !important;
+  }
+  
+  /* Prevent horizontal scroll on tables */
+  .table-responsive {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Adjust margins */
+  .m-mobile-0 { margin: 0 !important; }
+  .p-mobile-md { padding: 16px !important; }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .card-body {
+    padding: 16px !important;
+  }
+  
+  /* Adjust typography for readability */
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.25rem !important; }
+  h3 { font-size: 1.1rem !important; }
 }
