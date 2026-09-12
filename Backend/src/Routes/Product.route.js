@@ -7,7 +7,7 @@ import { verifyjwt } from '../Middleware/auth.middleware.js'
 
 const routerofProduct= Router()
 routerofProduct.route("/all-products").get(AdminlistOfProducts)
-routerofProduct.route("/farmer-all-products").get(FarmerGetHisProduct)
+routerofProduct.route("/farmer-all-products").post(FarmerGetHisProduct)
 routerofProduct.route("/add-product").post(verifyjwt, upload.fields([
         {
         name:"image",
