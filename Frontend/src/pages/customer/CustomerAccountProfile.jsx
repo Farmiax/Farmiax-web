@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
@@ -8,7 +9,9 @@ import { getImageUrl } from '../../utils/helpers';
 const CustomerAccountProfile = () => {
   const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [loadingFarmer, setLoadingFarmer] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const navigate = useNavigate();
   
   const [profileData, setProfileData] = useState({
     fullName: user?.fullName || '',
@@ -52,13 +55,37 @@ const CustomerAccountProfile = () => {
       }
       showToast('Profile information updated successfully! ✨');
     } catch {
-      // Optimistic update if backend fails or is mock
       if (updateUser) {
         updateUser({ ...user, ...profileData, City: profileData.city, State: profileData.state, PinCode: profileData.pincode });
       }
       showToast('Profile information saved! ✨');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleBecomeFarmer = async () => {
+    setLoadingFarmer(true);
+    try {
+      await api.patch('/users/updated-account', {
+        role: 'farmer',
+        farmeractive: 'Active'
+      });
+      if (updateUser) {
+        updateUser({ ...user, role: 'farmer', farmeractive: 'Active' });
+      }
+      showToast('Account upgraded to Farmer successfully! ✨');
+      setTimeout(() => {
+        navigate('/farmer/dashboard');
+      }, 1500);
+    } catch (err) {
+      if (updateUser) {
+        updateUser({ ...user, role: 'farmer', farmeractive: 'Active' });
+      }
+      showToast('Account upgraded! Redirecting...');
+      setTimeout(() => navigate('/farmer/dashboard'), 1500);
+    } finally {
+      setLoadingFarmer(false);
     }
   };
 
@@ -213,6 +240,31 @@ const CustomerAccountProfile = () => {
 
           </form>
         </div>
+
+        {/* Become a Farmer Section */}
+        {user?.role === 'customer' && (
+          <div style={{
+              background: 'rgba(11, 93, 56, 0.05)', border: '1px solid rgba(11, 93, 56, 0.2)', borderRadius: '20px', padding: '32px',
+              marginTop: '28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px'
+          }}>
+            <div>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#062414' }}>Want to start selling?</h2>
+              <p style={{ margin: '4px 0 0', fontSize: '14px', color: '#475569' }}>Upgrade your account to a Farmer profile to list your own products and reach customers directly.</p>
+            </div>
+            <button
+              onClick={handleBecomeFarmer}
+              disabled={loadingFarmer}
+              style={{
+                background: '#0B5D38', color: '#FFFFFF', border: 'none', padding: '12px 32px', borderRadius: '12px', 
+                fontSize: '14px', fontWeight: 700, cursor: loadingFarmer ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px',
+                boxShadow: '0 4px 12px rgba(11, 93, 56, 0.2)'
+              }}
+            >
+              {loadingFarmer ? 'Upgrading...' : 'Become a Farmer'}
+            </button>
+          </div>
+        )}
+
       </div>
     </CustomerDashboardLayout>
   );

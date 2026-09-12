@@ -2803,4 +2803,27 @@ h1, h2, h3, .section-title, .product-title, .profile-card-header h2, .profile-ba
   .products-grid {
     grid-template-columns: 1fr;
   }
+}@media (max-width: 768px) {
+  /* Customer Profile Layouts */
+  .customer-profile-layout, .customer-dashboard-layout {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Generic Grids */
+  .summary-cards-row, .kpi-cards-grid, .stats-grid, .dashboard-stats-grid, .product-top-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .products-grid, .farmer-products-grid, .categories-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .dashboard-charts-grid, .bottom-split, .farmer-dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Make sure sidebars become full width if uncollapsed */
+  .dashboard-right-col, .shop-sidebar {
+    width: 100% !important;
+  }
 }

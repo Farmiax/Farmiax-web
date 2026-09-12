@@ -9,6 +9,7 @@ import CustomerDashboardLayout from '../../components/common/CustomerDashboardLa
 import {
   FiChevronRight, FiCheck, FiBox, FiHeart, FiShoppingCart, FiUsers, FiTag, FiTruck, FiHeadphones, FiSettings
 } from 'react-icons/fi';
+import { getImageUrl } from '../../utils/helpers';
 import '../../styles/dashboard.css';
 
 const CustomerProfile = () => {
@@ -53,19 +54,30 @@ const CustomerProfile = () => {
         if (allProducts.length > 0) {
           const formattedRecs = allProducts.slice(0, 4).map(p => ({
             id: p._id || p.id,
-            name: p.name || p.ProductName || 'Organic Product',
+            name: p.name || p.ProductName || 'Unnamed Product',
             img: getImageUrl(p.image, tomatoImg),
-            farmer: p.farmer || 'Local Farm',
+            farmer: p.farmer || null,
             price: p.price || 0,
-            oldPrice: p.oldPrice || (p.price ? p.price * 1.2 : 180),
-            weight: `${p.quantity || 1} ${p.unit || 'unit'}`,
-            rating: 4.5
+            oldPrice: p.oldPrice || null,
+            weight: `${p.quantity || ''} ${p.unit || ''}`.trim(),
+            rating: p.rating || 0
           }));
           setRecommended(formattedRecs);
 
           // Generate dynamic categories
+          const getCategoryEmoji = (name) => {
+            const n = name.toLowerCase();
+            if (n.includes('veg')) return '🥕';
+            if (n.includes('fruit')) return '🍎';
+            if (n.includes('oil') || n.includes('ghee')) return '🫙';
+            if (n.includes('honey')) return '🍯';
+            if (n.includes('pulse') || n.includes('grain')) return '🌾';
+            if (n.includes('dairy') || n.includes('milk')) return '🥛';
+            if (n.includes('spice')) return '🌶️';
+            return '🌱';
+          };
           const catSet = new Set(allProducts.map(p => p.Category || p.category).filter(Boolean));
-          const catArray = Array.from(catSet).map(c => ({ name: c, emoji: '🌱' })).slice(0, 4);
+          const catArray = Array.from(catSet).map(c => ({ name: c, emoji: getCategoryEmoji(c) })).slice(0, 4);
           setCategories(catArray);
         }
 
@@ -210,7 +222,18 @@ const CustomerProfile = () => {
                     </button>
                   </div>
                 );
-              }) : <p style={{ color: 'var(--text-muted)', fontSize: '13px', padding: '16px 0' }}>No recommendations yet. Start shopping to get personalized suggestions!</p>}
+              }) : (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px 20px', background: 'var(--cream-bg)', borderRadius: '12px', border: '1px dashed var(--primary-light)' }}>
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'var(--primary-color)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                    <FiHeart size={24} />
+                  </div>
+                  <h4 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: '700', color: 'var(--text-color)' }}>Your Catalog is Empty</h4>
+                  <p style={{ margin: '0 0 16px', fontSize: '14px', color: 'var(--text-muted)' }}>We need a bit more data to recommend products for you.</p>
+                  <button className="product-add-btn" style={{ width: 'auto', padding: '10px 24px', margin: '0 auto' }} onClick={() => navigate('/customer/shop')}>
+                    Browse Fresh Produce
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -238,7 +261,15 @@ const CustomerProfile = () => {
                       <Link to="/customer/track-order" className="order-action-link">Track <FiChevronRight size={12} /></Link>
                     </div>
                   </div>
-                )) : <p style={{ color: 'var(--text-muted)', fontSize: '13px', padding: '12px 0' }}>No recent orders found.</p>}
+                )) : (
+                  <div style={{ textAlign: 'center', padding: '30px 20px', background: 'var(--cream-bg)', borderRadius: '12px', border: '1px dashed var(--primary-light)' }}>
+                    <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--primary-color)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                      <FiBox size={20} />
+                    </div>
+                    <h4 style={{ margin: '0 0 6px', fontSize: '15px', fontWeight: '600', color: 'var(--text-color)' }}>No Recent Orders</h4>
+                    <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>You haven't placed any orders yet.</p>
+                  </div>
+                )}
               </div>
             </div>
 

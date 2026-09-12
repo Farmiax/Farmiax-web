@@ -49,9 +49,7 @@ const adminService = {
       });
     }
 
-    const res = await api.post('/product/update', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const res = await api.post('/product/update', formData);
     return res.data?.data || res.data;
   },
 
@@ -83,10 +81,14 @@ const adminService = {
     return res.data?.data || res.data;
   },
 
-  // GET /users/all-Farmers — All registered farmers with active/inactive status
   getAllFarmers: async () => {
-    const res = await api.get('/users/all-Farmers');
-    return res.data?.data || res.data || [];
+    try {
+      const res = await api.get('/users/all-Farmers');
+      return res.data?.data || res.data || [];
+    } catch (err) {
+      if (err.response?.status === 404) return [];
+      throw err;
+    }
   },
 };
 

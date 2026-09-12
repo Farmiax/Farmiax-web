@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import CustomerDashboardLayout from '../../components/common/CustomerDashboardLayout';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -11,6 +12,8 @@ const CustomerShop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { addToCart } = useCart();
   const { wishlistIds, toggleWishlist } = useWishlist();
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const urlCategory = searchParams.get('category');
   const urlSearch = searchParams.get('search');
@@ -261,6 +264,24 @@ const CustomerShop = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
+                  {(user?.role === 'farmer' || user?.role === 'both') && user?.farmeractive === 'Active' ? (
+                    <button 
+                      onClick={() => navigate('/farmer/dashboard')}
+                      className="btn-dark-green"
+                      style={{ padding: '8px 16px', fontSize: '13px', fontWeight: 'bold' }}
+                    >
+                      Farmer Dashboard
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => navigate('/farmer/signup')}
+                      className="btn-dark-green"
+                      style={{ padding: '8px 16px', fontSize: '13px', fontWeight: 'bold', background: '#FCE06D', color: '#062414', border: 'none' }}
+                    >
+                      Join as Farmer
+                    </button>
+                  )}
+
                   <button
                     onClick={() => setShowMobileFilters(!showMobileFilters)}
                     className="shop-filter-toggle-mobile"

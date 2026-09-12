@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import toast from 'react-hot-toast';
 import authService from '../services/authService';
+import { socket } from '../services/socket';
 
 const AuthContext = createContext(null);
 
@@ -29,6 +31,31 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
+
+  // Socket Connection & Real-time Listeners
+  useEffect(() => {
+    if (user) {
+      socket.connect();
+      socket.emit('register', user._id || user.id);
+
+      const handleNewOrder = (data) => {
+        toast.success(`🚜 ${data.message}`);
+      };
+
+      const handleStatusUpdate = (data) => {
+        toast.success(`📦 ${data.message}`);
+      };
+
+      socket.on('new_order', handleNewOrder);
+      socket.on('order_status_update', handleStatusUpdate);
+
+      return () => {
+        socket.off('new_order', handleNewOrder);
+        socket.off('order_status_update', handleStatusUpdate);
+        socket.disconnect();
+      };
+    }
+  }, [user]);
 
   const login = useCallback(async (email, password) => {
     const res = await authService.login(email, password);
@@ -79,8 +106,8 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   const isAuthenticated = !!user;
-  const isCustomer = user?.role === 'customer';
-  const isFarmer = user?.role === 'farmer';
+  const isCustomer = user?.role === 'customer' || user?.role === 'both';
+  const isFarmer = user?.role === 'farmer' || user?.role === 'both';
 
   const value = {
     user,

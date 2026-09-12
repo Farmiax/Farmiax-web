@@ -220,7 +220,13 @@ const AdminDashboard = () => {
         </div>
 
         {orders.length === 0 ? (
-          <p style={{ textAlign: 'center', padding: '30px', color: 'rgba(255,255,255,0.6)', margin: 0 }}>No orders recorded yet.</p>
+          <div style={{ textAlign: 'center', padding: '60px 20px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(59, 130, 246, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#93C5FD' }}>
+              <FiBox size={32} />
+            </div>
+            <h4 style={{ margin: '0 0 10px', fontSize: '18px', fontWeight: '800', color: '#FFFFFF' }}>No Platform Orders Yet</h4>
+            <p style={{ margin: 0, fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)' }}>Customer orders across the platform will be aggregated here.</p>
+          </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="admin-table">

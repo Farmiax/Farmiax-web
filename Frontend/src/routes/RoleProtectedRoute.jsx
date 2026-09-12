@@ -20,7 +20,11 @@ const RoleProtectedRoute = ({ children, requiredRole }) => {
     return <Navigate to="/customer/signin" replace />;
   }
 
-  if (user?.role !== requiredRole) {
+  if (user?.role !== requiredRole && user?.role !== 'both') {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  if (requiredRole === 'farmer' && user?.farmeractive !== 'Active') {
     return <Navigate to="/unauthorized" replace />;
   }
 

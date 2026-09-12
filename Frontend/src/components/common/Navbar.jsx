@@ -150,7 +150,7 @@ const Navbar = () => {
                 </button>
               ) : (
                 <>
-                  <button onClick={handleLogin} className="btn btn-outline btn-full">
+                  <button onClick={handleLogin} className="btn btn-outline btn-full" style={{ color: '#FFFFFF', borderColor: 'rgba(255,255,255,0.4)' }}>
                     Sign In
                   </button>
                   <button onClick={handleJoinNow} className="btn btn-primary btn-full">

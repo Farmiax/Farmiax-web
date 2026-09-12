@@ -20,7 +20,7 @@ const FarmerPayouts = () => {
   });
 
   const [kycStatus, setKycStatus] = useState({
-    verified: Boolean(user?.role === 'farmer'),
+    verified: Boolean(user?.role === 'farmer' || user?.role === 'both'),
     documentType: 'Kisan Registration ID & Farm Verification',
     docNumber: user?._id ? `FMX-KYC-${String(user._id).slice(-6).toUpperCase()}` : 'FMX-KYC-VERIFIED',
     verifiedOn: user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Verified',

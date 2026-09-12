@@ -115,6 +115,15 @@
   text-shadow: 0 1px 8px rgba(255, 255, 255, 0.8);
 }
 
+@media (max-width: 768px) {
+  .hero-headline {
+    font-size: 2.2rem;
+  }
+  .hero-subtext {
+    font-size: 14.5px;
+  }
+}
+
 /* User Paths Cards */
 .user-paths {
   max-width: 800px;
@@ -251,7 +260,8 @@
 
 @media (max-width: 768px) {
   .user-paths-grid {
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   .path-card {
     padding: 16px 10px;

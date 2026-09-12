@@ -420,8 +420,8 @@ const CustomerProductDetails = () => {
         {/* Tab Content Display */}
         <div style={{ marginBottom: '60px' }}>
           {activeTab === 'Description' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '36px' }}>
-              <div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '36px' }}>
+              <div style={{ flex: '1 1 300px' }}>
                 <p style={{ fontSize: '15px', lineHeight: '1.8', color: '#475569', marginBottom: '24px' }}>
                   {product.description || `Farmiax ${product.name} is cultivated using age-old regenerative farming techniques. Sourced straight from local grower cooperatives, it retains maximum natural vitamins, minerals, and rich organic taste without chemical processing.`}
                 </p>
@@ -449,7 +449,7 @@ const CustomerProductDetails = () => {
               </div>
 
               {/* Farmer Info Sidebar Card */}
-              <div style={{ background: 'rgba(255, 255, 255, 0.45)', backdropFilter: 'blur(16px) saturate(180%)', WebkitBackdropFilter: 'blur(16px) saturate(180%)', border: '1px solid rgba(255, 255, 255, 0.6)', borderTop: '1px solid rgba(255, 255, 255, 0.8)', borderRadius: '16px', padding: '24px', textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', color: '#1F2937' }}>
+              <div style={{ flex: '1 1 300px', maxWidth: '400px', background: 'rgba(255, 255, 255, 0.45)', backdropFilter: 'blur(16px) saturate(180%)', WebkitBackdropFilter: 'blur(16px) saturate(180%)', border: '1px solid rgba(255, 255, 255, 0.6)', borderTop: '1px solid rgba(255, 255, 255, 0.8)', borderRadius: '16px', padding: '24px', textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', color: '#1F2937' }}>
                 <span style={{ display: 'inline-block', padding: '4px 12px', background: '#DCFCE7', color: '#15803D', fontSize: '11px', fontWeight: 800, borderRadius: '999px', marginBottom: '16px' }}>
                   CERTIFIED GROWER
                 </span>

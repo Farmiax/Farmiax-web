@@ -65,10 +65,8 @@ const CustomerAuth = ({ initialMode = 'signin' }) => {
     setLoading(true);
     try {
       const user = await login(loginEmail, loginPassword);
-      if (user.role === 'customer') {
-        navigate('/customer', { replace: true });
-      } else if (user.role === 'farmer') {
-        navigate('/farmer/dashboard', { replace: true });
+      if (user.role === 'customer' || user.role === 'farmer' || user.role === 'both') {
+        navigate('/customer/shop', { replace: true });
       }
     } catch (err) {
       setApiError(getApiError(err));
@@ -220,9 +218,7 @@ const CustomerAuth = ({ initialMode = 'signin' }) => {
               </button>
             </form>
           )}
-
-          <SocialAuth role="customer" />
-
+          {/* <SocialAuth role="customer" /> */}
           <p className="auth-switch">
             {isLogin ? (
               <>Don't have an account? <button type="button" style={{background:'none',border:'none',color:'var(--primary)',fontWeight:600,cursor:'pointer'}} onClick={toggleMode}>Create Account</button></>

@@ -9,7 +9,9 @@ const productService = {
 
   // GET /product/product/:productId — populated with farmer info
   getProduct: async (productId) => {
-    const res = await api.get(`/product/product/${productId}`);
+    const res = await api.get(`/product/product/${productId}`, {
+      validateStatus: (status) => status >= 200 && status < 400
+    });
     return res.data?.data || res.data;
   },
 
@@ -28,9 +30,7 @@ const productService = {
       });
     }
 
-    const res = await api.post('/product/add-product', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const res = await api.post('/product/add-product', formData);
     return res.data?.data || res.data;
   },
 
@@ -49,9 +49,7 @@ const productService = {
       });
     }
 
-    const res = await api.post('/product/update', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const res = await api.post('/product/update', formData);
     return res.data?.data || res.data;
   },
 
@@ -66,34 +64,18 @@ const productService = {
     return res.data?.data || res.data;
   },
 
-  // GET /product/farmer-all-products or fallback to all-products filtered by farmer
   getFarmerProducts: async (farmerId) => {
     try {
-        console.log(farmerId)
       if (farmerId) {
-        const res = await api.post('/product/farmer-all-products', 
-           {
-        farmerId: farmerId,
-         }
-        );
-        console.log(res)
+        const res = await api.post('/product/farmer-all-products', { farmerId: farmerId });
         const items = res.data?.data || res.data;
-        if (Array.isArray(items) && items.length > 0) return items;
+        if (Array.isArray(items)) return items;
       }
-    } catch {
-      // Fallback to filtering all products
-      
-    }
-
-    try {
-      const allRes = await api.get('/product/all-products');
-      const allProducts = allRes.data?.data || allRes.data || [];
-      if (!farmerId) return allProducts;
-      return allProducts.filter(
-        (p) => p.farmer === farmerId || p.farmer?._id === farmerId || p.farmerId === farmerId
-      );
-    } catch {
       return [];
+    } catch (err) {
+      if (err.response?.status === 404) return [];
+      console.error("Error fetching farmer products", err);
+      throw err;
     }
   },
 };

@@ -26,6 +26,15 @@
   z-index: 50;
 }
 
+.admin-sidebar-sticky-wrapper {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
 .admin-sidebar.collapsed {
   width: 80px;
 }
@@ -136,13 +145,13 @@
   margin-bottom: 28px;
 }
 
-/* Global Text Override for Light Glass */
+/* Global Text Override for Dark Glass */
 .admin-glass-box *, .admin-kpi-card * {
-  color: #111827 !important;
+  color: #FFFFFF !important;
 }
 
-.admin-glass-box span, .admin-kpi-card span {
-  color: #374151 !important;
+.admin-glass-box span, .admin-kpi-card span, .admin-glass-box p, .admin-kpi-card p {
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .admin-kpi-card {
@@ -372,5 +381,29 @@
   
   .admin-kpi-grid {
     grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 768px) {
+  /* Customer Profile Layouts */
+  .customer-profile-layout, .customer-dashboard-layout {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Generic Grids */
+  .summary-cards-row, .kpi-cards-grid, .stats-grid, .dashboard-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .products-grid, .farmer-products-grid, .categories-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .dashboard-charts-grid, .bottom-split, .farmer-dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Make sure sidebars become full width if uncollapsed */
+  .dashboard-right-col, .shop-sidebar {
+    width: 100% !important;
   }
 }

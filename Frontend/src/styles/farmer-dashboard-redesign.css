@@ -446,3 +446,27 @@
     width: calc(100% + 32px);
   }
 }
+@media (max-width: 768px) {
+  /* Customer Profile Layouts */
+  .customer-profile-layout, .customer-dashboard-layout {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Generic Grids */
+  .summary-cards-row, .kpi-cards-grid, .stats-grid, .dashboard-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .products-grid, .farmer-products-grid, .categories-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .dashboard-charts-grid, .bottom-split, .farmer-dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Make sure sidebars become full width if uncollapsed */
+  .dashboard-right-col, .shop-sidebar {
+    width: 100% !important;
+  }
+}

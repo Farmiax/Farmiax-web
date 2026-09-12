@@ -283,7 +283,7 @@ const FarmerDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {recentOrdersList.map((ord, idx) => {
+                {recentOrdersList.length > 0 ? recentOrdersList.map((ord, idx) => {
                   const ordId = ord._id || ord.id || `ORD-${idx}`;
                   return (
                     <tr key={ordId}>
@@ -313,18 +313,28 @@ const FarmerDashboard = () => {
                             fontSize: '12px',
                             textDecoration: 'none',
                             background: 'linear-gradient(135deg, #15803D 0%, #166534 100%)',
-                boxShadow: '0 4px 16px rgba(22, 101, 52, 0.4)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: '#FFFFFF',
+                            boxShadow: '0 4px 16px rgba(22, 101, 52, 0.4)',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            color: '#FFFFFF',
                             borderRadius: '8px',
                           }}
                         >
-                          <FiEye size={12} /> Manage
+                          Details
                         </Link>
                       </td>
                     </tr>
                   );
-                })}
+                }) : (
+                  <tr>
+                    <td colSpan="6" style={{ padding: '60px 20px', textAlign: 'center' }}>
+                      <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#86EFAC' }}>
+                        <FiBox size={24} />
+                      </div>
+                      <h4 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: '700', color: '#FFFFFF' }}>No Recent Orders</h4>
+                      <p style={{ margin: 0, fontSize: '14px', color: 'rgba(255, 255, 255, 0.7)' }}>When customers place orders for your produce, they will appear here.</p>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

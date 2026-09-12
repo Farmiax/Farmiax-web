@@ -41,62 +41,64 @@ const AdminDashboardLayout = ({ children, activeNav }) => {
 
       {/* Admin Sidebar */}
       <aside className={`admin-sidebar ${isSidebarOpen ? '' : 'collapsed'} ${isMobileMenuOpen ? 'open-mobile' : ''}`}>
-        <div className="admin-sidebar-header">
-          {isSidebarOpen ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-              <Logo size="sm" />
-            </div>
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, paddingRight: '12px' }}>
-              <Logo size="sm" />
-            </div>
-          )}
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="admin-desktop-toggle"
-            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-            title={isSidebarOpen ? 'Collapse' : 'Expand'}
-          >
-            {isSidebarOpen ? <FiChevronLeft size={18} /> : <FiChevronRight size={18} />}
-          </button>
-        </div>
+        <div className="admin-sidebar-sticky-wrapper">
+          <div className="admin-sidebar-header">
+            {isSidebarOpen ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                <Logo size="sm" />
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, paddingRight: '12px' }}>
+                <Logo size="sm" />
+              </div>
+            )}
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="admin-desktop-toggle"
+              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              title={isSidebarOpen ? 'Collapse' : 'Expand'}
+            >
+              {isSidebarOpen ? <FiChevronLeft size={18} /> : <FiChevronRight size={18} />}
+            </button>
+          </div>
 
-        <nav className="admin-sidebar-nav">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            const isActive = activeNav === link.id || location.pathname === link.path;
-            return (
-              <Link
-                key={link.id}
-                to={link.path}
-                className={`admin-nav-link ${isActive ? 'active' : ''}`}
-                style={{ justifyContent: isSidebarOpen ? 'flex-start' : 'center' }}
-                title={link.label}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <Icon size={19} />
-                {isSidebarOpen && <span>{link.label}</span>}
-              </Link>
-            );
-          })}
-        </nav>
+          <nav className="admin-sidebar-nav">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive = activeNav === link.id || location.pathname === link.path;
+              return (
+                <Link
+                  key={link.id}
+                  to={link.path}
+                  className={`admin-nav-link ${isActive ? 'active' : ''}`}
+                  style={{ justifyContent: isSidebarOpen ? 'flex-start' : 'center' }}
+                  title={link.label}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Icon size={19} />
+                  {isSidebarOpen && <span>{link.label}</span>}
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="admin-sidebar-footer">
-          <button
-            onClick={handleLogout}
-            className="admin-nav-link"
-            style={{
-              width: '100%',
-              border: 'none',
-              background: 'rgba(239, 68, 68, 0.15)',
-              color: '#F87171',
-              cursor: 'pointer',
-              justifyContent: isSidebarOpen ? 'flex-start' : 'center',
-            }}
-          >
-            <FiLogOut size={18} />
-            {isSidebarOpen && <span>Admin Logout</span>}
-          </button>
+          <div className="admin-sidebar-footer">
+            <button
+              onClick={handleLogout}
+              className="admin-nav-link"
+              style={{
+                width: '100%',
+                border: 'none',
+                background: 'rgba(239, 68, 68, 0.15)',
+                color: '#F87171',
+                cursor: 'pointer',
+                justifyContent: isSidebarOpen ? 'flex-start' : 'center',
+              }}
+            >
+              <FiLogOut size={18} />
+              {isSidebarOpen && <span>Admin Logout</span>}
+            </button>
+          </div>
         </div>
       </aside>
 

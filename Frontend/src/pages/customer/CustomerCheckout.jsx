@@ -146,17 +146,8 @@ const CustomerCheckout = () => {
       clearLocalCart();
       navigate('/customer/order-success', { state: { order: placedOrder } });
     } catch (err) {
-      console.warn('Backend API notice, proceeding with local order state:', err?.message);
-      const fallbackOrder = {
-        _id: 'FMX' + Math.floor(1000000 + Math.random() * 9000000),
-        userId: user?._id || user?.id,
-        Products: items,
-        totalAmount: grandTotal,
-        actualAmount: subtotal,
-        paymentMethod: paymentMethod,
-      };
-      clearLocalCart();
-      navigate('/customer/order-success', { state: { order: fallbackOrder } });
+      console.error('Order checkout failed:', err?.message || err);
+      toast.error(err?.response?.data?.message || err?.message || 'Failed to place order.');
     } finally {
       setLoading(false);
     }

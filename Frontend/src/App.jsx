@@ -75,6 +75,17 @@ function DataInitializer({ children }) {
 
   useEffect(() => {
     dispatch(fetchInitialData());
+
+    // Keep-alive ping every 10 minutes (600,000 ms) to prevent Render backend from sleeping
+    const keepAliveInterval = setInterval(() => {
+      fetch(import.meta.env.VITE_API_BASE_URL + '/product/all-products')
+        .then(res => {
+          if (!res.ok) console.warn('Keep-alive ping non-200 response');
+        })
+        .catch(err => console.warn('Keep-alive ping failed', err));
+    }, 600000);
+
+    return () => clearInterval(keepAliveInterval);
   }, [dispatch]);
   
   useEffect(() => {
@@ -105,8 +116,6 @@ function DataInitializer({ children }) {
 
     return () => clearInterval(intervalId);
   }, []);
-
-
 
   if (error) {
     console.warn("Could not load initial data:", error);
@@ -146,7 +155,7 @@ function App() {
                   <Route path="/forgot-password" element={<ForgotPassword />} />
 
                   {/* Customer Routes (Protected: customer role) */}
-                  <Route path="/customer" element={<Navigate to="/customer/dashboard" replace />} />
+                  <Route path="/customer" element={<Navigate to="/customer/shop" replace />} />
                   <Route path="/customer/dashboard" element={<RoleProtectedRoute requiredRole="customer"><CustomerProfile /></RoleProtectedRoute>} />
                   <Route path="/customer/profile" element={<RoleProtectedRoute requiredRole="customer"><CustomerProfile /></RoleProtectedRoute>} />
                   <Route path="/customer/personal-profile" element={<RoleProtectedRoute requiredRole="customer"><CustomerAccountProfile /></RoleProtectedRoute>} />

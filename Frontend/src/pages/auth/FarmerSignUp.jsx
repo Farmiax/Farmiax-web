@@ -81,7 +81,7 @@ const FarmerSignUp = () => {
             <div className="auth-checkbox"><input type="checkbox" id="ft" checked={agreed} onChange={e=>setAgreed(e.target.checked)}/><label htmlFor="ft">I agree to <a href="#">Terms</a> and <a href="#">Privacy Policy</a></label></div>
             <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading}>{loading?'Creating...':'Create Farmer Account'}</button>
           </form>
-          <SocialAuth role="farmer" />
+          {/* <SocialAuth role="farmer" /> */}
           <p className="auth-switch">Already have an account? <Link to="/farmer/signin">Sign In</Link></p>
         </div>
       </div>

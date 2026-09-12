@@ -21,7 +21,7 @@ const AdminFarmers = () => {
     setLoading(true);
     try {
       const data = await adminService.getAllFarmers();
-      const list = Array.isArray(data) ? data : (data?.data || []);
+      const list = Array.isArray(data) ? data : (data?.allFarmer || data?.data || []);
       setFarmers(list);
       setFilteredFarmers(list);
     } catch {

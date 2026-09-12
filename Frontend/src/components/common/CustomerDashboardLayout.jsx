@@ -142,6 +142,16 @@ const CustomerDashboardLayout = ({ children }) => {
           </form>
 
           <div className="header-actions">
+            {(user?.role === 'farmer' || user?.role === 'both') && (
+              <button 
+                className="btn btn-primary btn-sm" 
+                style={{ padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, marginRight: '8px' }}
+                onClick={() => navigate('/farmer/dashboard')}
+                title="Go to Farmer Dashboard"
+              >
+                Farmer Dashboard
+              </button>
+            )}
             <button className="header-icon-btn" onClick={() => navigate('/customer/notifications')} title="Notifications">
               <FiBell size={22} />
             </button>

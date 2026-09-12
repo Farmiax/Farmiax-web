@@ -38,10 +38,10 @@ const SocialAuth = ({ role = 'customer' }) => {
                   role: role,
                 });
                 toast.success('Signed in with Google! 🌟');
-                if (user.role === 'farmer') {
-                  navigate('/farmer/dashboard', { replace: true });
+                if (user.role === 'farmer' || user.role === 'both') {
+                  navigate('/customer/shop', { replace: true });
                 } else {
-                  navigate('/customer', { replace: true });
+                  navigate('/customer/shop', { replace: true });
                 }
               } catch (err) {
                 toast.error(err?.response?.data?.message || err?.message || 'Google login failed');
@@ -83,10 +83,10 @@ const SocialAuth = ({ role = 'customer' }) => {
       });
       toast.success('Signed in with Google! 🌟');
       setShowEmailModal(false);
-      if (user.role === 'farmer') {
-        navigate('/farmer/dashboard', { replace: true });
+      if (user.role === 'farmer' || user.role === 'both') {
+        navigate('/customer/shop', { replace: true });
       } else {
-        navigate('/customer', { replace: true });
+        navigate('/customer/shop', { replace: true });
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || err?.message || 'Google login failed');

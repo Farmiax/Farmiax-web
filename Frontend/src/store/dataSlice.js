@@ -5,9 +5,21 @@ export const fetchInitialData = createAsyncThunk(
   'data/fetchInitialData',
   async (_, { rejectWithValue }) => {
     try {
-      const [productsRes, farmersRes] = await Promise.allSettled([
-        api.get('/product/all-products'),
-        api.get('/users/all-Farmers')
+      const fetchWithFallback = async (promise) => {
+        try {
+          const res = await promise;
+          return { status: 'fulfilled', value: res };
+        } catch (err) {
+          if (err.response?.status === 404) {
+            return { status: 'fulfilled', value: { data: [] } };
+          }
+          return { status: 'rejected', reason: err };
+        }
+      };
+
+      const [productsRes, farmersRes] = await Promise.all([
+        fetchWithFallback(api.get('/product/all-products')),
+        fetchWithFallback(api.get('/users/all-Farmers'))
       ]);
 
       let products = [];
@@ -16,6 +28,8 @@ export const fetchInitialData = createAsyncThunk(
       if (productsRes.status === 'fulfilled') {
         const prods = productsRes.value.data?.data || productsRes.value.data?.products || productsRes.value.data || [];
         products = Array.isArray(prods) ? prods : [];
+      } else {
+        console.warn("Failed to load products:", productsRes.reason);
       }
 
       if (farmersRes.status === 'fulfilled') {
@@ -23,17 +37,19 @@ export const fetchInitialData = createAsyncThunk(
         if (Array.isArray(fetchedFarmers)) {
           farmers = fetchedFarmers.map((f, idx) => ({
             id: f._id || f.id || `farmer_${idx}`,
-            name: f.fullName || f.name || 'Organic Farmer',
-            farmName: f.farmName || (f.City ? `${f.City} Fresh Organics` : 'Local Farmiax Organics'),
-            location: [f.City, f.State].filter(Boolean).join(', ') || 'Tamil Nadu',
-            rating: (4.7 + (idx % 3) * 0.1).toFixed(1),
-            orders: 100 + idx * 45,
-            avatar: f.avatar && f.avatar !== 'Not Photo' ? f.avatar : 'https://images.unsplash.com/photo-1595844730298-b960ff86faa1?auto=format&fit=crop&w=200&q=80',
-            coverImg: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80',
-            isOrganic: true,
+            name: f.fullName || f.name || 'Unnamed Farmer',
+            farmName: f.farmName || f.City || 'Independent Farmer',
+            location: [f.City, f.State].filter(Boolean).join(', ') || 'Unknown Location',
+            rating: f.rating || 0,
+            orders: f.ordersCount || 0,
+            avatar: f.avatar && f.avatar !== 'Not Photo' ? f.avatar : null,
+            coverImg: f.coverImg || null,
+            isOrganic: f.isOrganic || false,
             rawObj: f
           }));
         }
+      } else {
+        console.warn("Failed to load farmers:", farmersRes.reason);
       }
 
       return { products, farmers };

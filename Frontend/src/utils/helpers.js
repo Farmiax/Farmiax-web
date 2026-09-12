@@ -113,7 +113,7 @@ export const getImageUrl = (imagePath, fallback = 'https://images.unsplash.com/p
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:') || imagePath.startsWith('blob:')) {
     return imagePath;
   }
-  const backendBase = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1').replace(/\/api\/v1\/?$/, '');
+  const backendBase = (import.meta.env.VITE_API_BASE_URL || 'https://farmiax-web-backend.onrender.com/api/v1').replace(/\/api\/v1\/?$/, '');
   const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
   return `${backendBase}/${cleanPath}`;
 };

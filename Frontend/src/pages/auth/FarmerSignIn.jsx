@@ -28,8 +28,8 @@ const FarmerSignIn = () => {
     setLoading(true);
     try {
       const user = await login(email, password);
-      if (user.role === 'farmer') {
-        navigate('/farmer/dashboard', { replace: true });
+      if (user.role === 'farmer' || user.role === 'both') {
+        navigate('/customer/shop', { replace: true });
       } else {
         setApiError('This account is not registered as a farmer. Please use customer login.');
       }
@@ -78,7 +78,7 @@ const FarmerSignIn = () => {
             </button>
           </form>
 
-          <SocialAuth role="farmer" />
+          {/* <SocialAuth role="farmer" /> */}
 
           <p className="auth-switch">
             Don't have a farmer account? <Link to="/farmer/signup">Create Farmer Account</Link>
