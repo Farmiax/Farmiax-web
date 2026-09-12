@@ -75,11 +75,13 @@ const productService = {
         farmerId: farmerId,
          }
         );
+        console.log(res)
         const items = res.data?.data || res.data;
         if (Array.isArray(items) && items.length > 0) return items;
       }
     } catch {
       // Fallback to filtering all products
+      
     }
 
     try {
