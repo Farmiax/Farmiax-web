@@ -69,6 +69,7 @@ const productService = {
   // GET /product/farmer-all-products or fallback to all-products filtered by farmer
   getFarmerProducts: async (farmerId) => {
     try {
+        console.log(farmerId)
       if (farmerId) {
         const res = await api.post('/product/farmer-all-products', 
            {
