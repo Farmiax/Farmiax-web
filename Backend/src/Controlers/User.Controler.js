@@ -521,8 +521,18 @@ const DeleteAccountofFarmer = asyncHandler(async (req, res) => {
     );
   }
 });
+const healthCheck = asyncHandler(async (req, res) => {
+  return res.status(200).json(
+    new Apiresponse(
+      200,
+        null,
+        "Backend is healthy"   
+    )
+  );
+});
 
 export {
+  healthCheck,
   registerUser,
   loginuser,
   LogoutUser,
