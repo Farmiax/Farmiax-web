@@ -70,8 +70,8 @@ const productService = {
   getFarmerProducts: async (farmerId) => {
     try {
       if (farmerId) {
-        const res = await api.get('/product/farmer-all-products', {
-           farmerId ,
+        const res = await api.post('/product/farmer-all-products', {
+           data:{farmerId} ,
         });
         const items = res.data?.data || res.data;
         if (Array.isArray(items) && items.length > 0) return items;
