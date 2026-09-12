@@ -85,6 +85,34 @@ function DataInitializer({ children }) {
 
   return children;
 }
+ useEffect(() => {
+    const healthCheck = async () => {
+      try {
+        const response = await fetch(
+          "https://farmiax-web-backend.onrender.com/api/v1/users/health"
+        );
+
+        if (!response.ok) {
+          throw new Error(`Health check failed: ${response.status}`);
+        }
+
+        
+      } catch (error) {
+        console.error("Backend health check error:", error);
+      }
+    };
+
+    // First call immediately
+    healthCheck();
+
+    // Then every 10 minutes
+    const intervalId = setInterval(
+      healthCheck,
+      10 * 60 * 1000
+    );
+
+    return () => clearInterval(intervalId);
+  }, []);
 
 function App() {
   return (
