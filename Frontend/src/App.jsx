@@ -76,16 +76,8 @@ function DataInitializer({ children }) {
   useEffect(() => {
     dispatch(fetchInitialData());
   }, [dispatch]);
-
-
-
-  if (error) {
-    console.warn("Could not load initial data:", error);
-  }
-
-  return children;
-}
- useEffect(() => {
+  
+  useEffect(() => {
     const healthCheck = async () => {
       try {
         const response = await fetch(
@@ -113,6 +105,16 @@ function DataInitializer({ children }) {
 
     return () => clearInterval(intervalId);
   }, []);
+
+
+
+  if (error) {
+    console.warn("Could not load initial data:", error);
+  }
+
+  return children;
+}
+ 
 
 function App() {
   return (
