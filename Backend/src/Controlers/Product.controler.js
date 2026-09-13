@@ -220,31 +220,32 @@ const FarmerAndAdminremoveProduct = asyncHandler(async (req, res) => {
     const { productId } = req.params;
 
     if (!mongoose.isValidObjectId(productId)) {
-      throw new ApiError(400," Invalid Product Id");
-      
+      throw new ApiError(400, "Invalid Product Id");
     }
 
     const product = await Product.findById(productId);
 
     if (!product) {
-      throw new ApiError(404,"Product is not found");
-      
+      throw new ApiError(404, "Product is not found");
     }
 
-    if (product.image) {
-      const publicId = product.image.split("/").pop().split(".")[0];
-      await destroyoncloundinary(publicId);
+    if (product.image && typeof product.image === "string" && product.image.includes("cloudinary")) {
+      try {
+        const publicId = product.image.split("/").pop().split(".")[0];
+        await destroyoncloundinary(publicId);
+      } catch (imgErr) {
+        console.error("Cloudinary destruction error:", imgErr);
+      }
     }
 
     await Product.findByIdAndDelete(productId);
-    
 
     return res
-      .status(205)
-      .json(new Apiresponse(205, null, "Product deleted successfully"));
+      .status(200)
+      .json(new Apiresponse(200, null, "Product deleted successfully"));
   } catch (error) {
     const status = error.statusCode || 500;
-    return res.status(status).json(new Apiresponse(status, null, error.message|| " something went wrong when deleting a product"));
+    return res.status(status).json(new Apiresponse(status, null, error.message || "Something went wrong when deleting a product"));
   }
 });
 const FarmerGetHisProduct = asyncHandler(async (req, res) => {
