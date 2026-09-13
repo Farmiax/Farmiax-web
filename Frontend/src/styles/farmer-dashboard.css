@@ -450,3 +450,11 @@
     grid-template-columns: 2fr 1fr;
   }
 }
+
+.farmer-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 12px;
+}

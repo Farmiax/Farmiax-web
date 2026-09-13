@@ -19,17 +19,17 @@ const CustomerProfile = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
-  // Unsplash URLs for realistic data matching Farmiax brand
-  const bannerImg = "https://images.unsplash.com/photo-1595856722238-6369cba4ba86?auto=format&fit=crop&w=1200&q=80";
-  const tomatoImg = "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=400&q=80";
-  const potatoImg = "https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=400&q=80";
-  const bananaImg = "https://images.unsplash.com/photo-1571501443685-61266eecfc6f?auto=format&fit=crop&w=400&q=80";
-  const milkImg = "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=400&q=80";
+  // Generic fallback URLs matching Farmiax brand
+  const bannerImg = "/logo.png";
+  const tomatoImg = "/logo.png";
+  const potatoImg = "/logo.png";
+  const bananaImg = "/logo.png";
+  const milkImg = "/logo.png";
 
-  const riceImg = "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=200&q=80";
-  const capsicumImg = "https://images.unsplash.com/photo-1558237373-c1572cbf610e?auto=format&fit=crop&w=200&q=80";
-  const corianderImg = "https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?auto=format&fit=crop&w=200&q=80";
-  const farmerImg = "https://images.unsplash.com/photo-1595844730298-b960ff86faa1?auto=format&fit=crop&w=200&q=80";
+  const riceImg = "/logo.png";
+  const capsicumImg = "/logo.png";
+  const corianderImg = "/logo.png";
+  const farmerImg = "/logo.png";
 
 
 
@@ -65,19 +65,12 @@ const CustomerProfile = () => {
           setRecommended(formattedRecs);
 
           // Generate dynamic categories
-          const getCategoryEmoji = (name) => {
-            const n = name.toLowerCase();
-            if (n.includes('veg')) return '🥕';
-            if (n.includes('fruit')) return '🍎';
-            if (n.includes('oil') || n.includes('ghee')) return '🫙';
-            if (n.includes('honey')) return '🍯';
-            if (n.includes('pulse') || n.includes('grain')) return '🌾';
-            if (n.includes('dairy') || n.includes('milk')) return '🥛';
-            if (n.includes('spice')) return '🌶️';
-            return '🌱';
+          const getCatImg = (name) => {
+            return '/logo.png';
           };
+          const getCategoryImage = getCatImg;
           const catSet = new Set(allProducts.map(p => p.Category || p.category).filter(Boolean));
-          const catArray = Array.from(catSet).map(c => ({ name: c, emoji: getCategoryEmoji(c) })).slice(0, 4);
+          const catArray = Array.from(catSet).map(c => ({ name: c, image: getCategoryImage(c) })).slice(0, 4);
           setCategories(catArray);
         }
 
@@ -172,7 +165,9 @@ const CustomerProfile = () => {
             <div className="categories-row">
               {categories.length > 0 ? categories.map((cat, i) => (
                 <div key={i} className="category-card" onClick={() => navigate(`/customer/shop?category=${cat.name}`)}>
-                  <div className="category-icon" style={{ fontSize: '32px', backgroundColor: 'var(--cream-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{cat.emoji}</div>
+                  <div className="category-icon" style={{ backgroundColor: 'var(--cream-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', padding: 0 }}>
+                    <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
                   <span className="category-name">{cat.name}</span>
                 </div>
               )) : <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>No categories available.</p>}

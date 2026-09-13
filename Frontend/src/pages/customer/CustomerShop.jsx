@@ -377,7 +377,7 @@ const CustomerShop = () => {
                               alt={p.name || 'Produce'}
                               loading="lazy"
                               onError={(e) => {
-                                e.currentTarget.src = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80';
+                                e.currentTarget.src = '/logo.png';
                               }}
                             />
                           </Link>

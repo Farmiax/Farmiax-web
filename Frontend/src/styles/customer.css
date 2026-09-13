@@ -2827,3 +2827,35 @@ h1, h2, h3, .section-title, .product-title, .profile-card-header h2, .profile-ba
     width: 100% !important;
   }
 }
+
+/* Track Order Search Form Mobile Responsiveness */
+.track-order-search-form {
+  display: flex;
+  gap: 10px;
+  max-width: 460px;
+  margin: 0 auto 24px;
+  flex-wrap: wrap;
+}
+
+.track-search-input {
+  flex: 1 1 200px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  font-size: 14px;
+  outline: none;
+  color: #1F2937;
+}
+
+.track-search-btn {
+  padding: 12px 24px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .track-search-btn {
+    flex: 1 1 100%;
+  }
+}

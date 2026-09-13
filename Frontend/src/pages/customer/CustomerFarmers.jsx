@@ -95,28 +95,28 @@ const CustomerFarmers = () => {
   const feedItems = allProducts
     .filter((prod) => {
       const prodFarmerId = prod.farmer?._id || prod.farmer || prod.farmerId;
-      return followedIds.length === 0 || followedIds.includes(prodFarmerId) || followedIds.includes(farmers[0]?.id);
+      return followedIds.includes(prodFarmerId);
     })
     .map((prod, idx) => {
-      const farmerObj = farmers.find(f => f.id === (prod.farmer?._id || prod.farmer || prod.farmerId)) || farmers[0] || {
-        id: 'farmer_default',
-        name: 'Local Organic Farmer',
-        farmName: 'Farmiax Certified Partner',
-        location: 'Tamil Nadu',
-        avatar: 'https://images.unsplash.com/photo-1595844730298-b960ff86faa1?auto=format&fit=crop&w=200&q=80',
-        coverImg: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80'
+      const farmerObj = farmers.find(f => f.id === (prod.farmer?._id || prod.farmer || prod.farmerId)) || {
+        id: prod.farmer?._id || prod.farmer || 'unknown',
+        name: 'Unknown Farmer',
+        farmName: 'Independent Farmer',
+        location: 'Unknown',
+        avatar: null,
+        coverImg: null
       };
 
       return {
         id: prod._id || prod.id || `harvest_${idx}`,
         farmer: farmerObj,
-        postedTime: idx === 0 ? 'Harvested 2 hours ago 🌅' : 'Fresh Batch Posted Today',
+        postedTime: 'Fresh Batch',
         productName: prod.name || prod.ProductName || 'Organic Produce',
         price: prod.price || prod.Price || 0,
         oldPrice: (prod.price || prod.Price || 0) ? Math.round((prod.price || prod.Price) * 1.15) : null,
         unit: prod.unit || '1 Pack',
         image: prod.imageurl || prod.image || farmerObj.coverImg,
-        desc: prod.description || '100% natural chemical-free harvest. Direct from farm to kitchen.',
+        desc: prod.description || 'Direct from farm to kitchen.',
         backendObj: prod,
       };
     });

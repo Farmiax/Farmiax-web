@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fi';
 import '../../styles/customer.css';
 
-const defaultAvatar = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80";
+const defaultAvatar = "/logo.png";
 
 const CustomerSettings = () => {
   const { user, updateUser } = useAuth();

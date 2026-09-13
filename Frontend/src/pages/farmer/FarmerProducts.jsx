@@ -35,7 +35,7 @@ const FarmerProducts = () => {
     price: '',
     quantity: '1',
     unit: 'kg',
-    stock: '50',
+    stock: '100',
     description: '',
     image: null,
     imageUrlPreview: '',
@@ -52,7 +52,7 @@ const FarmerProducts = () => {
       price: '',
       quantity: '1',
       unit: 'kg',
-      stock: '50',
+      stock: '100',
       description: '',
       image: null,
       imageUrlPreview: '',
@@ -71,7 +71,7 @@ const FarmerProducts = () => {
       price: prod.price || prod.Price || '',
       quantity: prod.quantity || '1',
       unit: prod.unit || 'kg',
-      stock: prod.stock || '50',
+      stock: prod.stock !== undefined ? prod.stock : '0',
       description: prod.description || '',
       image: null,
       imageUrlPreview: getImageUrl(prod.image),
@@ -269,7 +269,7 @@ const FarmerProducts = () => {
                       alt={p.name}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80';
+                        e.currentTarget.src = '/logo.png';
                       }}
                     />
                   </div>
@@ -280,7 +280,7 @@ const FarmerProducts = () => {
                         {p.name || p.ProductName}
                       </h3>
                       <p style={{ margin: '0 0 12px', fontSize: '13px', color: 'rgba(255, 255, 255, 0.85)' }}>
-                        Pack: {p.quantity || 1} {p.unit || 'kg'} • In Stock: <strong style={{ color: '#4ADE80' }}>{p.stock || 50} units</strong>
+                        Pack: {p.quantity || 1} {p.unit || 'kg'} • In Stock: <strong style={{ color: '#4ADE80' }}>{p.stock !== undefined ? p.stock : 0} units</strong>
                       </p>
                     </div>
 

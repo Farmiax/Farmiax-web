@@ -1,9 +1,28 @@
 import axios from 'axios';
-import api from './api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://farmiax-web-backend.onrender.com/api/v1';
 
 const getAdminToken = () => localStorage.getItem('farmiax_admin_token');
+
+const adminApi = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  validateStatus: (status) => status >= 200 && status < 400,
+});
+
+adminApi.interceptors.request.use(
+  (config) => {
+    const token = getAdminToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.token = token; // some backend endpoints expect 'token'
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 const adminService = {
   // POST /users/adminlogin — { email, password } -> { Token: token }
@@ -25,13 +44,13 @@ const adminService = {
 
   // GET /product/all-products — All products across all farmers
   getAllProducts: async () => {
-    const res = await api.get('/product/all-products');
+    const res = await adminApi.get('/product/all-products');
     return res.data?.data || res.data || [];
   },
 
   // GET /product/product/:productId — Single product with populated farmer details
   getProductDetails: async (productId) => {
-    const res = await api.get(`/product/product/${productId}`);
+    const res = await adminApi.get(`/product/product/${productId}`);
     return res.data?.data || res.data;
   },
 
@@ -49,41 +68,37 @@ const adminService = {
       });
     }
 
-    const res = await api.post('/product/update', formData);
+    const res = await adminApi.post('/product/update', formData);
     return res.data?.data || res.data;
   },
 
   // DELETE /product/admin/:productId — Admin-authenticated product deletion
-  // Requires header { token: <adminToken> }
   deleteProduct: async (productId) => {
-    const token = getAdminToken();
-    const res = await axios.delete(`${API_BASE_URL}/product/admin/${productId}`, {
-      headers: { token },
-    });
+    const res = await adminApi.delete(`/product/admin/${productId}`);
     return res.data?.data || res.data;
   },
 
   // GET /order/getorders — Master list of all customer orders
   getAllOrders: async () => {
-    const res = await api.get('/order/getorders');
+    const res = await adminApi.get('/order/getorders');
     return res.data?.data || res.data || [];
   },
 
   // PATCH /order/updatestatus — { orderId, status }
   updateOrderStatus: async (orderId, status) => {
-    const res = await api.patch('/order/updatestatus', { orderId, status });
+    const res = await adminApi.patch('/order/updatestatus', { orderId, status });
     return res.data?.data || res.data;
   },
 
   // DELETE /order/updateorderrecord — { orderId }
   deleteOrder: async (orderId) => {
-    const res = await api.delete('/order/updateorderrecord', { data: { orderId } });
+    const res = await adminApi.delete('/order/updateorderrecord', { data: { orderId } });
     return res.data?.data || res.data;
   },
 
   getAllFarmers: async () => {
     try {
-      const res = await api.get('/users/all-Farmers');
+      const res = await adminApi.get('/users/all-Farmers');
       return res.data?.data || res.data || [];
     } catch (err) {
       if (err.response?.status === 404) return [];

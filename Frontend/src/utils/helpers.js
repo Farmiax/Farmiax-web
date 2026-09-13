@@ -107,7 +107,7 @@ export const orderStatuses = [
 ];
 
 // Resolves images safely across Cloudinary URLs, relative URLs, and local assets
-export const getImageUrl = (imagePath, fallback = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80') => {
+export const getImageUrl = (imagePath, fallback = '/logo.png') => {
   if (!imagePath) return fallback;
   if (typeof imagePath !== 'string') return fallback;
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:') || imagePath.startsWith('blob:')) {

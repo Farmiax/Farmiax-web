@@ -54,15 +54,7 @@ export const CartProvider = ({ children }) => {
             const qty = typeof cartInfo === 'object' ? (Number(cartInfo.quantity) || 1) : Number(cartInfo) || 1;
             const date = typeof cartInfo === 'object' ? cartInfo.date : Date.now();
             if (!product) {
-              return {
-                _id: productId,
-                name: 'Organic Product',
-                price: 150,
-                cartQuantity: qty,
-                cartDate: date,
-                quantity: 1,
-                unit: 'kg'
-              };
+              return null; // Don't mock missing products
             }
             return {
               ...product,
@@ -90,14 +82,9 @@ export const CartProvider = ({ children }) => {
       const data = res.data?.data || res.data || {};
       setCartData(data);
       return res;
-    } catch {
-      setCartData((prev) => ({
-        ...prev,
-        [productId]: {
-          quantity: (Number(prev[productId]?.quantity) || 0) + quantity,
-          date: Date.now(),
-        },
-      }));
+    } catch (err) {
+      console.error('Add to cart failed:', err);
+      throw err;
     }
   }, []);
 
@@ -107,20 +94,9 @@ export const CartProvider = ({ children }) => {
       const data = res.data?.data || res.data || {};
       setCartData(data);
       return res;
-    } catch {
-      setCartData((prev) => {
-        const next = { ...prev };
-        if (quantity <= 0) {
-          delete next[productId];
-        } else {
-          next[productId] = {
-            ...next[productId],
-            quantity,
-            date: Date.now(),
-          };
-        }
-        return next;
-      });
+    } catch (err) {
+      console.error('Update cart failed:', err);
+      throw err;
     }
   }, []);
 

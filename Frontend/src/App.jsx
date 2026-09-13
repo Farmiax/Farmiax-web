@@ -92,7 +92,7 @@ function DataInitializer({ children }) {
     const healthCheck = async () => {
       try {
         const response = await fetch(
-          "https://farmiax-web-backend.onrender.com/api/v1/users/health"
+          `${import.meta.env.VITE_API_BASE_URL}/users/health`
         );
 
         if (!response.ok) {

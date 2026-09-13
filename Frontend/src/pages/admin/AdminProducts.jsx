@@ -218,7 +218,7 @@ const AdminProducts = () => {
                             src={getImageUrl(p.image)}
                             alt={p.name}
                             style={{ width: '42px', height: '42px', borderRadius: '8px', objectFit: 'cover', background: '#021209' }}
-                            onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=200&q=80'; }}
+                            onError={(e) => { e.currentTarget.src = '/logo.png'; }}
                           />
                           <div>
                             <strong style={{ fontSize: '14px', color: '#FFFFFF', display: 'block' }}>{p.name}</strong>

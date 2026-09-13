@@ -75,11 +75,8 @@ const CustomerProductDetails = () => {
   const isWishlisted = wishlistIds.has(prodId);
   const mainImage = getImageUrl(product.image || product.Image);
 
-  const galleryImages = [
-    mainImage,
-    'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&q=80',
-    'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80',
-    'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80',
+  const galleryImages = product?.images?.length ? product.images.map((img) => getImageUrl(img)) : [
+    mainImage
   ];
 
   const handleQuantityChange = (type) => {
@@ -199,7 +196,7 @@ const CustomerProductDetails = () => {
                 alt={product.name}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&q=80';
+                  e.currentTarget.src = '/logo.png';
                 }}
               />
             </div>

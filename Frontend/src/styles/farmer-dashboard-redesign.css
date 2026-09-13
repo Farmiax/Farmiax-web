@@ -22,7 +22,7 @@
   margin-bottom: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   /* Optional: we can add a subtle tractor image as a faint background overlay */
-  background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1592982537447-6f2334e38c7b?w=1000&q=80');
+  background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.85)), url('/farmer bg.png');
   background-position: right center;
   background-size: cover;
 }

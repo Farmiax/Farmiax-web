@@ -189,20 +189,20 @@ const TrackOrder = () => {
             </p>
 
             <form
+              className="track-order-search-form"
               onSubmit={(e) => {
                 e.preventDefault();
                 if (searchInput.trim()) navigate(`/customer/track-order/${searchInput.trim()}`);
               }}
-              style={{ display: 'flex', gap: '10px', maxWidth: '460px', margin: '0 auto 24px' }}
             >
               <input
                 type="text"
                 placeholder="e.g. FMX9821092..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                style={{ flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFFFFF', fontSize: '14px', outline: 'none', color: '#1F2937' }}
+                className="track-search-input"
               />
-              <button type="submit" className="btn-dark-green" style={{ padding: '12px 24px', fontSize: '14px' }}>
+              <button type="submit" className="btn-dark-green track-search-btn">
                 Track Order
               </button>
             </form>
