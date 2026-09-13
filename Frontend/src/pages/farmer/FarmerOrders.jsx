@@ -119,7 +119,7 @@ const FarmerOrders = () => {
       doc.setTextColor(100);
       doc.text(`Order ID: #${order._id || order.id}`, 14, 28);
       doc.text(`Date: ${new Date(order.createdAt || Date.now()).toLocaleDateString('en-IN')}`, 14, 34);
-      doc.text(`Customer: ${order.customer?.fullName || 'Customer'}`, 14, 40);
+      doc.text(`Customer: ${order.user?.fullName || order.customer?.fullName || 'Customer'}`, 14, 40);
 
       const items = (order.Products || []).map((item, idx) => [
         idx + 1,
@@ -154,7 +154,7 @@ const FarmerOrders = () => {
 
   const filteredOrders = orders.filter((o) => {
     const oId = String(o._id || o.id || '').toLowerCase();
-    const custName = (o.customer?.fullName || o.customer || '').toLowerCase();
+    const custName = (o.user?.fullName || o.customer?.fullName || o.customer || '').toLowerCase();
     const matchesSearch = !searchQuery || oId.includes(searchQuery.toLowerCase()) || custName.includes(searchQuery.toLowerCase());
     const matchesTab = activeTab === 'All' || (o.status || '').toLowerCase().includes(activeTab.toLowerCase());
     return matchesSearch && matchesTab;
@@ -262,11 +262,13 @@ const FarmerOrders = () => {
                         </td>
                         <td>
                           <p style={{ margin: 0, fontWeight: 700, fontSize: '14px', color: '#FFFFFF' }}>
-                            {ord.customer?.fullName || ord.customer || 'Customer'}
+                            {ord.user?.fullName || ord.customer?.fullName || ord.customer || 'Customer'}
                           </p>
-                          <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.75)' }}>
-                            {ord.customer?.phone || '+91 98450 12345'}
-                          </span>
+                          {(ord.user?.phone || ord.customer?.phone) && (
+                            <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.75)' }}>
+                              {ord.user?.phone || ord.customer?.phone}
+                            </span>
+                          )}
                         </td>
                         <td style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.85)' }}>
                           {new Date(ord.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
@@ -397,14 +399,16 @@ const FarmerOrders = () => {
                 <h4 style={{ margin: '0 0 10px', fontSize: '14px', fontWeight: 700, color: '#334155' }}>Customer & Destination</h4>
                 <div style={{ background: '#FFF', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '14px' }}>
                   <p style={{ margin: '0 0 4px', fontWeight: 700, fontSize: '14px', color: '#0F172A' }}>
-                    {selectedOrder.customer?.fullName || selectedOrder.customer || 'Customer Partner'}
+                    {selectedOrder.user?.fullName || selectedOrder.customer?.fullName || selectedOrder.customer || 'Customer Partner'}
                   </p>
                   <p style={{ margin: '0 0 4px', fontSize: '13px', color: '#475569' }}>
-                    {selectedOrder.customer?.address || '12, Green Park Avenue, Indiranagar, Bengaluru'}
+                    {[selectedOrder.user?.address, selectedOrder.user?.City, selectedOrder.user?.State].filter(Boolean).join(', ') || selectedOrder.customer?.address || 'Indiranagar, Bengaluru'}
                   </p>
-                  <p style={{ margin: 0, fontSize: '13px', color: '#16A34A', fontWeight: 600 }}>
-                    📞 {selectedOrder.customer?.phone || '+91 98450 12345'}
-                  </p>
+                  {(selectedOrder.user?.phone || selectedOrder.customer?.phone) && (
+                    <p style={{ margin: 0, fontSize: '13px', color: '#16A34A', fontWeight: 600 }}>
+                      📞 {selectedOrder.user?.phone || selectedOrder.customer?.phone}
+                    </p>
+                  )}
                 </div>
               </div>
 
