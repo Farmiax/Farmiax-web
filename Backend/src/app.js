@@ -7,9 +7,11 @@ import xss from 'xss-clean';
 
 const app = express()
 app.use(cors({
-    origin:process.env.CORS_ORIGIN,
-    credentials:true
-}))
+    origin: (origin, callback) => callback(null, true),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'token', 'x-requested-with']
+}));
 
 // Security Headers
 app.use(helmet());
