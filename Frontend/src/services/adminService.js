@@ -14,10 +14,10 @@ const adminApi = axios.create({
 
 adminApi.interceptors.request.use(
   (config) => {
-    const token = getAdminToken();
+    const token = localStorage.getItem('farmiax_admin_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      config.headers.token = token; // some backend endpoints expect 'token'
+      config.headers.token = token; // Required by backend admin.auth.js middleware
     }
     return config;
   },
