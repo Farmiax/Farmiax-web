@@ -4,19 +4,17 @@ import { ApiError } from "../Utiles/ApiError.js"
 import { Apiresponse } from "../Utiles/ApiResponse.js"
 
 export const adminAuth=asyncHandler(async(req,res,next)=>{
-    const{token}=req.headers
-    
-    
-    
+    const authHeader = req.headers.authorization;
+    const token = req.headers.token || (authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null);
     
     if (!token) {
-        return res.status(400).json(new Apiresponse(400,"token is not valide"))
+        return res.status(400).json(new Apiresponse(400, null, "token is not valide"))
         
     }
     const decodetoken= await jwt.verify(token,process.env.ACCES_TOKEN_SECRET)
     
     if (decodetoken.payload !== process.env.ADMIN_EMAIL+process.env.ADMIN_PASSWORD) {
-        return res.status(400).json(new Apiresponse(400,"not autherise , login again"))
+        return res.status(400).json(new Apiresponse(400, null, "not autherise , login again"))
         
     }
     next()

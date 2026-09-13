@@ -7,7 +7,7 @@ import 'jspdf-autotable';
 import toast from 'react-hot-toast';
 import {
   FiBox, FiTruck, FiCheckCircle, FiClock, FiFileText,
-  FiPhone, FiMapPin, FiEye, FiDownload, FiArrowRight, FiX, FiSearch
+  FiPhone, FiMapPin, FiEye, FiDownload, FiArrowRight, FiX, FiSearch, FiTrash2
 } from 'react-icons/fi';
 import '../../styles/farmer-dashboard.css';
 import '../../styles/farmer-orders.css';
@@ -85,6 +85,26 @@ const FarmerOrders = () => {
 
     setUpdating(false);
     toast.success(`Order status updated to "${nextStatus}"! 🚚`);
+  };
+
+  const handleDeleteOrder = async (order) => {
+    const orderId = order._id || order.id;
+    if (!window.confirm('Are you sure you want to delete this completed order record?')) return;
+    
+    setUpdating(true);
+    try {
+      await orderService.deleteOrder(orderId);
+      setOrders((prev) => prev.filter((o) => (o._id !== orderId && o.id !== orderId)));
+      if (selectedOrder && (selectedOrder._id === orderId || selectedOrder.id === orderId)) {
+        setSelectedOrder(null);
+      }
+      toast.success('Order record removed successfully.');
+    } catch (err) {
+      toast.error('Failed to remove order record.');
+      console.error(err);
+    } finally {
+      setUpdating(false);
+    }
   };
 
   const handleDownloadInvoice = (order) => {
@@ -280,22 +300,42 @@ const FarmerOrders = () => {
                             >
                               <FiEye size={13} /> View
                             </button>
-                            <button
-                              onClick={() => handleNextStatus(ord)}
-                              disabled={updating || ord.status === 'Delivered'}
-                              className="btn btn-primary btn-sm"
-                              style={{
-                                padding: '6px 14px',
-                                fontSize: '12px',
-                                background: 'linear-gradient(135deg, #15803D 0%, #166534 100%)',
-                                borderRadius: '8px',
-                                border: '1px solid rgba(255, 255, 255, 0.3)',
-                                boxShadow: '0 2px 8px rgba(22, 101, 52, 0.4)',
-                              }}
-                              title="Advance Status"
-                            >
-                              Advance →
-                            </button>
+                            {ord.status === 'Delivered' ? (
+                              <button
+                                onClick={() => handleDeleteOrder(ord)}
+                                disabled={updating}
+                                className="btn btn-primary btn-sm"
+                                style={{
+                                  padding: '6px 14px',
+                                  fontSize: '12px',
+                                  background: 'linear-gradient(135deg, #DC2626 0%, #991B1B 100%)',
+                                  borderRadius: '8px',
+                                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                                  boxShadow: '0 2px 8px rgba(220, 38, 38, 0.4)',
+                                  color: '#FFF'
+                                }}
+                                title="Remove Order"
+                              >
+                                <FiTrash2 size={13} style={{ marginRight: '4px' }}/> Remove
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleNextStatus(ord)}
+                                disabled={updating}
+                                className="btn btn-primary btn-sm"
+                                style={{
+                                  padding: '6px 14px',
+                                  fontSize: '12px',
+                                  background: 'linear-gradient(135deg, #15803D 0%, #166534 100%)',
+                                  borderRadius: '8px',
+                                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                                  boxShadow: '0 2px 8px rgba(22, 101, 52, 0.4)',
+                                }}
+                                title="Advance Status"
+                              >
+                                Advance →
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -331,14 +371,25 @@ const FarmerOrders = () => {
                   <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>CURRENT STATUS</span>
                   <p style={{ margin: '4px 0 0', fontWeight: 800, fontSize: '16px', color: '#1D4533' }}>{selectedOrder.status || 'Processing'}</p>
                 </div>
-                <button
-                  onClick={() => handleNextStatus(selectedOrder)}
-                  disabled={selectedOrder.status === 'Delivered'}
-                  className="btn btn-primary btn-sm"
-                  style={{ padding: '8px 16px', fontSize: '13px' }}
-                >
-                  Mark Next Step →
-                </button>
+                {selectedOrder.status === 'Delivered' ? (
+                  <button
+                    onClick={() => handleDeleteOrder(selectedOrder)}
+                    disabled={updating}
+                    className="btn btn-primary btn-sm"
+                    style={{ padding: '8px 16px', fontSize: '13px', background: 'linear-gradient(135deg, #DC2626 0%, #991B1B 100%)', border: 'none', color: '#FFF', borderRadius: '8px' }}
+                  >
+                    <FiTrash2 size={13} style={{ marginRight: '4px' }}/> Remove Order
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleNextStatus(selectedOrder)}
+                    disabled={updating}
+                    className="btn btn-primary btn-sm"
+                    style={{ padding: '8px 16px', fontSize: '13px', border: 'none', borderRadius: '8px' }}
+                  >
+                    Mark Next Step →
+                  </button>
+                )}
               </div>
 
               {/* Customer & Shipping Details */}
