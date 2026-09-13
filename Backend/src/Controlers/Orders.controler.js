@@ -5,6 +5,7 @@ import { Order } from "../Models/Order.Model.js";
 import { User } from "../Models/User.Model.js";
 import { Product } from "../Models/Product.Models.js";
 import mongoose from "mongoose";
+import { getIo, getUserSocket } from "../socket.js";
 
 const Cashondelivery = asyncHandler(async (req, res) => {
   try {
@@ -142,7 +143,7 @@ const Cashondelivery = asyncHandler(async (req, res) => {
         throw new ApiError(400, `Farmer not found for product ${product._id}`);
       }
 
-      if (product.farmer.farmeractive !== "Active") {
+      if (product.farmer.farmeractive?.toLowerCase() !== "active") {
         throw new ApiError(
           403,
           `Farmer is inactive for product ${product._id}`,
@@ -153,8 +154,7 @@ const Cashondelivery = asyncHandler(async (req, res) => {
       // Stock check
       // --------------------------------
       const requestedQuantity = Number(item.quantity);
-
-      const availableStock = Number(product.stock);
+      const availableStock = Number(product.stock) || 0; // fallback to 0 if NaN/undefined
 
       if (availableStock <= 0) {
         throw new ApiError(400, `Stock is empty for product ${product._id}`);
@@ -163,7 +163,7 @@ const Cashondelivery = asyncHandler(async (req, res) => {
       if (requestedQuantity > availableStock) {
         throw new ApiError(
           400,
-          `Only ${availableStock} item(s) available for product ${product._id}`,
+          `Only ${availableStock} item(s) available for product ${product._id}`
         );
       }
     }
@@ -196,22 +196,18 @@ const Cashondelivery = asyncHandler(async (req, res) => {
     };
 
     // --------------------------------
-    // Reduce stock atomically
+    // Reduce stock atomically (with strict $gte check to prevent overselling)
     // --------------------------------
     for (const item of Products) {
+      const requestedQty = Number(item.quantity);
       const updatedProduct = await Product.findOneAndUpdate(
         {
           _id: item.product,
-
-          // Very important:
-          // update only if enough stock exists
-          stock: {
-            $gte: Number(item.quantity),
-          },
+          stock: { $gte: requestedQty } // Strict check: DB stock must be >= requested
         },
         {
           $inc: {
-            stock: -Number(item.quantity),
+            stock: -requestedQty,
           },
         },
         {
@@ -219,10 +215,11 @@ const Cashondelivery = asyncHandler(async (req, res) => {
         },
       );
 
+      // If product returns null, either it doesn't exist OR stock was insufficient during race condition
       if (!updatedProduct) {
         throw new ApiError(
-          409,
-          `Insufficient stock for product ${item.product}`,
+          400,
+          `Insufficient stock or product ${item.product} not found during final checkout.`
         );
       }
     }
@@ -254,6 +251,25 @@ const Cashondelivery = asyncHandler(async (req, res) => {
 
     if (!order) {
       throw new ApiError(500, "Something went wrong while placing order");
+    }
+
+    // --------------------------------
+    // Socket.io Real-time Notification
+    // --------------------------------
+    try {
+      const io = getIo();
+      const farmerIds = [...new Set(orderProducts.map(p => p.farmerId.toString()))];
+      farmerIds.forEach(fId => {
+        const socketId = getUserSocket(fId);
+        if (socketId) {
+          io.to(socketId).emit("new_order", { 
+            orderId: order._id, 
+            message: "New order received!" 
+          });
+        }
+      });
+    } catch (e) {
+      console.error("Socket emit failed", e);
     }
 
     // --------------------------------
@@ -368,6 +384,19 @@ const updatestatus = asyncHandler(async (req, res) => {
     );
     if (!order) {
       throw new ApiError(404, "Order not found");
+    }
+    try {
+      const io = getIo();
+      const socketId = getUserSocket(order.user.toString());
+      if (socketId) {
+        io.to(socketId).emit("order_status_update", {
+          orderId: order._id,
+          status: order.status,
+          message: `Order #${order._id.toString().slice(-6)} status updated to ${order.status}`
+        });
+      }
+    } catch (e) {
+      console.error("Socket emit failed", e);
     }
     return res
       .status(201)

@@ -1,3 +1,4 @@
+
 import { asyncHandler } from "../Utiles/AscynHandler.js";
 import { ApiError } from "../Utiles/ApiError.js";
 import { User } from "../Models/User.Model.js"
@@ -43,8 +44,29 @@ const registerUser = asyncHandler(async (req, res) => {
     const exitedUser = await User.findOne({
       $or: [{ phone }, { email }],
     });
+    
     if (exitedUser) {
-      throw new ApiError(409, "User's email or phone already exist");
+      // If user exists, upgrade them to 'both' so they can be both customer and farmer
+      exitedUser.role = "both";
+      if (farmeractive) exitedUser.farmeractive = farmeractive;
+      // Also update other fields in case they changed them
+      exitedUser.fullName = fullName;
+      exitedUser.address = address.toLowerCase();
+      exitedUser.PinCode = PinCode;
+      exitedUser.City = City;
+      exitedUser.State = State;
+      exitedUser.password = password; // this will trigger the pre-save hook to hash it again
+      
+      const avatarLocalPath = req.files?.avatar?.[0]?.path;
+      if (avatarLocalPath) {
+        const avatar = await UploudOnCloundinary(avatarLocalPath);
+        if (avatar) exitedUser.avatar = avatar.url;
+      }
+
+      await exitedUser.save();
+      
+      const createUser = await User.findById(exitedUser._id).select("-password -refreshToken");
+      return res.status(201).json(new Apiresponse(201, { user: createUser }, "user updated Successfully to both roles"));
     }
     if (!validator.isEmail(email)) {
       throw new ApiError(400, "Email Id is not valide");
@@ -101,6 +123,11 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginuser = asyncHandler(async (req, res) => {
   try {
     const  {email,password} = req.body; 
+     
+    // Strictly block admin email from normal user/farmer login
+    if (email === process.env.ADMIN_EMAIL) {
+      throw new ApiError(403, "Admin credentials cannot be used for user login");
+    }
      
     if (!validator.isEmail(email)) {
       throw new ApiError(400, "EmailId is required");
@@ -386,7 +413,9 @@ const updatedAvatarImage = asyncHandler(async (req, res) => {
 });
 const getAllFarmersDetail=asyncHandler(async(req ,res)=>{
   try {
-     const allFarmer = await User.find({role:"farmer"}).select(
+     const allFarmer = await User.find({
+       role: { $in: ["farmer", "both"] }
+     }).select(
       "-password  -refreshToken -accessToken -cartData -wishlist "
     )
      if (!allFarmer) {
@@ -409,12 +438,12 @@ const adminPanel = asyncHandler(async (req, res) => {
     }
 
     if (
-      email !== process.env.ADMIN_EMAIL &&
+      email !== process.env.ADMIN_EMAIL ||
       password !== process.env.ADMIN_PASSWORD
     ) {
       return res
         .status(401)
-        .json(new Apiresponse(401, "Invalide password or emailId"));
+        .json(new Apiresponse(401, "Invalid password or emailId"));
     }
     const payload = email + password;
     const token = jwt.sign({ payload }, process.env.ACCES_TOKEN_SECRET, {

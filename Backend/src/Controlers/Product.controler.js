@@ -72,6 +72,7 @@ const FarmeraddProduct = asyncHandler(async (req, res) => {
       .status(201)
       .json(new Apiresponse(201, product, "Product added successfully"));
   } catch (error) {
+    console.error("ADD PRODUCT ERROR:", error);
     const status = error.statusCode || 500;
     return res.status(status).json(new Apiresponse(status, null, error.message || "Failed to add product"));
   }

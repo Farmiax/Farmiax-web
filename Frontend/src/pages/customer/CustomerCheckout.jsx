@@ -11,6 +11,7 @@ import {
 
 import catGrains from '../../assets/images/cat-grains.png';
 import '../../styles/customer.css';
+import toast from 'react-hot-toast';
 
 // Payment methods supported strictly by backend enum: ["COD", "Stripe", "Razorpay"]
 const PAYMENT_METHODS = [
