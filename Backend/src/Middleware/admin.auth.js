@@ -9,20 +9,24 @@ export const adminAuth = asyncHandler(async (req, res, next) => {
         const token = req.headers.token || (authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null);
         
         if (!token) {
-            return res.status(400).json(new Apiresponse(400, null, "Token is missing or invalid"));
+            return res.status(401).json(new Apiresponse(401, null, "Admin token missing"));
         }
 
         const decodetoken = jwt.verify(token, process.env.ACCES_TOKEN_SECRET);
         
-        if (!decodetoken || decodetoken.payload !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
-            return res.status(401).json(new Apiresponse(401, null, "Not authorized, please login again"));
+        const expectedPayload = ((process.env.ADMIN_EMAIL || "") + (process.env.ADMIN_PASSWORD || "")).trim().toLowerCase();
+        const actualPayload = String(decodetoken?.payload || "").trim().toLowerCase();
+
+        if (!decodetoken || !actualPayload || actualPayload !== expectedPayload) {
+            return res.status(401).json(new Apiresponse(401, null, "Admin session expired or unauthorized. Please log in again."));
         }
 
         next();
     } catch (error) {
-        return res.status(401).json(new Apiresponse(401, null, error?.message || "Invalid token"));
+        return res.status(401).json(new Apiresponse(401, null, "Admin session expired or invalid. Please log in again."));
     }
 });
+
 
 
 

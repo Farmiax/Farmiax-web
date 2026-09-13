@@ -24,6 +24,20 @@ adminApi.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+adminApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('farmiax_admin_token');
+      localStorage.removeItem('farmiax_admin_email');
+      if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin') && window.location.pathname !== '/admin/login') {
+        window.location.href = '/admin/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 const adminService = {
   // POST /users/adminlogin — { email, password } -> { Token: token }
   login: async (email, password) => {
