@@ -88,8 +88,15 @@ const adminService = {
 
   // DELETE /product/admin/:productId — Admin-authenticated product deletion
   deleteProduct: async (productId) => {
-    const res = await adminApi.delete(`/product/admin/${productId}`);
-    return res.data?.data || res.data;
+    const token = getAdminToken();
+    try {
+      const res = await adminApi.post(`/product/admin-delete/${productId}`, { token });
+      return res.data?.data || res.data;
+    } catch (postErr) {
+      console.warn('POST admin-delete failed, trying DELETE fallback:', postErr);
+      const res = await adminApi.delete(`/product/admin/${productId}`);
+      return res.data?.data || res.data;
+    }
   },
 
   // GET /order/getorders — Master list of all customer orders
