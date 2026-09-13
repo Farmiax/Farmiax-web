@@ -95,7 +95,9 @@ const AdminProducts = () => {
       setDeleteProductId(null);
       fetchProducts();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to delete product');
+      const rawMsg = err.response?.data?.message || err.response?.data?.data;
+      const errMsg = (rawMsg && rawMsg !== 'success') ? rawMsg : 'Failed to delete product. Please verify admin session.';
+      toast.error(errMsg);
     } finally {
       setSubmitting(false);
     }
