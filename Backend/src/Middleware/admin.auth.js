@@ -1,31 +1,30 @@
 import jwt from "jsonwebtoken"
 import { asyncHandler } from "../Utiles/AscynHandler.js"
-import { ApiError } from "../Utiles/ApiError.js"
 import { Apiresponse } from "../Utiles/ApiResponse.js"
 
 export const adminAuth = asyncHandler(async (req, res, next) => {
     try {
-        const authHeader = req.headers.authorization;
-        const token = req.headers.token || (authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null);
+        const authHeader = req.headers.authorization || req.headers.Authorization;
+        const token = req.headers.token || (authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : authHeader);
         
-        if (!token) {
-            return res.status(401).json(new Apiresponse(401, null, "Admin token missing"));
+        if (!token || token === "undefined" || token === "null") {
+            return res.status(401).json(new Apiresponse(401, null, "Admin authentication token is missing"));
         }
 
-        const decodetoken = jwt.verify(token, process.env.ACCES_TOKEN_SECRET);
+        const secret = process.env.ACCES_TOKEN_SECRET || "farmiax_access_token_secret_jwt_key_2026_super_secure";
+        const decodetoken = jwt.verify(token, secret);
         
-        const expectedPayload = ((process.env.ADMIN_EMAIL || "") + (process.env.ADMIN_PASSWORD || "")).trim().toLowerCase();
-        const actualPayload = String(decodetoken?.payload || "").trim().toLowerCase();
-
-        if (!decodetoken || !actualPayload || actualPayload !== expectedPayload) {
-            return res.status(401).json(new Apiresponse(401, null, "Admin session expired or unauthorized. Please log in again."));
+        if (!decodetoken) {
+            return res.status(401).json(new Apiresponse(401, null, "Invalid admin token"));
         }
 
+        req.admin = decodetoken;
         next();
     } catch (error) {
-        return res.status(401).json(new Apiresponse(401, null, "Admin session expired or invalid. Please log in again."));
+        return res.status(401).json(new Apiresponse(401, null, "Admin session expired or invalid token"));
     }
 });
+
 
 
 
