@@ -217,9 +217,9 @@ const FarmerAndAdminUpdateProduct = asyncHandler(async (req, res) => {
 // ===================== Delete Product =====================
 const FarmerAndAdminremoveProduct = asyncHandler(async (req, res) => {
   try {
-    const { productId } = req.params;
+    const productId = req.params.productId || req.body?.productId || req.body?.id;
 
-    if (!mongoose.isValidObjectId(productId)) {
+    if (!productId || !mongoose.isValidObjectId(productId)) {
       throw new ApiError(400, "Invalid Product Id");
     }
 
@@ -242,7 +242,7 @@ const FarmerAndAdminremoveProduct = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .json(new Apiresponse(200, null, "Product deleted successfully"));
+      .json(new Apiresponse(200, { deletedId: productId }, "Product deleted successfully"));
   } catch (error) {
     const status = error.statusCode || 500;
     return res.status(status).json(new Apiresponse(status, null, error.message || "Something went wrong when deleting a product"));
@@ -251,23 +251,20 @@ const FarmerAndAdminremoveProduct = asyncHandler(async (req, res) => {
 const FarmerGetHisProduct = asyncHandler(async (req, res) => {
   try {
     const { farmerId } = req.body;
-    if (!mongoose.isValidObjectId(farmerId)) {
-       throw new ApiError(400,"Invalid Farmer ID");
-       
+    if (!farmerId || !mongoose.isValidObjectId(farmerId)) {
+      throw new ApiError(400, "Invalid Farmer ID");
     }
-    const allProducts = await Product.find({ farmer: farmerId });
-    if (allProducts.length === 0) {
-       throw new ApiError(404,"Products are not found");
-       
-    }
+    const allProducts = await Product.find({
+      $or: [{ farmer: farmerId }, { farmerId: farmerId }]
+    });
     return res
-      .status(302)
+      .status(200)
       .json(
-        new Apiresponse(302, allProducts, "Successfull fetching all products"),
+        new Apiresponse(200, allProducts || [], "Successfully fetched farmer products"),
       );
   } catch (error) {
-    const status = error.statusCode || 500
-    return res.status(status).json(new Apiresponse(status, [], error.message || "Something went wrong when fetching all products"));
+    const status = error.statusCode || 500;
+    return res.status(status).json(new Apiresponse(status, [], error.message || "Something went wrong when fetching farmer products"));
   }
 });
 

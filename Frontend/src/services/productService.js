@@ -66,16 +66,37 @@ const productService = {
 
   getFarmerProducts: async (farmerId) => {
     try {
-      if (farmerId) {
-        const res = await api.post('/product/farmer-all-products', { farmerId: farmerId });
+      let fId = farmerId;
+      if (!fId) {
+        const storedUser = localStorage.getItem('farmiax_user');
+        if (storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            fId = parsed._id || parsed.id;
+          } catch (e) {
+            console.error('Error parsing stored user', e);
+          }
+        }
+      }
+
+      if (fId) {
+        const res = await api.post('/product/farmer-all-products', { farmerId: fId }, {
+          validateStatus: (status) => status >= 200 && status < 400
+        });
         const items = res.data?.data || res.data;
         if (Array.isArray(items)) return items;
       }
-      return [];
+
+      const allRes = await api.get('/product/all-products');
+      const allProds = Array.isArray(allRes.data?.data) ? allRes.data.data : (Array.isArray(allRes.data) ? allRes.data : []);
+      if (fId) {
+        return allProds.filter(p => p.farmer === fId || p.farmer?._id === fId || p.farmerId === fId);
+      }
+      return allProds;
     } catch (err) {
       if (err.response?.status === 404) return [];
       console.error("Error fetching farmer products", err);
-      throw err;
+      return [];
     }
   },
 };

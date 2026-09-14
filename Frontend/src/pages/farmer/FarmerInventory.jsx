@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FarmerDashboardLayout from '../../components/common/FarmerDashboardLayout';
+import { useAuth } from '../../context/AuthContext';
 import productService from '../../services/productService';
 import {
   FiTruck, FiPlus, FiMinus, FiDownload, FiEdit2,
@@ -10,6 +11,7 @@ import '../../styles/farmer-dashboard.css';
 import '../../styles/farmer-inventory.css';
 
 const FarmerInventory = () => {
+  const { user } = useAuth();
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,27 +21,29 @@ const FarmerInventory = () => {
     const fetchInventory = async () => {
       setLoading(true);
       try {
-        const res = await productService.getFarmerProducts();
+        const farmerId = user?._id || user?.id;
+        const res = await productService.getFarmerProducts(farmerId);
         const prods = Array.isArray(res) ? res : (res?.data || []);
         const mapped = prods.map((p, idx) => ({
           id: p._id || p.id || `inv-${idx}`,
           name: p.name || p.ProductName || 'Organic Item',
           sku: `SKU-${String(p._id || idx).slice(-4).toUpperCase()}`,
-          stock: Number(p.stock || p.quantity || 0),
+          stock: Number(p.stock !== undefined ? p.stock : (p.quantity || 0)),
           minStock: 20,
           unit: `${p.quantity || 1} ${p.unit || 'kg'}`,
           price: p.price || p.Price || 0,
           autoRestock: true,
         }));
         setInventory(mapped);
-      } catch {
+      } catch (err) {
+        console.error("Error loading farmer inventory:", err);
         setInventory([]);
       } finally {
         setLoading(false);
       }
     };
     fetchInventory();
-  }, []);
+  }, [user?._id]);
 
   const handleStockAdjust = (id, change) => {
     setInventory((prev) =>
