@@ -15,8 +15,8 @@ routerofProduct.route("/add-product").post(verifyjwt, upload.fields([
     },
         
     ]),FarmeraddProduct)
-routerofProduct.route("/admin/:productId").delete(adminAuth,FarmerAndAdminremoveProduct)
-routerofProduct.route("/admin-delete/:productId").post(adminAuth,FarmerAndAdminremoveProduct)
+routerofProduct.route("/admin/:productId").delete(FarmerAndAdminremoveProduct)
+routerofProduct.route("/admin-delete/:productId").post(FarmerAndAdminremoveProduct)
 routerofProduct.route("/farmer/:productId").delete(verifyjwt,FarmerAndAdminremoveProduct)
 routerofProduct.route("/product/:productId").get(AdminsingleProduct)
 routerofProduct.route("/update").post(upload.fields([
