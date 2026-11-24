@@ -19,6 +19,8 @@ const storage = multer.diskStorage({
 
   filename: function (req, file, cb) {
     const uniqueName = `${Date.now()}-${file.originalname}`;
+    console.log("UPLOADING FILE:", uniqueName);
+    console.log("SAVING TO:", uploadDir);
     cb(null, uniqueName);
   },
 });
