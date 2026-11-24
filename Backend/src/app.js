@@ -6,6 +6,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 
 const app = express()
+app.set("trust proxy", 1);
 app.use(cors({
     origin: (origin, callback) => callback(null, true),
     credentials: true,
