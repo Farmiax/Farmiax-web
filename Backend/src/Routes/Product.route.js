@@ -8,13 +8,7 @@ import { verifyjwt } from '../Middleware/auth.middleware.js'
 const routerofProduct= Router()
 routerofProduct.route("/all-products").get(AdminlistOfProducts)
 routerofProduct.route("/farmer-all-products").post(FarmerGetHisProduct)
-routerofProduct.route("/add-product").post(verifyjwt, upload.fields([
-        {
-        name:"image",
-        maxCount:1
-    },
-        
-    ]),FarmeraddProduct)
+routerofProduct.route("/add-product").post(verifyjwt, upload.single("image"),FarmeraddProduct)
 routerofProduct.route("/admin/:productId").delete(FarmerAndAdminremoveProduct)
 routerofProduct.route("/admin-delete/:productId").post(FarmerAndAdminremoveProduct)
 routerofProduct.route("/farmer/:productId").delete(verifyjwt,FarmerAndAdminremoveProduct)
