@@ -54,7 +54,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.get("/{*splat}", (req, res) => {
-  res.sendFile(path.resolve(__dirname, '..', 'Public', 'index.html'));
+  path.resolve(__dirname, "..", "Frontend", "index.html")
 });
 
 export default app ;
