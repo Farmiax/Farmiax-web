@@ -21,7 +21,6 @@ const FarmeraddProduct = asyncHandler(async (req, res) => {
       farmerId,
       Category,
     } = req.body;
-    console.log("FILE:", req.file);
     const imagePath = req.file?.path;
     if (!imagePath) {
       throw new ApiError(400, "Product image is required");
