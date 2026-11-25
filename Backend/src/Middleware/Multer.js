@@ -6,8 +6,6 @@ import path from "path";
 // Absolute upload directory
 const uploadDir = path.resolve(process.cwd(), "Public", "temp");
 
-console.log("MULTER UPLOAD DIRECTORY:", uploadDir);
-
 // Create directory if missing
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -27,12 +25,6 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  console.log("MULTER RECEIVED FILE:", {
-    fieldname: file.fieldname,
-    originalname: file.originalname,
-    mimetype: file.mimetype,
-  });
-
   if (file.mimetype.startsWith("image/")) {
     return cb(null, true);
   }
