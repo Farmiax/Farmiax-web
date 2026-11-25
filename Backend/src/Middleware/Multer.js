@@ -3,8 +3,12 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 
-const uploadDir = path.join(process.cwd(), "Public", "temp");
+// Absolute upload directory
+const uploadDir = path.resolve(process.cwd(), "Public", "temp");
 
+console.log("MULTER UPLOAD DIRECTORY:", uploadDir);
+
+// Create directory if missing
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -15,21 +19,25 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
-    const uniqueName =
-      `${Date.now()}-${file.originalname.replace(/\s+/g, "_")}`;
+    const ext = path.extname(file.originalname);
+    const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
 
-    cb(null, uniqueName);
+    cb(null, filename);
   },
 });
 
 const fileFilter = (req, file, cb) => {
-  console.log("MULTER FILE:", file);
+  console.log("MULTER RECEIVED FILE:", {
+    fieldname: file.fieldname,
+    originalname: file.originalname,
+    mimetype: file.mimetype,
+  });
 
   if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only image files are allowed"), false);
+    return cb(null, true);
   }
+
+  return cb(new Error("Only image files are allowed"));
 };
 
 export const upload = multer({
@@ -37,5 +45,6 @@ export const upload = multer({
   fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024,
+    files: 1,
   },
 });
