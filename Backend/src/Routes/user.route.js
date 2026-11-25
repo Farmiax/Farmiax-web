@@ -15,13 +15,7 @@ import{refreshAccessToken,
    
 const router= Router()
 router.route("/register").post(
-    upload.fields([
-        {
-        name:"avatar",
-        maxCount:1
-    },
-        
-    ]),
+    upload.single("avatar") ,
     registerUser
 )
 router.route("/login").post(loginuser)
