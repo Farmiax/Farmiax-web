@@ -4,9 +4,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://farmiax-web-b
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
   validateStatus: (status) => status >= 200 && status < 400,
 });
 
